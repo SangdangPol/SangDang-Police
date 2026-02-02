@@ -72,7 +72,7 @@
         .menu-title { font-weight: bold; font-size: 13px; margin-bottom: 2px; }
         .menu-desc { font-size: 10px; color: var(--text-dim); }
 
-        /* [추가된 부분] 출처 표기 스타일 */
+        /* 출처 표기 */
         .credit-text {
             text-align: center; margin-top: 20px; font-size: 10px;
             color: rgba(255, 255, 255, 0.3); letter-spacing: 0.5px;
@@ -88,7 +88,7 @@
             z-index: 999; box-shadow: 0 5px 20px rgba(0,0,0,0.6);
         }
 
-        /* 오버레이 스타일 (이전과 동일) */
+        /* 오버레이 (전화 수신) */
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #000; display: none; flex-direction: column; }
         .overlay.active { display: flex; }
         
@@ -101,6 +101,7 @@
         .btn-red { background: var(--danger); }
         .btn-green { background: var(--safe); animation: pulse 1.5s infinite; }
 
+        /* 오버레이 (통화 중 - 목소리 재생) */
         .voice-screen { 
             flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; 
             background: #0f172a; padding: 30px; text-align: center;
@@ -116,6 +117,7 @@
         }
         .choice-btn:active { background: rgba(59, 130, 246, 0.3); }
 
+        /* 결과 화면 */
         .result-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; background: #0f172a; display: none; }
         .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid #334155; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
         .score-circle.safe { border-color: var(--safe); }
@@ -136,6 +138,17 @@
         .q-fake { background: rgba(239, 68, 68, 0.2); color: #fca5a5; } 
         .q-real { background: rgba(34, 197, 94, 0.2); color: #86efac; }
         
+        /* [긴급 수정] 가이드 로고 크기 고정 */
+        .guide-title-box { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        
+        /* !important를 붙여서 어떤 경우에도 30px를 넘지 않게 고정 */
+        .guide-ci { 
+            width: 30px !important; 
+            height: 30px !important; 
+            object-fit: contain; 
+            flex-shrink: 0; 
+        }
+
         .guide-item { display: flex; gap: 15px; background: var(--bg-card); padding: 15px; border-radius: 18px; border: var(--glass-border); margin-bottom: 10px; align-items: center; }
         .g-num { font-size: 24px; font-weight: 900; color: var(--accent); opacity: 0.8; }
         .g-txt h3 { margin: 0 0 5px 0; font-size: 15px; color: white; }
@@ -202,7 +215,7 @@
     <div id="view-guide" class="content-view">
         <div class="guide-title-box">
             <img src="logo.png" alt="CI" class="guide-ci" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1069/1069102.png'">
-            <span class="section-label" style="margin-bottom:0; font-size:18px;">범죄예방대응과 행동수칙</span>
+            <span class="section-label" style="margin-bottom:0; font-size:18px;">보이스피싱 예방 행동수칙</span>
         </div>
         <div class="guide-item"><div class="g-num">01</div><div class="g-txt"><h3>링크(URL) 클릭 금지</h3><p>출처를 알 수 없는 문자 속 인터넷 주소는 절대 누르지 마세요.</p></div></div>
         <div class="guide-item"><div class="g-num">02</div><div class="g-txt"><h3>앱 설치 요구는 사기</h3><p>기관은 전화로 '보안 앱' 설치를 요구하지 않습니다.</p></div></div>
@@ -226,8 +239,7 @@
         <div id="screen-voice" class="voice-screen">
             <div class="voice-wave">🔊</div>
             <div id="voice-status" class="voice-status">범인 목소리 듣는 중...</div>
-            <div id="choice-dock" class="choice-container">
-                </div>
+            <div id="choice-dock" class="choice-container"></div>
         </div>
 
         <div id="screen-result" class="result-screen">
@@ -352,7 +364,6 @@
             alert("소리 재생 오류: 파일명을 확인해주세요.");
         });
 
-        // 목소리 끝나면 선택지 표시
         voicePlayer.onended = function() {
             showChoices();
         };
