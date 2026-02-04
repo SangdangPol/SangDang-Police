@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>폴-체크 (안전 자가진단)</title>
+    <meta name="theme-color" content="#15803d">
+    
+    <!-- 아이콘 & 스타일 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 -->
+    <!-- 수정됨: 폴-체크 전용 ID (G-PFC08R08MG) 반영 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PFC08R08MG"></script>
+    <script>
+        const GA_MEASUREMENT_ID = 'G-PFC08R08MG';
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID, {
+            'page_title': '폴-체크(자가진단)',
+            'anonymize_ip': true
+        });
+
+        function sendAnalyticsEvent(eventName, params = {}) {
+            gtag('event', eventName, params);
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0fdf4; touch-action: manipulation; }
+        /* 체크박스 커스텀 스타일 */
+        .custom-checkbox:checked {
+            background-color: #16a34a;
+            border-color: #16a34a;
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+        }
+        .advice-box { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+
+    <!-- 모바일 컨테이너 -->
+    <div class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative">
+        
+        <!-- 헤더 (녹색 테마 + 로고 자연스럽게 배치) -->
+        <header class="bg-green-700 text-white p-4 flex items-center justify-between sticky top-0 z-20 shadow-md">
+            <div class="flex items-center gap-3">
+                <!-- 뒤로가기 버튼 -->
+                <button onclick="location.href='../'" class="hover:bg-green-600 p-1 rounded-full transition mr-1">
+                    <i class="fa-solid fa-arrow-left text-xl"></i>
+                </button>
+                
+                <!-- 로고 이미지: 배경색 제거(투명), 원형 처리 -->
+                <img src="logo.png" 
+                     onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'"
+                     alt="청주상당경찰서" 
+                     class="w-10 h-10 object-contain rounded-full">
+
+                <div>
+                    <h1 class="font-black text-lg leading-tight">상당 폴-체크</h1>
+                    <p class="text-xs text-green-200">범죄예방 환경진단</p>
+                </div>
+            </div>
+            <!-- 우측 장식 아이콘 -->
+            <i class="fa-solid fa-clipboard-check text-2xl opacity-50"></i>
+        </header>
+
+        <!-- 탭 메뉴 (집 vs 가게) -->
+        <div class="flex border-b border-gray-200 bg-white sticky top-[60px] z-10">
+            <button onclick="switchTab('home')" id="tab-home" class="flex-1 py-4 font-bold text-green-700 border-b-4 border-green-700 bg-green-50 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-house"></i> 우리집
+            </button>
+            <button onclick="switchTab('store')" id="tab-store" class="flex-1 py-4 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-store"></i> 내 가게
+            </button>
+        </div>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="p-5 flex-1 overflow-y-auto pb-24 bg-gray-50">
+            
+            <!-- 상단 안내 카드 -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-100 mb-6 text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-full mb-2">
+                    <i class="fa-solid fa-shield-cat text-xl"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-800" id="introTitle">우리집 안전점수 확인하기</h2>
+                <p class="text-sm text-gray-500 mt-1">해당하는 항목에 체크(V) 해주세요.<br>부족한 부분에 대한 <b>경찰관의 조언</b>이 제공됩니다.</p>
+            </div>
+
+            <!-- 체크리스트 컨테이너 -->
+            <div id="quiz-container" class="space-y-3">
+                <!-- 자바스크립트로 문항 자동 생성 -->
+            </div>
+
+        </main>
+
+        <!-- 하단 고정 버튼 -->
+        <div class="p-4 bg-white border-t border-gray-200 sticky bottom-0 z-20">
+            <button onclick="calculateScore()" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 active:scale-95 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                진단 결과 확인하기
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 결과 모달 (Modal) -->
+        <!-- ========================================== -->
+        <div id="resultModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+            <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden relative shadow-2xl transform transition-transform duration-300 scale-95" id="modalContent">
+                
+                <!-- 모달 헤더 -->
+                <div class="bg-green-700 p-4 text-white text-center relative">
+                    <h3 class="font-bold text-lg">진단 결과 리포트</h3>
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-green-200">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- 모달 내용 -->
+                <div class="p-6">
+                    <!-- 점수 섹션 -->
+                    <div class="text-center mb-6">
+                        <p class="text-gray-500 text-xs font-bold mb-1">현재 안전 점수</p>
+                        <div class="text-6xl font-black text-green-600 mb-2 tracking-tighter" id="scoreDisplay">0</div>
+                        <div id="gradeBadge" class="inline-block px-3 py-1 rounded-full text-white font-bold text-xs bg-gray-400">
+                            분석중...
+                        </div>
+                    </div>
+
+                    <!-- 처방전(조언) 섹션 -->
+                    <div class="border-t border-gray-100 pt-4">
+                        <h4 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-user-doctor text-green-600"></i>
+                            맞춤형 보안 솔루션
+                        </h4>
+                        <div class="bg-green-50 rounded-xl p-3 h-48 overflow-y-auto space-y-2 custom-scrollbar" id="adviceList">
+                            <!-- 조언 내용이 여기에 들어갑니다 -->
+                        </div>
+                    </div>
+
+                    <!-- 닫기 버튼 -->
+                    <button onclick="closeModal()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold mt-5 text-sm hover:bg-gray-900 transition">
+                        확인 완료
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // === 1. 진단 문항 데이터 (CPTED 기반) ===
+        const data = {
+            home: [
+                { q: "현관문에 이중 잠금장치(안전고리, 보조키)가 있습니까?", advice: "현관문은 침입의 첫 관문입니다. 도어락 외에 '안전고리'를 설치하여 문을 열 때 안전을 확보하세요." },
+                { q: "디지털 도어락 비밀번호를 3~6개월마다 변경합니까?", advice: "비밀번호 노출 방지를 위해 주기적으로 변경하고, 키패드에 남은 지문을 닦아주세요." },
+                { q: "창문에 방범창 또는 락힌지(잠금장치)가 설치되어 있습니까?", advice: "저층이나 복도식 아파트 창문은 침입이 쉽습니다. 창문 개방을 제한하는 '창문 스토퍼' 설치를 권장합니다." },
+                { q: "집 앞이나 복도에 택배, 전단지가 쌓여있지 않습니까?", advice: "문 앞에 쌓인 적치물은 빈집임을 알리는 신호가 됩니다. 장기 부재 시 이웃에게 부탁하거나 택배함을 이용하세요." },
+                { q: "가스배관에 덮개나 가시덮개가 설치되어 있습니까?", advice: "외부 배관을 타고 오르는 침입을 막기 위해 가시덮개 설치나 배관 주변 정리가 필요합니다." },
+                { q: "공동현관(1층) 출입 통제가 잘 이루어지고 있습니까?", advice: "공동현관 비밀번호 노출을 주의하고, 외부인 출입 시 따라 들어오지 못하게 확인하세요." }
+            ],
+            store: [
+                { q: "CCTV가 사각지대 없이 설치되어 있고, '녹화중' 안내판이 있습니까?", advice: "CCTV는 범죄 심리를 억제하는 가장 효과적인 수단입니다. 눈에 잘 띄는 곳에 안내판을 부착하세요." },
+                { q: "계산대(포스기)에 현금을 최소한으로만 보관합니까?", advice: "다액의 현금은 범죄의 표적이 됩니다. 수시로 금고나 은행에 입금하여 시재를 줄이세요." },
+                { q: "출입문이나 유리창이 내부가 잘 보이도록 투명합니까?", advice: "내부가 잘 보여야(자연 감시) 외부 행인이나 순찰차가 범죄를 발견하기 쉽습니다. 불필요한 부착물을 제거하세요." },
+                { q: "비상벨이나 긴급신고 시스템(폴-매니저 등)을 사용 중입니까?", advice: "위급 상황 시 즉시 알릴 수 있는 수단을 마련하고, 직원들과 사용법을 숙지하세요." },
+                { q: "고가품(귀금속 등)은 퇴근 시 별도 금고에 보관합니까?", advice: "진열된 귀금속은 야간 침입 절도의 1순위 타겟입니다. 영업 종료 후 반드시 금고에 보관하세요." },
+                { q: "매장 후문이나 창문의 시정장치가 견고합니까?", advice: "침입 범죄의 상당수는 허술한 뒷문이나 환기구를 통해 발생합니다. 견고한 이중 잠금장치를 설치하세요." }
+            ]
+        };
+
+        let currentTab = 'home';
+
+        // === 2. 탭 전환 기능 ===
+        function switchTab(tab) {
+            currentTab = tab;
+            const btnHome = document.getElementById('tab-home');
+            const btnStore = document.getElementById('tab-store');
+            const title = document.getElementById('introTitle');
+            
+            if(tab === 'home') {
+                btnHome.className = "flex-1 py-4 font-bold text-green-700 border-b-4 border-green-700 bg-green-50 transition-all flex items-center justify-center gap-2";
+                btnStore.className = "flex-1 py-4 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all flex items-center justify-center gap-2";
+                title.innerText = "우리집 안전점수 확인하기";
+            } else {
+                btnStore.className = "flex-1 py-4 font-bold text-green-700 border-b-4 border-green-700 bg-green-50 transition-all flex items-center justify-center gap-2";
+                btnHome.className = "flex-1 py-4 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all flex items-center justify-center gap-2";
+                title.innerText = "내 가게 안전점수 확인하기";
+            }
+            renderQuestions();
+        }
+
+        // === 3. 문항 렌더링 ===
+        function renderQuestions() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            
+            data[currentTab].forEach((item, index) => {
+                const id = `q-${index}`;
+                // 애니메이션 효과를 위해 순차적 딜레이 적용
+                container.innerHTML += `
+                    <label class="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 cursor-pointer hover:border-green-500 hover:shadow-md transition-all active:scale-[0.99]" style="animation: fadeIn 0.3s ease-out ${index * 0.05}s backwards;">
+                        <input type="checkbox" id="${id}" class="mt-1 w-6 h-6 border-2 border-gray-300 rounded text-green-600 focus:ring-green-500 custom-checkbox transition-colors">
+                        <span class="text-gray-700 text-sm font-medium leading-relaxed select-none">${item.q}</span>
+                    </label>
+                `;
+            });
+        }
+
+        // === 4. 점수 계산 및 결과 모달 표시 ===
+        function calculateScore() {
+            const questions = data[currentTab];
+            let checkedCount = 0;
+            let adviceHTML = '';
+
+            questions.forEach((item, index) => {
+                const checkbox = document.getElementById(`q-${index}`);
+                if(checkbox.checked) {
+                    checkedCount++;
+                } else {
+                    // 체크 안 된 항목은 조언 리스트에 추가
+                    adviceHTML += `
+                        <div class="advice-box flex gap-3 items-start p-2 border-b border-green-100 last:border-0">
+                            <i class="fa-solid fa-circle-exclamation text-red-500 mt-1 flex-shrink-0"></i>
+                            <span class="text-gray-600 text-xs leading-relaxed text-justify">${item.advice}</span>
+                        </div>`;
+                }
+            });
+
+            const score = Math.round((checkedCount / questions.length) * 100);
+            
+            // GA4 통계 전송 (진단 완료)
+            sendAnalyticsEvent('checklist_completed', { 
+                type: currentTab, 
+                score: score 
+            });
+
+            // 점수 표시
+            const scoreEl = document.getElementById('scoreDisplay');
+            scoreEl.innerText = score;
+            
+            // 등급 및 색상 설정
+            const badge = document.getElementById('gradeBadge');
+            const scoreColorClass = score >= 80 ? 'text-blue-600' : (score >= 50 ? 'text-yellow-500' : 'text-red-500');
+            
+            scoreEl.className = `text-6xl font-black mb-2 tracking-tighter ${scoreColorClass}`;
+
+            if(score >= 80) {
+                badge.innerText = "안심 단계 (Great)";
+                badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-blue-500";
+            } else if(score >= 50) {
+                badge.innerText = "관심 단계 (Caution)";
+                badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-yellow-500";
+            } else {
+                badge.innerText = "위험 단계 (Warning)";
+                badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-red-500";
+            }
+
+            // 조언 표시
+            const adviceList = document.getElementById('adviceList');
+            if(score === 100) {
+                adviceList.innerHTML = `
+                    <div class="text-center text-blue-600 font-bold py-10 flex flex-col items-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                            <i class="fa-solid fa-thumbs-up text-3xl"></i>
+                        </div>
+                        완벽합니다!<br>
+                        <span class="text-xs text-gray-500 font-normal mt-1">지금 상태를 잘 유지해주세요.</span>
+                    </div>`;
+            } else {
+                adviceList.innerHTML = adviceHTML;
+            }
+
+            // 모달 열기
+            const modal = document.getElementById('resultModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            // 팝업 애니메이션
+            setTimeout(() => {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('resultModal');
+            const content = document.getElementById('modalContent');
+            
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200); // 애니메이션 시간 후 숨김
+        }
+
+        // 초기 실행
+        renderQuestions();
+    </script>
+</body>
+</html>
