@@ -4,17 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>청주상당경찰서 폴-보이스</title>
-    
-    <!-- [추가됨] 홈 화면 추가 시 아이콘 설정 (로고 적용) -->
-    <link rel="apple-touch-icon" href="logo.png">
-    <link rel="icon" type="image/png" href="logo.png">
-    
-    <!-- [추가됨] 웹앱 모드 설정 (전체화면 등) -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1a237e">
-
     <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 코드 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4W28Z27Z6"></script>
     <script>
@@ -118,6 +107,19 @@
         }
         .hero-banner p { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.4; word-break: keep-all; }
         
+        /* 스미싱용 축소 배너 스타일 */
+        .hero-banner.mini {
+            padding: 15px; 
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center; /* [수정됨] 중앙 정렬 적용 */
+        }
+        .hero-banner.mini h1 { font-size: 16px; margin: 0; font-weight: 900; }
+        .hero-banner.mini p { font-size: 12px; font-weight: normal; margin: 0; opacity: 0.9; }
+
         .section-label { font-size: 14px; color: var(--primary); font-weight: 800; margin-bottom: 12px; display: block; display: flex; align-items: center; gap: 6px;}
         
         .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -146,7 +148,7 @@
             z-index: 999; padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* 오버레이 (전화 수신 - 어두운 테마 유지: 몰입감 위해) */
+        /* 오버레이 (전화 수신 - 어두운 테마 유지) */
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #000; display: none; flex-direction: column; }
         .overlay.active { display: flex; }
         
@@ -260,9 +262,13 @@
 
     <!-- 2. 스미싱 퀴즈 -->
     <div id="view-smishing" class="content-view">
-        <div class="hero-banner" style="background: linear-gradient(135deg, #059669, #34d399);">
-            <h1>스미싱 탐지소</h1>
-            <p>문자 속 <strong>교묘한 가짜</strong>를 찾아내세요.</p>
+        <!-- [수정됨] 배너 크기 축소 (mini 클래스 사용) + 중앙 정렬 -->
+        <div class="hero-banner mini" style="background: linear-gradient(135deg, #059669, #34d399);">
+            <div>
+                <h1>스미싱 탐지소</h1>
+                <p>문자 속 <strong>가짜</strong>를 찾아내세요.</p>
+            </div>
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 24px; opacity: 0.5;"></i>
         </div>
         
         <div class="quiz-card">
@@ -279,6 +285,15 @@
             <div class="quiz-btn-group">
                 <button class="quiz-btn q-fake" onclick="checkQuiz(true, true, '정답! 공식 주소 뒤에 xyz 등 이상한 영어가 붙으면 100% 가짜입니다.')">🚨 스미싱이다</button>
                 <button class="quiz-btn q-real" onclick="checkQuiz(false, true, '틀렸습니다. 택배사는 링크를 보내지 않습니다.')">✅ 정상 문자다</button>
+            </div>
+        </div>
+        <!-- [추가됨] Q3. 정부 지원금 빙자 -->
+        <div class="quiz-card">
+            <div style="font-weight:800; font-size:16px; margin-bottom:8px; color:#1f2937;">Q3. 정부 지원금 신청</div>
+            <div class="quiz-msg">[정부24] 귀하는 '소상공인 손실보상' 대상자입니다.<br>신청하기: <strong>bit.ly/support_fund</strong></div>
+            <div class="quiz-btn-group">
+                <button class="quiz-btn q-fake" onclick="checkQuiz(true, true, '정답! 정부는 절대로 단축 URL(bit.ly 등)로 안내하지 않습니다.')">🚨 스미싱이다</button>
+                <button class="quiz-btn q-real" onclick="checkQuiz(false, true, '틀렸습니다. 정부 공식 사이트 주소(go.kr)가 아닙니다.')">✅ 정상 문자다</button>
             </div>
         </div>
     </div>
