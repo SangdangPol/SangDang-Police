@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>상당 폴-매니저</title>
     
+    <!-- [중요] 홈 화면 추가 시 아이콘 설정 (로고 적용) -->
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    
     <!-- PWA 메타 태그 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -12,9 +16,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- 테마 색상 변경 (경찰 남색) -->
     <meta name="theme-color" content="#1a237e">
-    
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2503/2503667.png">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2503/2503667.png">
 
     <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 준비 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CPSKM0VVYP"></script>
@@ -85,10 +86,10 @@
 
     <div class="w-full max-w-md bg-white h-screen shadow-2xl flex flex-col relative overflow-hidden">
         
-        <!-- 헤더 (경찰 남색 배경 + 흰색 텍스트 + 뒤로가기 버튼 추가됨) -->
+        <!-- 헤더 (경찰 남색 배경 + 흰색 텍스트 + 뒤로가기 버튼) -->
         <header class="bg-police-dark text-white p-4 flex items-center justify-between shadow-md z-10 pt-safe-top">
             <div class="flex items-center gap-3">
-                <!-- [추가된 기능] 메인으로 뒤로가기 버튼 -->
+                <!-- 뒤로가기 버튼 -->
                 <button onclick="location.href='../'" class="hover:bg-blue-900 p-1 rounded-full transition mr-1">
                     <i class="fa-solid fa-arrow-left text-xl"></i>
                 </button>
@@ -268,7 +269,7 @@
             </div>
         </div>
 
-        <!-- 앱 설치 가이드 -->
+        <!-- 앱 설치 가이드 (탭 기능 추가) -->
         <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6 modal">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
                 <button onclick="closeInstallGuide()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -318,7 +319,9 @@
             checkFirstTimeUser();
             renderChecklist();
             loadChecklistState();
-            loadWitnessLogs();
+            loadWitnessLogs(); // 기록 불러오기
+            
+            // 통계: 첫 방문 시 이벤트 전송
             sendAnalyticsEvent('app_open', { date: new Date().toISOString() });
         });
 
@@ -360,11 +363,13 @@
             document.getElementById('displayStoreName').innerText = name;
             document.getElementById('settingsModal').classList.add('hidden');
             
+            // 통계: 설정 저장 이벤트
             sendAnalyticsEvent('setting_saved', { store_name: name });
+            
             setTimeout(() => { if(!localStorage.getItem('pol_guide_shown')) openInstallGuide(); }, 500);
         }
 
-        // === 3. 기능 구현 ===
+        // === 3. 긴급 문자 기능 ===
         function sendEmergencySMS() {
             const storeName = localStorage.getItem('pol_storeName');
             const address = localStorage.getItem('pol_address');
@@ -372,6 +377,7 @@
 
             const message = `[긴급신고/상당경찰서] 위급상황 발생!\n장소: ${address}\n상호: ${storeName}\n즉시 출동 바랍니다.`;
             if(confirm("112 문자 신고창으로 이동하시겠습니까?")) {
+                // 통계: 112 신고 버튼 클릭 (가장 중요)
                 sendAnalyticsEvent('click_112_emergency');
                 window.location.href = `sms:112?body=${encodeURIComponent(message)}`;
             }
@@ -384,45 +390,59 @@
             
             const message = `[긴급연락] ${storeName}입니다. 지금 가게로 급히 와주세요. 도움이 필요합니다.`;
             if(confirm(`보호자(${guardianPhone})에게 문자를 보내시겠습니까?`)) {
+                // 통계: 보호자 호출 클릭
                 sendAnalyticsEvent('click_guardian_call');
+                
                 const userAgent = navigator.userAgent.toLowerCase();
                 let separator = (userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) ? "&" : "?";
                 window.location.href = `sms:${guardianPhone}${separator}body=${encodeURIComponent(message)}`;
             }
         }
 
+        // === 4. [특수시책] 스마트 위트니스 (기록) ===
         let currentTraits = [];
+
         function addLogTrait(trait) {
             currentTraits.push(trait);
+            // 버튼 눌렀다는 피드백 (토스트 메시지 대용)
             alert(`'${trait}' 선택됨. (현재: ${currentTraits.join(', ')})`);
         }
 
         function saveLog() {
             if (currentTraits.length === 0) {
-                alert("선택된 특징이 없습니다.");
+                alert("선택된 특징이 없습니다. 버튼을 눌러 특징을 입력해주세요.");
                 return;
             }
+
             const now = new Date();
             const timeString = now.toLocaleDateString() + " " + now.toLocaleTimeString();
             const logContent = `${timeString} - ${currentTraits.join(', ')}`;
+            
+            // 로컬 스토리지에 저장
             let logs = JSON.parse(localStorage.getItem('pol_witness_logs') || '[]');
-            logs.unshift(logContent);
-            if(logs.length > 50) logs.pop();
+            logs.unshift(logContent); // 최신순
+            if(logs.length > 50) logs.pop(); // 최대 50개 유지
             localStorage.setItem('pol_witness_logs', JSON.stringify(logs));
+
+            // 통계: 증거 기록 저장
             sendAnalyticsEvent('witness_log_saved', { traits_count: currentTraits.length });
-            currentTraits = [];
-            loadWitnessLogs();
-            alert("저장되었습니다.");
+
+            currentTraits = []; // 초기화
+            loadWitnessLogs(); // 화면 갱신
+            alert("저장되었습니다. 나중에 증거자료로 활용하세요.");
         }
 
         function loadWitnessLogs() {
             const logs = JSON.parse(localStorage.getItem('pol_witness_logs') || '[]');
             const listEl = document.getElementById('logList');
             listEl.innerHTML = '';
+
             if (logs.length === 0) {
                 listEl.innerHTML = '<li class="text-center text-gray-400 py-2">기록된 내용이 없습니다.</li>';
                 return;
             }
+
+            // 최근 3개만 표시
             logs.slice(0, 3).forEach(log => {
                 const li = document.createElement('li');
                 li.className = 'log-item bg-white p-2 rounded border border-gray-200';
@@ -433,24 +453,36 @@
 
         function copyLogs() {
             const logs = JSON.parse(localStorage.getItem('pol_witness_logs') || '[]');
-            if (logs.length === 0) { alert("복사할 기록이 없습니다."); return; }
+            if (logs.length === 0) {
+                alert("복사할 기록이 없습니다.");
+                return;
+            }
             const textToCopy = "[상당 폴-매니저 기록]\n" + logs.join('\n');
+            
             const textArea = document.createElement("textarea");
             textArea.value = textToCopy;
             document.body.appendChild(textArea);
             textArea.select();
-            try { document.execCommand('copy'); alert("복사되었습니다."); } catch (err) {}
+            try {
+                document.execCommand('copy');
+                alert("기록이 복사되었습니다. 경찰관이나 문자에 붙여넣으세요.");
+            } catch (err) {
+                console.error('복사 실패', err);
+            }
             document.body.removeChild(textArea);
         }
 
+        // 기록 삭제 기능 추가
         function clearLogs() {
-            if(confirm("모든 기록을 삭제하시겠습니까?")) {
+            if(confirm("저장된 인상착의 기록을 모두 삭제하시겠습니까?")) {
                 localStorage.removeItem('pol_witness_logs');
                 loadWitnessLogs();
-                alert("삭제되었습니다.");
+                alert("모든 기록이 삭제되었습니다.");
             }
         }
 
+
+        // === 5. 체크리스트 & 가이드 로직 ===
         function renderChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';
@@ -474,13 +506,20 @@
             let checkedCount = 0;
             const stateArray = [];
             checkboxes.forEach(cb => { if(cb.checked) checkedCount++; stateArray.push(cb.checked); });
+
             const percentage = Math.round((checkedCount / checkboxes.length) * 100);
             const progressText = document.getElementById('progressText');
             progressText.innerText = `${percentage}% 완료`;
+            
             const isComplete = percentage === 100;
-            if (isComplete) sendAnalyticsEvent('checklist_completed');
+            if (isComplete) {
+                // 통계: 체크리스트 완료
+                sendAnalyticsEvent('checklist_completed');
+            }
+
             progressText.className = `text-xs font-bold px-2 py-1 rounded ${isComplete ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`;
             document.getElementById('completeMessage').classList.toggle('hidden', !isComplete);
+
             const today = new Date().toISOString().split('T')[0];
             localStorage.setItem('pol_checklist_data', JSON.stringify({ date: today, checks: stateArray }));
         }
@@ -495,24 +534,38 @@
             updateChecklistState();
         }
 
+        // 가이드 로직 (탭 기능으로 업그레이드)
         function openInstallGuide() {
             const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
             document.getElementById('installGuideModal').classList.remove('hidden');
-            if (isIOS) showGuide('ios'); else showGuide('android');
+            
+            // OS 자동 감지하여 해당 탭 먼저 보여주기
+            if (isIOS) showGuide('ios');
+            else showGuide('android');
+            
             localStorage.setItem('pol_guide_shown', 'true');
         }
-        function closeInstallGuide() { document.getElementById('installGuideModal').classList.add('hidden'); }
+
+        function closeInstallGuide() { 
+            document.getElementById('installGuideModal').classList.add('hidden'); 
+        }
+
         function showGuide(os) {
             const androidGuide = document.getElementById('androidGuide');
             const iosGuide = document.getElementById('iosGuide');
             const btnAndroid = document.getElementById('btnAndroid');
             const btnIos = document.getElementById('btnIos');
+
             if (os === 'android') {
-                androidGuide.classList.remove('hidden'); iosGuide.classList.add('hidden');
+                androidGuide.classList.remove('hidden');
+                iosGuide.classList.add('hidden');
+                
                 btnAndroid.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-blue text-police-blue transition";
                 btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
             } else {
-                androidGuide.classList.add('hidden'); iosGuide.classList.remove('hidden');
+                androidGuide.classList.add('hidden');
+                iosGuide.classList.remove('hidden');
+                
                 btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-blue text-police-blue transition";
                 btnAndroid.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
             }
