@@ -159,16 +159,9 @@
         .q-fake { background: rgba(239, 68, 68, 0.2); color: #fca5a5; } 
         .q-real { background: rgba(34, 197, 94, 0.2); color: #86efac; }
         
-        /* [긴급 수정] 가이드 로고 크기 고정 */
+        /* 가이드 로고 크기 고정 */
         .guide-title-box { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        
-        /* !important를 붙여서 어떤 경우에도 30px를 넘지 않게 고정 */
-        .guide-ci { 
-            width: 30px !important; 
-            height: 30px !important; 
-            object-fit: contain; 
-            flex-shrink: 0; 
-        }
+        .guide-ci { width: 30px !important; height: 30px !important; object-fit: contain; flex-shrink: 0; }
 
         .guide-item { display: flex; gap: 15px; background: var(--bg-card); padding: 15px; border-radius: 18px; border: var(--glass-border); margin-bottom: 10px; align-items: center; }
         .g-num { font-size: 24px; font-weight: 900; color: var(--accent); opacity: 0.8; }
@@ -187,6 +180,13 @@
 
     <header class="header">
         <div class="brand">
+            <!-- [NEW] 뒤로가기 버튼 추가 -->
+            <div onclick="location.href='../'" style="cursor: pointer; display: flex; align-items: center; margin-right: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </div>
             <img src="logo.png" alt="로고" class="brand-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1069/1069102.png'"> 
             <span>청주상당경찰서</span>
         </div>
@@ -469,6 +469,3 @@
 
 </body>
 </html>
-
-
-
