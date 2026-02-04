@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     
-    <!-- 웹앱 모드 설정 (주소창 제거 등) -->
+    <!-- 웹앱 모드 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -23,13 +23,18 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden relative">
         
         <!-- 상단 헤더 -->
-        <div class="bg-police-dark p-6 text-center">
-            <img src="logo.png" onerror="this.style.display='none'" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1">
-            <h1 class="text-2xl font-black text-white mb-1">청주상당경찰서</h1>
-            <p class="text-blue-200 text-sm">범죄예방대응과 스마트 치안센터</p>
+        <div class="bg-police-dark p-6 text-center relative">
+            <!-- [추가됨] 앱 설치 가이드 버튼 (우측 상단) -->
+            <button onclick="openInstallGuide()" class="absolute top-4 right-4 text-yellow-300 hover:text-white text-xs border border-yellow-300 rounded px-2 py-1 transition font-bold z-10">
+                <i class="fa-solid fa-download mr-1"></i>앱설치
+            </button>
+
+            <img src="logo.png" onerror="this.style.display='none'" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1 relative z-0">
+            <h1 class="text-2xl font-black text-white mb-1 relative z-0">청주상당경찰서</h1>
+            <p class="text-blue-200 text-sm relative z-0">범죄예방대응과 스마트 치안센터</p>
         </div>
 
         <!-- 메뉴 선택 -->
@@ -64,7 +69,7 @@
                 </div>
             </a>
 
-            <!-- 3. [신규] 폴-체크 이동 버튼 (녹색) -->
+            <!-- 3. 폴-체크 이동 버튼 (녹색) -->
             <a href="./check/" class="block w-full group">
                 <div class="bg-green-50 border-2 border-green-100 hover:border-green-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
                     <div class="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
@@ -85,7 +90,91 @@
             청주상당경찰서 범죄예방대응과<br>
             Copyright © Sangdang Police Station
         </div>
+
+        <!-- ========================================== -->
+        <!-- [추가됨] 앱 설치 가이드 모달 -->
+        <!-- ========================================== -->
+        <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6 modal">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
+                <button onclick="closeInstallGuide()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">앱 아이콘 만들기</h2>
+                <p class="text-sm text-gray-600 mb-4">홈 화면에 추가하면 QR코드 없이 바로 실행됩니다.</p>
+                
+                <!-- 탭 버튼 -->
+                <div class="flex border-b mb-3">
+                    <button id="btnAndroid" onclick="showGuide('android')" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition">안드로이드</button>
+                    <button id="btnIos" onclick="showGuide('ios')" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">아이폰</button>
+                </div>
+
+                <!-- 아이폰용 가이드 -->
+                <div id="iosGuide" class="hidden bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
+                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">아이폰 (Safari)</p>
+                    <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼 클릭</div>
+                    <div>2. 메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b> 선택</div>
+                    <div>3. 우측 상단 <b>추가</b> 버튼 클릭</div>
+                </div>
+                
+                <!-- 안드로이드용 가이드 -->
+                <div id="androidGuide" class="bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
+                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">안드로이드 (Chrome/Samsung)</p>
+                    <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴 클릭</div>
+                    <div class="text-xs text-gray-500">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
+                    <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 선택</div>
+                </div>
+                
+                <button onclick="closeInstallGuide()" class="w-full bg-police-dark text-white py-2 rounded-lg mt-4 font-bold" style="background-color: #1a237e;">확인</button>
+            </div>
+        </div>
+
     </div>
 
+    <script>
+        // 가이드 로직 (탭 기능 포함)
+        function openInstallGuide() {
+            const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+            document.getElementById('installGuideModal').classList.remove('hidden');
+            
+            // OS 자동 감지하여 해당 탭 먼저 보여주기
+            if (isIOS) showGuide('ios');
+            else showGuide('android');
+        }
+
+        function closeInstallGuide() { 
+            document.getElementById('installGuideModal').classList.add('hidden'); 
+        }
+
+        function showGuide(os) {
+            const androidGuide = document.getElementById('androidGuide');
+            const iosGuide = document.getElementById('iosGuide');
+            const btnAndroid = document.getElementById('btnAndroid');
+            const btnIos = document.getElementById('btnIos');
+            const policeBlue = 'border-blue-900 text-blue-900'; // Tailwind 클래스 대용 스타일 변수
+
+            if (os === 'android') {
+                androidGuide.classList.remove('hidden');
+                iosGuide.classList.add('hidden');
+                
+                // 스타일 직접 조작 (Tailwind 클래스 충돌 방지)
+                btnAndroid.style.borderColor = '#1a237e';
+                btnAndroid.style.color = '#1a237e';
+                btnIos.style.borderColor = 'transparent';
+                btnIos.style.color = '#9ca3af';
+            } else {
+                androidGuide.classList.add('hidden');
+                iosGuide.classList.remove('hidden');
+                
+                btnIos.style.borderColor = '#1a237e';
+                btnIos.style.color = '#1a237e';
+                btnAndroid.style.borderColor = 'transparent';
+                btnAndroid.style.color = '#9ca3af';
+            }
+        }
+        
+        // 최초 접속 시 가이드 자동 표시 (선택 사항 - 현재는 버튼 클릭시에만 뜨도록 함)
+        // if(!localStorage.getItem('pol_main_guide_shown')) {
+        //     openInstallGuide();
+        //     localStorage.setItem('pol_main_guide_shown', 'true');
+        // }
+    </script>
 </body>
 </html>
