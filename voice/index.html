@@ -2,90 +2,542 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청주상당경찰서 범죄예방센터</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>청주상당경찰서 폴-보이스</title>
     
-    <!-- [중요] 홈 화면 추가 시 아이콘 설정 (로고 적용) -->
+    <!-- [추가됨] 홈 화면 추가 시 아이콘 설정 (로고 적용) -->
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     
-    <!-- 웹앱 모드 설정 (주소창 제거 등) -->
+    <!-- [추가됨] 웹앱 모드 설정 (전체화면 등) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1a237e">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 코드 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4W28Z27Z6"></script>
+    <script>
+        // 보이스피싱 훈련소 전용 측정 ID
+        const GA_MEASUREMENT_ID = 'G-J4W28Z27Z6';
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID, {
+            'page_title': '폴-보이스', 
+            'anonymize_ip': true 
+        });
+
+        // 버튼 클릭 등 이벤트 추적을 위한 헬퍼 함수
+        function sendAnalyticsEvent(eventName, params = {}) {
+            gtag('event', eventName, params);
+            console.log(`[통계 전송] ${eventName}`, params);
+        }
+    </script>
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f3f4f6; }
-        .bg-police-dark { background-color: #1a237e; }
+        /* [디자인 시스템 - Light Theme 적용] */
+        :root {
+            --bg-main: #f3f4f6;       /* 밝은 회색 배경 */
+            --bg-card: #ffffff;       /* 흰색 카드 */
+            --primary: #1a237e;       /* 경찰 남색 (헤더) */
+            --accent: #2563eb;        /* 강조색 (파랑) */
+            --danger: #ef4444;
+            --safe: #22c55e;
+            --text-main: #1f2937;     /* 진한 회색 텍스트 */
+            --text-sub: #6b7280;      /* 연한 회색 텍스트 */
+            --border: 1px solid #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+            margin: 0; background-color: #f3f4f6; color: var(--text-main);
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            display: flex; justify-content: center;
+            overflow: hidden;
+        }
+
+        .app-frame {
+            width: 100%; max-width: 450px; height: 100%;
+            display: flex; flex-direction: column; position: relative;
+            background: var(--bg-main);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* 헤더 */
+        .header {
+            flex: 0 0 60px; /* 높이 통일 */
+            padding: 0 16px; /* 좌우 여백 통일 */
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--primary); color: white; z-index: 50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .brand { display: flex; align-items: center; gap: 10px; }
+        
+        /* 로고 스타일 */
+        .brand-logo { 
+            width: 40px; height: 40px; 
+            object-fit: contain; 
+            background: white; 
+            border-radius: 50%; 
+            padding: 2px; 
+            flex-shrink: 0;
+        }
+        
+        /* 타이틀 스타일 */
+        .brand-text-group { display: flex; flex-direction: column; justify-content: center; }
+        .brand-title { font-size: 18px; font-weight: 900; line-height: 1.1; }
+        .brand-subtitle { font-size: 11px; font-weight: normal; opacity: 0.8; margin-top: 1px; color: #e0e7ff; }
+
+        /* 우측 부서 태그 */
+        .dept-tag { 
+            font-size: 12px; color: #e5e7eb; 
+            background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; 
+        }
+
+        /* 컨텐츠 영역 */
+        .content-view {
+            flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px;
+            display: none; -webkit-overflow-scrolling: touch;
+        }
+        .content-view.active { display: block; }
+
+        /* 메인 배너 */
+        .hero-banner { 
+            background: linear-gradient(135deg, #1e40af, #3b82f6); 
+            color: white;
+            padding: 24px 20px; border-radius: 16px; margin-bottom: 24px;
+            position: relative; overflow: hidden; 
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .hero-banner p { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.4; word-break: keep-all; }
+        
+        .section-label { font-size: 14px; color: var(--primary); font-weight: 800; margin-bottom: 12px; display: block; display: flex; align-items: center; gap: 6px;}
+        
+        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .menu-card { 
+            background: var(--bg-card); border: var(--border); 
+            padding: 20px 15px; border-radius: 16px; text-align: center; cursor: pointer; 
+            position: relative; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.1s;
+        }
+        .menu-card:active { transform: scale(0.98); background: #f9fafb; }
+        .menu-icon { font-size: 32px; margin-bottom: 10px; }
+        .menu-title { font-weight: 800; font-size: 15px; margin-bottom: 4px; color: var(--text-main); }
+        .menu-desc { font-size: 12px; color: var(--text-sub); }
+
+        /* 출처 표기 */
+        .credit-text {
+            text-align: center; margin-top: 30px; font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* 하단 탭바 (밝은 테마) */
+        .bottom-nav {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: white; border-top: var(--border);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 999; padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* 오버레이 (전화 수신 - 어두운 테마 유지: 몰입감 위해) */
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #000; display: none; flex-direction: column; }
+        .overlay.active { display: flex; }
+        
+        .call-screen { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 60px 30px 100px 30px; background: radial-gradient(circle at center, #1e293b 0%, #000 100%); color: white; }
+        .caller-info { text-align: center; margin-top: 20px; }
+        .c-name { font-size: 30px; font-weight: 700; margin: 10px 0; }
+        .c-loc { color: #94a3b8; font-size: 14px; margin-top: 5px; }
+        .call-actions { display: flex; justify-content: space-around; width: 100%; }
+        .c-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; cursor: pointer; }
+        .btn-red { background: var(--danger); }
+        .btn-green { background: var(--safe); animation: pulse 1.5s infinite; }
+
+        /* 오버레이 (통화 중) */
+        .voice-screen { 
+            flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; 
+            background: #111827; padding: 30px; text-align: center; color: white;
+        }
+        .voice-wave { font-size: 60px; margin-bottom: 20px; animation: bounce 1s infinite; }
+        .voice-status { font-size: 18px; color: #60a5fa; margin-bottom: 40px; font-weight: bold; }
+        
+        .choice-container { width: 100%; display: flex; flex-direction: column; gap: 15px; opacity: 0; transition: opacity 0.5s; }
+        .choice-container.show { opacity: 1; }
+        .choice-btn { 
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 16px; border-radius: 12px; color: white; font-size: 15px; text-align: left; cursor: pointer;
+        }
+        .choice-btn:active { background: rgba(255, 255, 255, 0.2); }
+
+        /* 결과 화면 */
+        .result-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; background: #111827; display: none; color: white; }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid #374151; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .score-circle.safe { border-color: var(--safe); }
+        .score-circle.danger { border-color: var(--danger); }
+        .s-num { font-size: 40px; font-weight: 900; }
+        .res-desc { color: #d1d5db; line-height: 1.6; margin-bottom: 30px; font-size: 16px; }
+
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #9ca3af; cursor: pointer; flex: 1; height: 100%; }
+        .nav-icon-svg { width: 24px; height: 24px; fill: #9ca3af; transition: all 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active .nav-icon-svg { fill: var(--primary); transform: translateY(-2px); }
+        .nav-text { font-size: 11px; font-weight: 600; }
+
+        .quiz-card { background: white; border: var(--border); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .quiz-msg { background: #f1f5f9; color: #334155; padding: 15px; border-radius: 10px; font-size: 14px; line-height: 1.5; margin: 15px 0; border-left: 4px solid var(--accent); }
+        .quiz-btn-group { display: flex; gap: 10px; }
+        .quiz-btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; transition: opacity 0.2s; }
+        .q-fake { background: #fee2e2; color: #ef4444; } 
+        .q-real { background: #dcfce7; color: #16a34a; }
+        
+        /* 가이드 로고 */
+        .guide-title-box { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px solid #e5e7eb; }
+        .guide-ci { width: 40px !important; height: 40px !important; object-fit: contain; flex-shrink: 0; }
+
+        .guide-item { display: flex; gap: 15px; background: white; padding: 20px; border-radius: 16px; border: var(--border); margin-bottom: 12px; align-items: flex-start; box-shadow: var(--shadow); }
+        .g-num { font-size: 20px; font-weight: 900; color: var(--accent); opacity: 0.8; line-height: 1; margin-top: 2px;}
+        .g-txt h3 { margin: 0 0 6px 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
+        .g-txt p { margin: 0; font-size: 13px; color: var(--text-sub); line-height: 1.5; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
+<body>
 
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+<div class="app-frame">
+    <audio id="ringtone" loop preload="auto"><source src="ringtone.mp3" type="audio/mpeg"></audio>
+    <audio id="voice-player" preload="auto"></audio>
+
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="brand">
+            <!-- 뒤로가기 버튼 -->
+            <div onclick="location.href='../'" style="cursor: pointer; display: flex; align-items: center; margin-right: 4px; padding: 5px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </div>
+            <!-- 로고 -->
+            <img src="logo.png" alt="로고" class="brand-logo" onerror="this.style.display='none'"> 
+            
+            <!-- 타이틀 및 부제 -->
+            <div class="brand-text-group">
+                <span class="brand-title">폴-보이스</span>
+                <span class="brand-subtitle">보이스피싱 예방 훈련소</span>
+            </div>
+        </div>
+        <span class="dept-tag">청주상당경찰서</span>
+    </header>
+
+    <!-- 1. 메인 홈 -->
+    <div id="view-home" class="content-view active">
+        <div class="hero-banner">
+            <p>가상의 범인 목소리를 듣고 대처하세요!</p>
+        </div>
         
-        <!-- 상단 헤더 -->
-        <div class="bg-police-dark p-6 text-center">
-            <img src="logo.png" onerror="this.style.display='none'" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1">
-            <h1 class="text-2xl font-black text-white mb-1">청주상당경찰서</h1>
-            <p class="text-blue-200 text-sm">범죄예방대응과 스마트 치안센터</p>
+        <span class="section-label"><i class="fa-solid fa-triangle-exclamation"></i> 체험할 범죄 유형 선택</span>
+        <div class="grid-menu">
+            <div class="menu-card" onclick="startSim('prosecutor')"><span class="menu-icon">⚖️</span><div class="menu-title">기관 사칭</div><div class="menu-desc">검사/경찰 사칭</div></div>
+            <div class="menu-card" onclick="startSim('loan')"><span class="menu-icon">💰</span><div class="menu-title">대출 빙자</div><div class="menu-desc">저금리 대환대출</div></div>
+            <div class="menu-card" onclick="startSim('family')"><span class="menu-icon">📱</span><div class="menu-title">자녀 사칭</div><div class="menu-desc">액정 파손/납치</div></div>
+            <div class="menu-card" onclick="startSim('romance')"><span class="menu-icon">💘</span><div class="menu-title">로맨스 스캠</div><div class="menu-desc">SNS 연애 빙자</div></div>
+            <div class="menu-card" onclick="startSim('smishing')"><span class="menu-icon">📩</span><div class="menu-title">부고/청첩장</div><div class="menu-desc">URL 클릭 유도</div></div>
+            <div class="menu-card" onclick="startSim('invest')"><span class="menu-icon">📈</span><div class="menu-title">투자 리딩방</div><div class="menu-desc">고수익 보장</div></div>
         </div>
-
-        <!-- 메뉴 선택 -->
-        <div class="p-6 space-y-4">
-            <p class="text-center text-gray-600 font-bold mb-4">이용하실 서비스를 선택해주세요</p>
-
-            <!-- 1. 폴-보이스 이동 버튼 (파랑) -->
-            <a href="./voice/" class="block w-full group">
-                <div class="bg-blue-50 border-2 border-blue-100 hover:border-blue-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
-                    <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-gray-800 group-hover:text-blue-700">폴-보이스</h2>
-                        <p class="text-xs text-gray-500">보이스피싱 예방 모의 훈련소</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-300 group-hover:text-blue-500"></i>
-                </div>
-            </a>
-
-            <!-- 2. 폴-매니저 이동 버튼 (남색) -->
-            <a href="./manager/" class="block w-full group">
-                <div class="bg-indigo-50 border-2 border-indigo-100 hover:border-indigo-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
-                    <div class="bg-indigo-900 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-store"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-gray-800 group-hover:text-indigo-700">폴-매니저</h2>
-                        <p class="text-xs text-gray-500">소상공인 안심 파트너</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-300 group-hover:text-indigo-500"></i>
-                </div>
-            </a>
-
-            <!-- 3. [신규] 폴-체크 이동 버튼 (녹색) -->
-            <a href="./check/" class="block w-full group">
-                <div class="bg-green-50 border-2 border-green-100 hover:border-green-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
-                    <div class="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-clipboard-check"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-bold text-gray-800 group-hover:text-green-700">폴-체크</h2>
-                        <p class="text-xs text-gray-500">우리 집/가게 안전점수 자가진단</p>
-                    </div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-300 group-hover:text-green-500"></i>
-                </div>
-            </a>
-
-        </div>
-
-        <!-- 하단 푸터 -->
-        <div class="bg-gray-50 p-4 text-center border-t text-xs text-gray-400">
-            청주상당경찰서 범죄예방대응과<br>
-            Copyright © Sangdang Police Station
+        
+        <div class="credit-text">
+            AI Voice provided by <strong>Naver Clova Dubbing</strong>
         </div>
     </div>
+
+    <!-- 2. 스미싱 퀴즈 -->
+    <div id="view-smishing" class="content-view">
+        <div class="hero-banner" style="background: linear-gradient(135deg, #059669, #34d399);">
+            <h1>스미싱 탐지소</h1>
+            <p>문자 속 <strong>교묘한 가짜</strong>를 찾아내세요.</p>
+        </div>
+        
+        <div class="quiz-card">
+            <div style="font-weight:800; font-size:16px; margin-bottom:8px; color:#1f2937;">Q1. 모바일 청첩장</div>
+            <div class="quiz-msg">[Web발신] 김철수♥이영희 결혼합니다.<br>모바일 청첩장: <strong>wedding.invitation.apk</strong></div>
+            <div class="quiz-btn-group">
+                <button class="quiz-btn q-fake" onclick="checkQuiz(true, true, '정답! apk는 악성 앱 설치 파일입니다. 절대 누르지 마세요.')">🚨 스미싱이다</button>
+                <button class="quiz-btn q-real" onclick="checkQuiz(false, true, '틀렸습니다. apk 파일은 매우 위험합니다.')">✅ 정상 문자다</button>
+            </div>
+        </div>
+        <div class="quiz-card">
+            <div style="font-weight:800; font-size:16px; margin-bottom:8px; color:#1f2937;">Q2. 택배 주소지 확인</div>
+            <div class="quiz-msg">[CJ대한통운] 운송장번호[45***] 주소지 불분명.<br>확인하기: <strong>cj-gls.com.kr.xyz</strong></div>
+            <div class="quiz-btn-group">
+                <button class="quiz-btn q-fake" onclick="checkQuiz(true, true, '정답! 공식 주소 뒤에 xyz 등 이상한 영어가 붙으면 100% 가짜입니다.')">🚨 스미싱이다</button>
+                <button class="quiz-btn q-real" onclick="checkQuiz(false, true, '틀렸습니다. 택배사는 링크를 보내지 않습니다.')">✅ 정상 문자다</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 예방 가이드 -->
+    <div id="view-guide" class="content-view">
+        <div class="guide-title-box">
+            <img src="logo.png" alt="CI" class="guide-ci" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1069/1069102.png'">
+            <span class="section-label" style="margin-bottom:0; font-size:18px;">보이스피싱 예방 행동수칙</span>
+        </div>
+        <div class="guide-item">
+            <div class="g-num">01</div>
+            <div class="g-txt">
+                <h3>링크(URL) 클릭 금지</h3>
+                <p>출처를 알 수 없는 문자 속 인터넷 주소는<br>절대 누르지 마세요.</p>
+            </div>
+        </div>
+        <div class="guide-item">
+            <div class="g-num">02</div>
+            <div class="g-txt">
+                <h3>앱 설치 요구는 사기</h3>
+                <p>검찰, 경찰, 금감원은 전화로 '보안 앱' 설치를<br>요구하지 않습니다.</p>
+            </div>
+        </div>
+        <div class="guide-item">
+            <div class="g-num">03</div>
+            <div class="g-txt">
+                <h3>끊고, 확인 전화</h3>
+                <p>의심스러운 전화를 받았다면 일단 끊으세요.<br>그리고 112로 확인하세요.</p>
+            </div>
+        </div>
+        
+        <div style="margin-top:20px; padding:20px; background:#fee2e2; border-radius:16px; text-align:center; color:#b91c1c; font-size:14px; border:1px solid #fca5a5;">
+            <strong>🚨 보이스피싱 신고: 국번없이 112</strong><br><div style="height:8px;"></div>
+            <strong>☎️ 금융감독원 상담: 1332</strong>
+        </div>
+    </div>
+
+    <!-- [시뮬레이션 오버레이 - 어두운 테마 유지] -->
+    <div id="sim-overlay" class="overlay">
+        <div id="screen-call" class="call-screen">
+            <div class="caller-info">
+                <div class="c-sub">수신 전화</div>
+                <div id="sim-name" class="c-name">발신자</div>
+                <div id="sim-loc" class="c-loc">South Korea</div>
+            </div>
+            <div class="call-actions"><div class="c-btn btn-red" onclick="endSim(100)">📞</div><div class="c-btn btn-green" onclick="answerCall()">📞</div></div>
+        </div>
+
+        <div id="screen-voice" class="voice-screen">
+            <div class="voice-wave">🔊</div>
+            <div id="voice-status" class="voice-status">범인 목소리 듣는 중...</div>
+            <div id="choice-dock" class="choice-container"></div>
+        </div>
+
+        <div id="screen-result" class="result-screen">
+            <div id="res-circle" class="score-circle"><span id="res-score" class="s-num">0</span></div>
+            <h2 id="res-title">결과</h2>
+            <p id="res-desc" class="res-desc">설명</p>
+            <button onclick="closeSim()" style="padding:15px 40px; border-radius:30px; border:none; background:#3b82f6; color:white; font-weight:bold; cursor:pointer;">돌아가기</button>
+        </div>
+    </div>
+
+    <!-- 하단 탭바 -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-text">훈련소</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('smishing', this)">
+            <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span class="nav-text">스미싱</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('guide', this)">
+            <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg><span class="nav-text">가이드</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* [DB] 실제 MP3 파일명과 선택지 데이터 */
+    const DB = {
+        'prosecutor': { 
+            caller: '서울중앙지검', loc: 'Seoul', voice: 'voice_prosecutor.mp3',
+            choices: [
+                { txt: "제 명의 통장이요? 무서운데 시키는 대로 할게요.", score: -100, msg: "❌ 피해 발생! 검찰은 절대 전화로 수사하지 않습니다." },
+                { txt: "무슨 사건인지 소속과 이름을 정확히 대세요.", score: 50, msg: "⚠️ 주의! 범인이 더 강하게 협박할 수 있습니다." },
+                { txt: "보이스피싱이네. 제가 직접 검찰청에 확인합니다.", score: 100, msg: "⭕ 방어 성공! 의심하고 확인하는 것이 최선입니다." }
+            ]
+        },
+        'loan': { 
+            caller: '1588-XXXX', loc: 'Bank', voice: 'voice_loan.mp3',
+            choices: [
+                { txt: "정말 2.5%요? 대출 진행해주세요.", score: -100, msg: "❌ 피해 발생! 저금리 대출 미끼에 당하셨습니다." },
+                { txt: "기존 대출금 상환하라고요? 입금할게요.", score: -100, msg: "❌ 피해 발생! 상환 자금은 절대 개인 계좌로 받지 않습니다." },
+                { txt: "대출 권유 전화는 불법입니다. 끊습니다.", score: 100, msg: "⭕ 방어 성공! 금융기관은 먼저 대출 권유 전화를 하지 않습니다." }
+            ]
+        },
+        'family': { 
+            caller: '내 딸♡', loc: 'Mobile', voice: 'voice_family.mp3',
+            choices: [
+                { txt: "어머! 엄마가 바로 링크 눌러서 해줄게.", score: -100, msg: "❌ 피해 발생! 링크를 누르면 악성 앱이 설치됩니다." },
+                { txt: "인증이 안 돼? 엄마 신분증 사진 찍어 보낼게.", score: -100, msg: "❌ 피해 발생! 신분증 사진으로 대포폰이 개통됩니다." },
+                { txt: "딸, 원래 쓰던 번호로 전화해 봐. 목소리 들어야 해.", score: 100, msg: "⭕ 방어 성공! 반드시 본인 목소리를 확인해야 합니다." }
+            ]
+        },
+        'romance': { 
+            caller: 'James Kim', loc: 'USA', voice: 'voice_romance.mp3',
+            choices: [
+                { txt: "어머, 300만원이 필요해? 내가 보내줄게.", score: -100, msg: "❌ 피해 발생! 로맨스 스캠에 당하셨습니다." },
+                { txt: "얼굴도 안 봤는데 돈을 보내라고? 사기꾼아!", score: 100, msg: "⭕ 방어 성공! SNS로 만난 사람이 돈을 요구하면 100% 사기입니다." }
+            ]
+        },
+        'smishing': { 
+            caller: '청주시청', loc: 'Cheongju', voice: 'voice_smishing.mp3',
+            choices: [
+                { txt: "아, 마감이라고요? 지금 링크 눌러서 신청할게요.", score: -100, msg: "❌ 피해 발생! 관공서는 문자로 링크를 보내지 않습니다." },
+                { txt: "청주시청이라고요? 제가 시청으로 직접 방문하겠습니다.", score: 100, msg: "⭕ 방어 성공! 해당 부서에 직접 전화하거나 방문해서 확인하세요." }
+            ]
+        },
+        'invest': { 
+            caller: '김사부 팀장', loc: 'Investment', voice: 'voice_invest.mp3',
+            choices: [
+                { txt: "300% 수익이요? 지금 바로 입금하겠습니다.", score: -100, msg: "❌ 피해 발생! 세상에 원금이 보장되는 고수익 투자는 없습니다." },
+                { txt: "사기 치지 마세요. 금융위에 등록된 업체입니까?", score: 100, msg: "⭕ 방어 성공! 리딩방은 대부분 사기입니다." }
+            ]
+        }
+    };
+
+    let vibrationInterval = null;
+    let currentVoice = null;
+    let curData = null;
+
+    /* 소리 & 진동 */
+    function playRingtone() {
+        let audio = document.getElementById('ringtone');
+        if (audio) { audio.currentTime = 0; audio.play().catch(e=>{}); }
+        if (navigator.vibrate) {
+            navigator.vibrate([1000, 1000]); 
+            vibrationInterval = setInterval(() => { navigator.vibrate([1000, 1000]); }, 2000);
+        }
+    }
+
+    function stopRingtone() {
+        let audio = document.getElementById('ringtone');
+        if (audio) { audio.pause(); audio.currentTime = 0; }
+        if (vibrationInterval) { clearInterval(vibrationInterval); vibrationInterval = null; }
+        if (navigator.vibrate) navigator.vibrate(0);
+    }
+
+    /* 시나리오 시작 */
+    function startSim(type) {
+        curData = DB[type];
+        document.getElementById('sim-name').innerText = curData.caller;
+        document.getElementById('sim-loc').innerText = curData.loc;
+        document.getElementById('sim-overlay').classList.add('active');
+        
+        ['screen-call','screen-voice','screen-result'].forEach(e => document.getElementById(e).style.display='none');
+        document.getElementById('screen-call').style.display = 'flex';
+        
+        playRingtone();
+    }
+
+    /* 전화 받기 -> 목소리 재생 */
+    function answerCall() {
+        stopRingtone();
+        document.getElementById('screen-call').style.display = 'none';
+        document.getElementById('screen-voice').style.display = 'flex';
+        
+        let voicePlayer = document.getElementById('voice-player');
+        voicePlayer.src = curData.voice;
+        
+        document.getElementById('voice-status').innerText = "범인 목소리 듣는 중...";
+        document.getElementById('choice-dock').innerHTML = '';
+        document.getElementById('choice-dock').classList.remove('show');
+
+        voicePlayer.play().catch(e => {
+            alert("소리 재생 오류: 파일명을 확인해주세요.");
+        });
+
+        voicePlayer.onended = function() {
+            showChoices();
+        };
+    }
+
+    /* 선택지 표시 함수 */
+    function showChoices() {
+        document.getElementById('voice-status').innerText = "어떻게 대처하시겠습니까?";
+        let dock = document.getElementById('choice-dock');
+        let html = '';
+        curData.choices.forEach(opt => {
+            html += `<div class="choice-btn" onclick="endSim(${opt.score}, '${opt.msg}')">${opt.txt}</div>`;
+        });
+        dock.innerHTML = html;
+        dock.classList.add('show');
+    }
+
+    /* 결과 처리 */
+    function endSim(score, msg) {
+        let voicePlayer = document.getElementById('voice-player');
+        voicePlayer.pause();
+
+        ['screen-call','screen-voice','screen-result'].forEach(e => document.getElementById(e).style.display='none');
+        document.getElementById('screen-result').style.display = 'flex';
+        
+        let circle = document.getElementById('res-circle');
+        let title = document.getElementById('res-title');
+        let desc = document.getElementById('res-desc');
+        
+        document.getElementById('res-score').innerText = score > 0 ? score : 0;
+        desc.innerText = msg;
+
+        if(score >= 50) {
+            circle.className = "score-circle safe";
+            title.innerText = "방어 성공";
+            title.style.color = "var(--safe)";
+        } else {
+            circle.className = "score-circle danger";
+            title.innerText = "피해 발생";
+            title.style.color = "var(--danger)";
+        }
+    }
+
+    function checkQuiz(uFake, rFake, msg) {
+        document.getElementById('sim-overlay').classList.add('active');
+        ['screen-call','screen-voice','screen-result'].forEach(e => document.getElementById(e).style.display='none');
+        document.getElementById('screen-result').style.display = 'flex';
+        
+        let circle = document.getElementById('res-circle');
+        let title = document.getElementById('res-title');
+        let desc = document.getElementById('res-desc');
+        
+        let isCorrect = (uFake === rFake);
+        document.getElementById('res-score').innerText = isCorrect ? 100 : 0;
+        desc.innerText = msg;
+
+        if (isCorrect) {
+            circle.className = "score-circle safe";
+            title.innerText = "정답입니다!";
+            title.style.color = "var(--safe)";
+        } else {
+            circle.className = "score-circle danger";
+            title.innerText = "오답입니다!";
+            title.style.color = "var(--danger)";
+        }
+    }
+
+    function closeSim() {
+        stopRingtone();
+        let voicePlayer = document.getElementById('voice-player');
+        voicePlayer.pause();
+        document.getElementById('sim-overlay').classList.remove('active');
+    }
+
+    function switchTab(id, el) {
+        document.querySelectorAll('.content-view').forEach(e => e.classList.remove('active'));
+        document.getElementById('view-' + id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+    }
+</script>
 
 </body>
 </html>
