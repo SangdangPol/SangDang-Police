@@ -6,13 +6,21 @@
     <title>폴-체크 (안전 자가진단)</title>
     <meta name="theme-color" content="#15803d">
     
+    <!-- [추가됨] 홈 화면 아이콘 설정 (경찰서 CI 적용) -->
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    
+    <!-- [추가됨] 웹앱 모드 설정 (전체화면 등) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <!-- 아이콘 & 스타일 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 -->
-    <!-- 수정됨: 폴-체크 전용 ID (G-PFC08R08MG) 반영 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-PFC08R08MG"></script>
     <script>
         const GA_MEASUREMENT_ID = 'G-PFC08R08MG';
@@ -89,7 +97,10 @@
                     <i class="fa-solid fa-shield-cat text-xl"></i>
                 </div>
                 <h2 class="text-lg font-bold text-gray-800" id="introTitle">우리집 안전점수 확인하기</h2>
-                <p class="text-sm text-gray-500 mt-1">해당하는 항목에 체크(V) 해주세요.<br>부족한 부분에 대한 <b>경찰관의 조언</b>이 제공됩니다.</p>
+                <p class="text-sm text-gray-500 mt-1">
+                    <span id="displayUserName" class="text-green-700 font-bold">사용자</span>님,<br>
+                    해당하는 항목에 체크(V) 해주세요.
+                </p>
             </div>
 
             <!-- 체크리스트 컨테이너 -->
@@ -151,6 +162,63 @@
             </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- 설정 모달 (공통 기능 추가) -->
+        <!-- ========================================== -->
+        <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4 modal">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden">
+                <div class="bg-police-dark p-4 text-white text-center">
+                    <h2 class="font-bold text-lg">사용자 설정</h2>
+                    <p class="text-xs opacity-80">진단 결과에 표시될 이름을 입력하세요.</p>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">이름 (또는 닉네임)</label>
+                        <input type="text" id="inputUserName" placeholder="예: 홍길동" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50">
+                    </div>
+                    <button onclick="saveSettings()" class="w-full bg-police-dark text-white font-bold py-3 rounded-lg shadow hover:bg-blue-900 transition">
+                        저장하기
+                    </button>
+                    <button onclick="document.getElementById('settingsModal').classList.add('hidden')" class="w-full text-gray-500 py-2 text-sm underline">닫기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 앱 설치 가이드 (공통 기능 추가) -->
+        <!-- ========================================== -->
+        <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6 modal">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
+                <button onclick="closeInstallGuide()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">앱 아이콘 만들기</h2>
+                <p class="text-sm text-gray-600 mb-4">홈 화면에 추가하면 QR코드 없이 바로 실행됩니다.</p>
+                
+                <!-- 탭 버튼 -->
+                <div class="flex border-b mb-3">
+                    <button id="btnAndroid" onclick="showGuide('android')" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition">안드로이드</button>
+                    <button id="btnIos" onclick="showGuide('ios')" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">아이폰</button>
+                </div>
+
+                <!-- 아이폰용 -->
+                <div id="iosGuide" class="hidden bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
+                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">아이폰 (Safari)</p>
+                    <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼 클릭</div>
+                    <div>2. 메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b> 선택</div>
+                    <div>3. 우측 상단 <b>추가</b> 버튼 클릭</div>
+                </div>
+                
+                <!-- 안드로이드용 -->
+                <div id="androidGuide" class="bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
+                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">안드로이드 (Chrome/Samsung)</p>
+                    <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴 클릭</div>
+                    <div class="text-xs text-gray-500">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
+                    <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 선택</div>
+                </div>
+                
+                <button onclick="closeInstallGuide()" class="w-full bg-police-dark text-white py-2 rounded-lg mt-4 font-bold">확인</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -175,6 +243,13 @@
         };
 
         let currentTab = 'home';
+
+        // === 초기화 ===
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserName();
+            renderQuestions();
+            sendAnalyticsEvent('app_open');
+        });
 
         // === 2. 탭 전환 기능 ===
         function switchTab(tab) {
@@ -299,8 +374,53 @@
             }, 200); // 애니메이션 시간 후 숨김
         }
 
-        // 초기 실행
-        renderQuestions();
+        // === 설정 관련 기능 (추가됨) ===
+        function openSettings() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('inputUserName').value = localStorage.getItem('pol_check_username') || '';
+        }
+
+        function saveSettings() {
+            const name = document.getElementById('inputUserName').value.trim();
+            if(name) {
+                localStorage.setItem('pol_check_username', name);
+                loadUserName();
+                document.getElementById('settingsModal').classList.add('hidden');
+            } else {
+                alert("이름을 입력해주세요.");
+            }
+        }
+
+        function loadUserName() {
+            const name = localStorage.getItem('pol_check_username');
+            if(name) {
+                document.getElementById('displayUserName').innerText = name;
+            }
+        }
+
+        // === 앱 설치 가이드 (공통 기능) ===
+        function openInstallGuide() {
+            const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+            document.getElementById('installGuideModal').classList.remove('hidden');
+            if (isIOS) showGuide('ios'); else showGuide('android');
+            localStorage.setItem('pol_guide_shown', 'true');
+        }
+        function closeInstallGuide() { document.getElementById('installGuideModal').classList.add('hidden'); }
+        function showGuide(os) {
+            const androidGuide = document.getElementById('androidGuide');
+            const iosGuide = document.getElementById('iosGuide');
+            const btnAndroid = document.getElementById('btnAndroid');
+            const btnIos = document.getElementById('btnIos');
+            if (os === 'android') {
+                androidGuide.classList.remove('hidden'); iosGuide.classList.add('hidden');
+                btnAndroid.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition";
+                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
+            } else {
+                androidGuide.classList.add('hidden'); iosGuide.classList.remove('hidden');
+                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition";
+                btnAndroid.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
+            }
+        }
     </script>
 </body>
 </html>
