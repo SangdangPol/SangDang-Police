@@ -4,6 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>청주상당경찰서 피싱 가드</title>
+    <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 코드 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4W28Z27Z6"></script>
+    <script>
+        // 보이스피싱 훈련소 전용 측정 ID
+        const GA_MEASUREMENT_ID = 'G-J4W28Z27Z6';
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID, {
+            'page_title': '보이스피싱 훈련소', 
+            'anonymize_ip': true 
+        });
+
+        // 버튼 클릭 등 이벤트 추적을 위한 헬퍼 함수
+        function sendAnalyticsEvent(eventName, params = {}) {
+            gtag('event', eventName, params);
+            console.log(`[통계 전송] ${eventName}`, params);
+        }
+    </script>
     <style>
         /* [디자인 시스템] */
         :root {
@@ -448,5 +469,6 @@
 
 </body>
 </html>
+
 
 
