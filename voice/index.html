@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>청주상당경찰서 피싱 가드</title>
+    <title>청주상당경찰서 폴-보이스</title>
     <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 코드 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4W28Z27Z6"></script>
     <script>
@@ -15,7 +15,7 @@
         
         gtag('js', new Date());
         gtag('config', GA_MEASUREMENT_ID, {
-            'page_title': '보이스피싱 훈련소', 
+            'page_title': '폴-보이스', 
             'anonymize_ip': true 
         });
 
@@ -26,27 +26,27 @@
         }
     </script>
     <style>
-        /* [디자인 시스템] */
+        /* [디자인 시스템 - Light Theme 적용 (통일성 확보)] */
         :root {
-            --bg-main: #0f172a;
-            --bg-card: rgba(30, 41, 59, 0.7);
-            --primary: #3b82f6;
-            --accent: #0ea5e9;
+            --bg-main: #f3f4f6;       /* 밝은 회색 배경 */
+            --bg-card: #ffffff;       /* 흰색 카드 */
+            --primary: #1a237e;       /* 경찰 남색 (헤더) */
+            --accent: #2563eb;        /* 강조색 (파랑) */
             --danger: #ef4444;
             --safe: #22c55e;
-            --text-light: #f8fafc;
-            --text-dim: #94a3b8;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --text-main: #1f2937;     /* 진한 회색 텍스트 */
+            --text-sub: #6b7280;      /* 연한 회색 텍스트 */
+            --border: 1px solid #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
-            margin: 0; background-color: #000; color: var(--text-light);
+            margin: 0; background-color: #f3f4f6; color: var(--text-main);
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             display: flex; justify-content: center;
-            background-image: linear-gradient(to bottom, #0f172a, #000);
             overflow: hidden;
         }
 
@@ -54,66 +54,92 @@
             width: 100%; max-width: 450px; height: 100%;
             display: flex; flex-direction: column; position: relative;
             background: var(--bg-main);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        /* 헤더 */
+        /* 헤더 (폴-매니저와 동일 규격) */
         .header {
-            flex: 0 0 50px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: var(--glass-border); background: rgba(15, 23, 42, 0.9); z-index: 50;
+            flex: 0 0 60px; /* 높이 통일 */
+            padding: 0 16px; /* 좌우 여백 통일 */
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--primary); color: white; z-index: 50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
-        .brand-logo { width: 28px; height: 28px; object-fit: contain; }
-        .dept-tag { background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+        
+        .brand { display: flex; align-items: center; gap: 10px; }
+        
+        /* 로고 스타일 (40px, 흰색 원형 배경) */
+        .brand-logo { 
+            width: 40px; height: 40px; 
+            object-fit: contain; 
+            background: white; 
+            border-radius: 50%; 
+            padding: 2px; 
+            flex-shrink: 0;
+        }
+        
+        /* 타이틀 스타일 */
+        .brand-text-group { display: flex; flex-direction: column; justify-content: center; }
+        .brand-title { font-size: 18px; font-weight: 900; line-height: 1.1; }
+        .brand-subtitle { font-size: 11px; font-weight: normal; opacity: 0.8; margin-top: 1px; color: #e0e7ff; }
+
+        /* 우측 부서 태그 */
+        .dept-tag { 
+            font-size: 12px; color: #e5e7eb; 
+            background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; 
+        }
 
         /* 컨텐츠 영역 */
         .content-view {
-            flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px;
+            flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px;
             display: none; -webkit-overflow-scrolling: touch;
         }
         .content-view.active { display: block; }
 
+        /* 메인 배너 */
         .hero-banner { 
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6); 
-            padding: 15px; border-radius: 16px; margin-bottom: 15px;
-            position: relative; overflow: hidden; border: var(--glass-border); 
+            background: linear-gradient(135deg, #1e40af, #3b82f6); 
+            color: white;
+            padding: 24px 20px; border-radius: 16px; margin-bottom: 24px;
+            position: relative; overflow: hidden; 
+            box-shadow: var(--shadow);
+            text-align: center;
         }
-        .hero-banner h1 { margin: 0; font-size: 18px; font-weight: 800; }
-        .hero-banner p { margin: 4px 0 0; opacity: 0.9; font-size: 12px; }
+        .hero-banner p { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.4; word-break: keep-all; }
         
-        .section-label { font-size: 13px; color: var(--accent); font-weight: bold; margin-bottom: 10px; display: block; }
+        .section-label { font-size: 14px; color: var(--primary); font-weight: 800; margin-bottom: 12px; display: block; display: flex; align-items: center; gap: 6px;}
         
-        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .menu-card { 
-            background: var(--bg-card); border: var(--glass-border); 
-            padding: 12px; border-radius: 14px; text-align: center; cursor: pointer; 
-            position: relative; display: flex; flex-direction: column; align-items: center; 
+            background: var(--bg-card); border: var(--border); 
+            padding: 20px 15px; border-radius: 16px; text-align: center; cursor: pointer; 
+            position: relative; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.1s;
         }
-        .menu-card:active { transform: scale(0.96); background: rgba(59, 130, 246, 0.3); }
-        .menu-icon { font-size: 24px; margin-bottom: 6px; }
-        .menu-title { font-weight: bold; font-size: 13px; margin-bottom: 2px; }
-        .menu-desc { font-size: 10px; color: var(--text-dim); }
+        .menu-card:active { transform: scale(0.98); background: #f9fafb; }
+        .menu-icon { font-size: 32px; margin-bottom: 10px; }
+        .menu-title { font-weight: 800; font-size: 15px; margin-bottom: 4px; color: var(--text-main); }
+        .menu-desc { font-size: 12px; color: var(--text-sub); }
 
         /* 출처 표기 */
         .credit-text {
-            text-align: center; margin-top: 20px; font-size: 10px;
-            color: rgba(255, 255, 255, 0.3); letter-spacing: 0.5px;
+            text-align: center; margin-top: 30px; font-size: 11px;
+            color: #9ca3af;
         }
 
-        /* 하단 탭바 */
+        /* 하단 탭바 (밝은 테마) */
         .bottom-nav {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 380px; height: 55px;
-            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px);
-            border-radius: 30px; border: var(--glass-border);
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: white; border-top: var(--border);
             display: flex; justify-content: space-around; align-items: center;
-            z-index: 999; box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            z-index: 999; padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* 오버레이 (전화 수신) */
+        /* 오버레이 (전화 수신 - 어두운 테마 유지: 몰입감 위해) */
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: #000; display: none; flex-direction: column; }
         .overlay.active { display: flex; }
         
-        .call-screen { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 60px 30px 100px 30px; background: radial-gradient(circle at center, #1e293b 0%, #000 100%); }
+        .call-screen { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 60px 30px 100px 30px; background: radial-gradient(circle at center, #1e293b 0%, #000 100%); color: white; }
         .caller-info { text-align: center; margin-top: 20px; }
         .c-name { font-size: 30px; font-weight: 700; margin: 10px 0; }
         .c-loc { color: #94a3b8; font-size: 14px; margin-top: 5px; }
@@ -122,13 +148,13 @@
         .btn-red { background: var(--danger); }
         .btn-green { background: var(--safe); animation: pulse 1.5s infinite; }
 
-        /* 오버레이 (통화 중 - 목소리 재생) */
+        /* 오버레이 (통화 중) */
         .voice-screen { 
             flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; 
-            background: #0f172a; padding: 30px; text-align: center;
+            background: #111827; padding: 30px; text-align: center; color: white;
         }
         .voice-wave { font-size: 60px; margin-bottom: 20px; animation: bounce 1s infinite; }
-        .voice-status { font-size: 18px; color: var(--accent); margin-bottom: 40px; font-weight: bold; }
+        .voice-status { font-size: 18px; color: #60a5fa; margin-bottom: 40px; font-weight: bold; }
         
         .choice-container { width: 100%; display: flex; flex-direction: column; gap: 15px; opacity: 0; transition: opacity 0.5s; }
         .choice-container.show { opacity: 1; }
@@ -136,37 +162,37 @@
             background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2);
             padding: 16px; border-radius: 12px; color: white; font-size: 15px; text-align: left; cursor: pointer;
         }
-        .choice-btn:active { background: rgba(59, 130, 246, 0.3); }
+        .choice-btn:active { background: rgba(255, 255, 255, 0.2); }
 
         /* 결과 화면 */
-        .result-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; background: #0f172a; display: none; }
-        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid #334155; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .result-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; background: #111827; display: none; color: white; }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid #374151; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
         .score-circle.safe { border-color: var(--safe); }
         .score-circle.danger { border-color: var(--danger); }
         .s-num { font-size: 40px; font-weight: 900; }
-        .res-desc { color: #cbd5e1; line-height: 1.6; margin-bottom: 30px; font-size: 15px; }
+        .res-desc { color: #d1d5db; line-height: 1.6; margin-bottom: 30px; font-size: 16px; }
 
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-dim); cursor: pointer; width: 60px; }
-        .nav-icon-svg { width: 22px; height: 22px; fill: var(--text-dim); transition: all 0.2s; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item.active .nav-icon-svg { fill: var(--accent); transform: translateY(-2px); filter: drop-shadow(0 0 5px var(--accent)); }
-        .nav-text { font-size: 10px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #9ca3af; cursor: pointer; flex: 1; height: 100%; }
+        .nav-icon-svg { width: 24px; height: 24px; fill: #9ca3af; transition: all 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item.active .nav-icon-svg { fill: var(--primary); transform: translateY(-2px); }
+        .nav-text { font-size: 11px; font-weight: 600; }
 
-        .quiz-card { background: var(--bg-card); border: var(--glass-border); padding: 20px; border-radius: 18px; margin-bottom: 20px; }
-        .quiz-msg { background: #e2e8f0; color: #1e293b; padding: 15px; border-radius: 10px; font-size: 14px; line-height: 1.5; margin: 15px 0; border-left: 4px solid var(--primary); }
+        .quiz-card { background: white; border: var(--border); padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .quiz-msg { background: #f1f5f9; color: #334155; padding: 15px; border-radius: 10px; font-size: 14px; line-height: 1.5; margin: 15px 0; border-left: 4px solid var(--accent); }
         .quiz-btn-group { display: flex; gap: 10px; }
-        .quiz-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .q-fake { background: rgba(239, 68, 68, 0.2); color: #fca5a5; } 
-        .q-real { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .quiz-btn { flex: 1; padding: 14px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; transition: opacity 0.2s; }
+        .q-fake { background: #fee2e2; color: #ef4444; } 
+        .q-real { background: #dcfce7; color: #16a34a; }
         
-        /* 가이드 로고 크기 고정 */
-        .guide-title-box { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .guide-ci { width: 30px !important; height: 30px !important; object-fit: contain; flex-shrink: 0; }
+        /* 가이드 로고 */
+        .guide-title-box { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px solid #e5e7eb; }
+        .guide-ci { width: 40px !important; height: 40px !important; object-fit: contain; flex-shrink: 0; }
 
-        .guide-item { display: flex; gap: 15px; background: var(--bg-card); padding: 15px; border-radius: 18px; border: var(--glass-border); margin-bottom: 10px; align-items: center; }
-        .g-num { font-size: 24px; font-weight: 900; color: var(--accent); opacity: 0.8; }
-        .g-txt h3 { margin: 0 0 5px 0; font-size: 15px; color: white; }
-        .g-txt p { margin: 0; font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+        .guide-item { display: flex; gap: 15px; background: white; padding: 20px; border-radius: 16px; border: var(--border); margin-bottom: 12px; align-items: flex-start; box-shadow: var(--shadow); }
+        .g-num { font-size: 20px; font-weight: 900; color: var(--accent); opacity: 0.8; line-height: 1; margin-top: 2px;}
+        .g-txt h3 { margin: 0 0 6px 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
+        .g-txt p { margin: 0; font-size: 13px; color: var(--text-sub); line-height: 1.5; }
 
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
@@ -178,34 +204,42 @@
     <audio id="ringtone" loop preload="auto"><source src="ringtone.mp3" type="audio/mpeg"></audio>
     <audio id="voice-player" preload="auto"></audio>
 
+    <!-- 헤더 -->
     <header class="header">
         <div class="brand">
-            <!-- [NEW] 뒤로가기 버튼 추가 -->
-            <div onclick="location.href='../'" style="cursor: pointer; display: flex; align-items: center; margin-right: 8px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f8fafc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- 뒤로가기 버튼 -->
+            <div onclick="location.href='../'" style="cursor: pointer; display: flex; align-items: center; margin-right: 4px; padding: 5px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
                 </svg>
             </div>
-            <img src="logo.png" alt="로고" class="brand-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1069/1069102.png'"> 
-            <span>청주상당경찰서</span>
+            <!-- 로고 -->
+            <img src="logo.png" alt="로고" class="brand-logo" onerror="this.style.display='none'"> 
+            
+            <!-- 타이틀 및 부제 -->
+            <div class="brand-text-group">
+                <span class="brand-title">폴-보이스</span>
+                <span class="brand-subtitle">보이스피싱 예방 훈련소</span>
+            </div>
         </div>
-        <span class="dept-tag">범죄예방대응과</span>
+        <span class="dept-tag">청주상당경찰서</span>
     </header>
 
+    <!-- 1. 메인 홈 -->
     <div id="view-home" class="content-view active">
         <div class="hero-banner">
-            <h1>피싱 예방 훈련소</h1>
             <p>가상의 범인 목소리를 듣고 대처하세요!</p>
         </div>
-        <span class="section-label">⚡ 체험할 범죄 유형 선택 (소리 주의)</span>
+        
+        <span class="section-label"><i class="fa-solid fa-triangle-exclamation"></i> 체험할 범죄 유형 선택</span>
         <div class="grid-menu">
-            <div class="menu-card" onclick="startSim('prosecutor')"><span class="menu-icon">⚖️</span><div class="menu-title">기관 사칭</div><div class="menu-desc">검사 사칭</div></div>
-            <div class="menu-card" onclick="startSim('loan')"><span class="menu-icon">💰</span><div class="menu-title">대출 빙자</div><div class="menu-desc">저금리 대출</div></div>
-            <div class="menu-card" onclick="startSim('family')"><span class="menu-icon">📱</span><div class="menu-title">자녀 사칭</div><div class="menu-desc">액정 파손</div></div>
-            <div class="menu-card" onclick="startSim('romance')"><span class="menu-icon">💘</span><div class="menu-title">로맨스 스캠</div><div class="menu-desc">파병 미군</div></div>
-            <div class="menu-card" onclick="startSim('smishing')"><span class="menu-icon">📩</span><div class="menu-title">지원금 문자</div><div class="menu-desc">시청 사칭</div></div>
-            <div class="menu-card" onclick="startSim('invest')"><span class="menu-icon">📈</span><div class="menu-title">투자 리딩방</div><div class="menu-desc">300% 수익</div></div>
+            <div class="menu-card" onclick="startSim('prosecutor')"><span class="menu-icon">⚖️</span><div class="menu-title">기관 사칭</div><div class="menu-desc">검사/경찰 사칭</div></div>
+            <div class="menu-card" onclick="startSim('loan')"><span class="menu-icon">💰</span><div class="menu-title">대출 빙자</div><div class="menu-desc">저금리 대환대출</div></div>
+            <div class="menu-card" onclick="startSim('family')"><span class="menu-icon">📱</span><div class="menu-title">자녀 사칭</div><div class="menu-desc">액정 파손/납치</div></div>
+            <div class="menu-card" onclick="startSim('romance')"><span class="menu-icon">💘</span><div class="menu-title">로맨스 스캠</div><div class="menu-desc">SNS 연애 빙자</div></div>
+            <div class="menu-card" onclick="startSim('smishing')"><span class="menu-icon">📩</span><div class="menu-title">부고/청첩장</div><div class="menu-desc">URL 클릭 유도</div></div>
+            <div class="menu-card" onclick="startSim('invest')"><span class="menu-icon">📈</span><div class="menu-title">투자 리딩방</div><div class="menu-desc">고수익 보장</div></div>
         </div>
         
         <div class="credit-text">
@@ -213,10 +247,15 @@
         </div>
     </div>
 
+    <!-- 2. 스미싱 퀴즈 -->
     <div id="view-smishing" class="content-view">
-        <div class="hero-banner" style="background: linear-gradient(135deg, #059669, #34d399);"><h1>스미싱 탐지소</h1><p>문자 속 <strong>가짜</strong>를 찾아내세요.</p></div>
+        <div class="hero-banner" style="background: linear-gradient(135deg, #059669, #34d399);">
+            <h1>스미싱 탐지소</h1>
+            <p>문자 속 <strong>교묘한 가짜</strong>를 찾아내세요.</p>
+        </div>
+        
         <div class="quiz-card">
-            <div style="font-weight:bold; margin-bottom:5px;">Q1. 모바일 청첩장</div>
+            <div style="font-weight:800; font-size:16px; margin-bottom:8px; color:#1f2937;">Q1. 모바일 청첩장</div>
             <div class="quiz-msg">[Web발신] 김철수♥이영희 결혼합니다.<br>모바일 청첩장: <strong>wedding.invitation.apk</strong></div>
             <div class="quiz-btn-group">
                 <button class="quiz-btn q-fake" onclick="checkQuiz(true, true, '정답! apk는 악성 앱 설치 파일입니다. 절대 누르지 마세요.')">🚨 스미싱이다</button>
@@ -224,7 +263,7 @@
             </div>
         </div>
         <div class="quiz-card">
-            <div style="font-weight:bold; margin-bottom:5px;">Q2. 택배 주소지 확인</div>
+            <div style="font-weight:800; font-size:16px; margin-bottom:8px; color:#1f2937;">Q2. 택배 주소지 확인</div>
             <div class="quiz-msg">[CJ대한통운] 운송장번호[45***] 주소지 불분명.<br>확인하기: <strong>cj-gls.com.kr.xyz</strong></div>
             <div class="quiz-btn-group">
                 <button class="quiz-btn q-fake" onclick="checkQuiz(true, true, '정답! 공식 주소 뒤에 xyz 등 이상한 영어가 붙으면 100% 가짜입니다.')">🚨 스미싱이다</button>
@@ -233,20 +272,23 @@
         </div>
     </div>
 
+    <!-- 3. 예방 가이드 -->
     <div id="view-guide" class="content-view">
         <div class="guide-title-box">
             <img src="logo.png" alt="CI" class="guide-ci" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1069/1069102.png'">
             <span class="section-label" style="margin-bottom:0; font-size:18px;">보이스피싱 예방 행동수칙</span>
         </div>
         <div class="guide-item"><div class="g-num">01</div><div class="g-txt"><h3>링크(URL) 클릭 금지</h3><p>출처를 알 수 없는 문자 속 인터넷 주소는 절대 누르지 마세요.</p></div></div>
-        <div class="guide-item"><div class="g-num">02</div><div class="g-txt"><h3>앱 설치 요구는 사기</h3><p>기관은 전화로 '보안 앱' 설치를 요구하지 않습니다.</p></div></div>
-        <div class="guide-item"><div class="g-num">03</div><div class="g-txt"><h3>끊고, 확인 전화</h3><p>의심스러운 전화를 받았다면 일단 끊으세요.<br>그리고 112로 확인하세요.</p></div></div>
-        <div style="margin-top:20px; padding:15px; background:rgba(239, 68, 68, 0.1); border-radius:15px; text-align:center; color:#fca5a5; font-size:13px;">
-            <strong>🚨 보이스피싱 신고: 국번없이 112</strong><br><div style="height:5px;"></div>
+        <div class="guide-item"><div class="g-num">02</div><div class="g-txt"><h3>앱 설치 요구는 사기</h3><p>검찰, 경찰, 금감원은 전화로 '보안 앱' 설치를 요구하지 않습니다.</p></div></div>
+        <div class="guide-item"><div class="g-num">03</div><div class="g-txt"><h3>끊고, 확인 전화</h3><p>의심스러운 전화를 받았다면 일단 끊으세요. 그리고 112로 확인하세요.</p></div></div>
+        
+        <div style="margin-top:20px; padding:20px; background:#fee2e2; border-radius:16px; text-align:center; color:#b91c1c; font-size:14px; border:1px solid #fca5a5;">
+            <strong>🚨 보이스피싱 신고: 국번없이 112</strong><br><div style="height:8px;"></div>
             <strong>☎️ 금융감독원 상담: 1332</strong>
         </div>
     </div>
 
+    <!-- [시뮬레이션 오버레이 - 어두운 테마 유지] -->
     <div id="sim-overlay" class="overlay">
         <div id="screen-call" class="call-screen">
             <div class="caller-info">
@@ -267,10 +309,11 @@
             <div id="res-circle" class="score-circle"><span id="res-score" class="s-num">0</span></div>
             <h2 id="res-title">결과</h2>
             <p id="res-desc" class="res-desc">설명</p>
-            <button onclick="closeSim()" style="padding:15px 40px; border-radius:30px; border:none; background:var(--primary); color:white; font-weight:bold;">돌아가기</button>
+            <button onclick="closeSim()" style="padding:15px 40px; border-radius:30px; border:none; background:#3b82f6; color:white; font-weight:bold; cursor:pointer;">돌아가기</button>
         </div>
     </div>
 
+    <!-- 하단 탭바 -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home', this)">
             <svg class="nav-icon-svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="nav-text">훈련소</span>
