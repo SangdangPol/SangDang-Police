@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>청주상당경찰서 폴-보이스</title>
     
-    <!-- GA4 연동 -->
+    <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4W28Z27Z6"></script>
     <script>
         const GA_MEASUREMENT_ID = 'G-J4W28Z27Z6';
@@ -33,12 +33,14 @@
         body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background-color: var(--bg-main); overflow: hidden; touch-action: manipulation; }
         .bg-police-dark { background-color: var(--primary); }
 
-        /* 탭 컨텐츠 영역 */
+        /* 가독성 핵심: 단어 유지 및 자동 줄바꿈 */
+        * { word-break: keep-all; overflow-wrap: break-word; }
+
         .content-view { display: none; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; padding-bottom: 100px; }
         .content-view.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 하단 탭바 (슬림화 및 중앙 정렬) */
+        /* 하단 탭바 슬림화 및 중앙 정렬 */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 450px; height: 60px; 
@@ -47,9 +49,8 @@
         }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
-        .nav-item i { font-size: 1.2rem; margin-bottom: 2px; }
+        .nav-item i { font-size: 1.1rem; margin-bottom: 2px; }
 
-        /* 시뮬레이션 오버레이 */
         .sim-overlay {
             position: fixed; inset: 0; z-index: 100; background: #0f172a; color: white;
             display: none; flex-direction: column;
@@ -57,7 +58,6 @@
         }
         .sim-overlay.active { display: flex; transform: translateY(0); }
 
-        /* 사이렌 점멸 효과 */
         @keyframes siren-flash {
             0% { background-color: rgba(220, 38, 38, 0.8); }
             50% { background-color: rgba(37, 99, 235, 0.8); }
@@ -68,68 +68,58 @@
             z-index: 9999 !important; pointer-events: none; display: flex; align-items: center; justify-content: center;
         }
 
-        /* 훈련 채팅 UI */
+        /* 훈련 대화창 가독성 최적화 */
         .chat-bubble {
-            background: #1e293b; padding: 20px; border-radius: 4px 20px 20px 20px;
+            background: #1e293b; padding: 18px; border-radius: 4px 20px 20px 20px;
             margin-bottom: 24px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             animation: slideUp 0.4s;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 선택지 버튼 */
         .option-btn {
-            width: 100%; text-align: left; padding: 18px; margin-bottom: 12px;
+            width: 100%; text-align: left; padding: 16px; margin-bottom: 10px;
             background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px; transition: all 0.2s; font-size: 15px; color: white;
+            border-radius: 12px; transition: all 0.2s; font-size: 15px; color: white; line-height: 1.4;
         }
         .option-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.98); }
         .option-btn.good { border-color: var(--safe); background: rgba(34, 197, 94, 0.2); pointer-events: none; }
         .option-btn.bad { border-color: var(--danger); background: rgba(239, 68, 68, 0.2); pointer-events: none; }
 
-        /* 피드백 박스 */
         .feedback-box { 
-            display: none; padding: 15px; border-radius: 12px; margin-top: 10px; 
-            font-size: 14px; line-height: 1.6; animation: slideUp 0.3s;
+            display: none; padding: 14px; border-radius: 12px; margin-top: 8px; 
+            font-size: 14px; line-height: 1.5; animation: slideUp 0.3s;
         }
         .feedback-box.good { background: #064e3b; color: #a7f3d0; border: 1px solid #10b981; }
         .feedback-box.bad { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; }
 
-        /* 파형 비주얼라이저 */
         .voice-wave span {
             display: inline-block; width: 6px; height: 30px; background: #60a5fa; margin: 0 2px;
             animation: wave 1s infinite ease-in-out;
         }
-        .voice-wave span:nth-child(2) { animation-delay: 0.1s; }
-        .voice-wave span:nth-child(3) { animation-delay: 0.2s; }
-        .voice-wave span:nth-child(4) { animation-delay: 0.3s; }
-        .voice-wave span:nth-child(5) { animation-delay: 0.4s; }
         @keyframes wave { 0%, 100% { height: 10px; opacity: 0.5; } 50% { height: 50px; opacity: 1; } }
 
-        /* 가이드 탭 디자인 */
-        .guide-title-box { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px solid #e5e7eb; }
-        .guide-ci { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; background: white; border-radius: 50%; padding: 2px; }
-        .guide-item { display: flex; gap: 15px; background: white; padding: 20px; border-radius: 16px; border: 1px solid #e5e7eb; margin-bottom: 12px; align-items: flex-start; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .g-num { font-size: 24px; font-weight: 900; color: var(--accent); opacity: 0.7; line-height: 1; margin-top: 2px; }
-        .g-txt h3 { margin: 0 0 6px 0; font-size: 17px; color: var(--text-main); font-weight: 800; }
-        .g-txt p { margin: 0; font-size: 13.5px; color: #6b7280; line-height: 1.6; text-align: justify; word-break: keep-all; }
+        /* 가이드 탭 디자인 완복 */
+        .guide-title-box { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px solid #e5e7eb; }
+        .guide-ci { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
+        .guide-item { display: flex; gap: 15px; background: white; padding: 18px; border-radius: 16px; border: 1px solid #e5e7eb; margin-bottom: 12px; align-items: flex-start; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .g-num { font-size: 22px; font-weight: 900; color: var(--accent); opacity: 0.7; line-height: 1; }
+        .g-txt h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
+        .g-txt p { margin: 0; font-size: 13.5px; color: #6b7280; line-height: 1.6; }
 
-        /* 퀴즈 카드 디자인 */
-        .quiz-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .quiz-msg { background: #f1f5f9; color: #334155; padding: 15px; border-radius: 10px; font-size: 14px; line-height: 1.5; margin: 15px 0; border-left: 4px solid var(--accent); }
+        .quiz-card { background: white; padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .quiz-msg { background: #f1f5f9; color: #334155; padding: 12px; border-radius: 10px; font-size: 14px; line-height: 1.5; margin: 12px 0; border-left: 4px solid var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="w-full max-w-[450px] bg-white h-screen shadow-2xl flex flex-col relative overflow-hidden mx-auto">
     
-    <!-- 오디오 자원 -->
     <audio id="ringtone" loop><source src="ringtone.mp3" type="audio/mpeg"></audio>
     <audio id="voice-player"></audio>
     <audio id="siren-sound"><source src="siren.mp3" type="audio/mpeg"></audio>
 
-    <!-- 사이렌 레이어 -->
     <div id="siren-overlay" class="hidden">
-        <i class="fa-solid fa-triangle-exclamation text-white text-[120px] animate-ping opacity-80"></i>
+        <i class="fa-solid fa-triangle-exclamation text-white text-[100px] animate-ping opacity-80"></i>
     </div>
 
     <!-- 헤더 -->
@@ -139,7 +129,7 @@
             <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" class="w-10 h-10 object-contain bg-white rounded-full p-0.5">
             <div class="flex flex-col">
                 <span class="text-lg font-black leading-none">폴-보이스</span>
-                <span class="text-[10px] opacity-80 mt-0.5 font-normal">보이스피싱 예방 훈련소</span>
+                <span class="text-[10px] opacity-80 mt-0.5 font-normal tracking-tight">보이스피싱 예방 훈련소</span>
             </div>
         </div>
         <span class="text-[10px] bg-white/10 px-2 py-1 rounded font-medium">청주상당경찰서</span>
@@ -148,36 +138,36 @@
     <!-- 탭 1: 훈련소 -->
     <div id="view-home" class="content-view active bg-gray-50">
         <div class="bg-gradient-to-br from-blue-800 to-blue-600 rounded-2xl p-6 text-white text-center shadow-lg mb-6">
-            <p class="text-lg font-bold">"범인의 목소리를 끝까지 듣고<br>단계별로 대처하세요!"</p>
+            <p class="text-lg font-bold">가상의 범인 목소리를 듣고<br>단계별로 대처하세요!</p>
         </div>
         
-        <div class="flex items-center gap-2 mb-3">
+        <div class="flex items-center gap-2 mb-3 px-1">
             <i class="fa-solid fa-layer-group text-[#1a237e]"></i>
-            <span class="text-sm font-bold text-[#1a237e]">훈련 시나리오 선택 (6대 악성사기)</span>
+            <span class="text-sm font-bold text-[#1a237e]">훈련 시나리오 선택</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-            <button onclick="startSim('prosecutor')" class="bg-white border p-4 rounded-xl shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center">
+        <div class="grid grid-cols-2 gap-3 px-1">
+            <button onclick="startSim('prosecutor')" class="bg-white border p-4 rounded-xl shadow-sm active:scale-95 flex flex-col items-center">
                 <span class="text-3xl mb-2">⚖️</span><span class="text-sm font-bold text-gray-800">기관 사칭</span>
                 <span class="text-[10px] text-gray-500">검사/수사관</span>
             </button>
-            <button onclick="startSim('loan')" class="bg-white border p-4 rounded-xl shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center">
+            <button onclick="startSim('loan')" class="bg-white border p-4 rounded-xl shadow-sm active:scale-95 flex flex-col items-center">
                 <span class="text-3xl mb-2">💰</span><span class="text-sm font-bold text-gray-800">대출 빙자</span>
-                <span class="text-[10px] text-gray-500">저금리 대환대출</span>
+                <span class="text-[10px] text-gray-500">저금리 대환</span>
             </button>
-            <button onclick="startSim('family')" class="bg-white border p-4 rounded-xl shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center">
+            <button onclick="startSim('family')" class="bg-white border p-4 rounded-xl shadow-sm active:scale-95 flex flex-col items-center">
                 <span class="text-3xl mb-2">📱</span><span class="text-sm font-bold text-gray-800">가족 사칭</span>
-                <span class="text-[10px] text-gray-500">액정파손/인증번호</span>
+                <span class="text-[10px] text-gray-500">액정 파손</span>
             </button>
-            <button onclick="startSim('romance')" class="bg-white border p-4 rounded-xl shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center">
+            <button onclick="startSim('romance')" class="bg-white border p-4 rounded-xl shadow-sm active:scale-95 flex flex-col items-center">
                 <span class="text-3xl mb-2">💘</span><span class="text-sm font-bold text-gray-800">로맨스 스캠</span>
-                <span class="text-[10px] text-gray-500">SNS 연애 빙자</span>
+                <span class="text-[10px] text-gray-500">연애 빙자</span>
             </button>
-            <button onclick="startSim('smishing')" class="bg-white border p-4 rounded-xl shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center">
-                <span class="text-3xl mb-2">💸</span><span class="text-sm font-bold text-gray-800">재난지원금 사칭</span>
-                <span class="text-[10px] text-gray-500">스미싱 문자</span>
+            <button onclick="startSim('smishing')" class="bg-white border p-4 rounded-xl shadow-sm active:scale-95 flex flex-col items-center">
+                <span class="text-3xl mb-2">💸</span><span class="text-sm font-bold text-gray-800">재난지원금</span>
+                <span class="text-[10px] text-gray-500">정부지원금 사칭</span>
             </button>
-            <button onclick="startSim('invest')" class="bg-white border p-4 rounded-xl shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center">
+            <button onclick="startSim('invest')" class="bg-white border p-4 rounded-xl shadow-sm active:scale-95 flex flex-col items-center">
                 <span class="text-3xl mb-2">📈</span><span class="text-sm font-bold text-gray-800">투자 사기</span>
                 <span class="text-[10px] text-gray-500">리딩방/코인</span>
             </button>
@@ -187,45 +177,45 @@
 
     <!-- 탭 2: 스미싱 퀴즈 -->
     <div id="view-smishing" class="content-view bg-gray-50">
-        <div class="bg-gradient-to-r from-green-600 to-emerald-500 rounded-2xl p-4 text-white text-center mb-6 flex flex-col items-center justify-center shadow-lg">
-            <h1 class="text-lg font-black tracking-tight mb-1">스미싱 탐지소</h1>
+        <div class="bg-gradient-to-r from-green-600 to-emerald-500 rounded-2xl p-4 text-white text-center mb-6 shadow-lg flex flex-col items-center justify-center">
+            <h1 class="text-lg font-black tracking-tight mb-0.5">스미싱 탐지소</h1>
             <div class="flex items-center justify-center gap-2 w-full translate-x-2"> 
-                <p class="text-xs opacity-95">문자 속 <strong>가짜</strong>를 찾아내세요.</p>
+                <p class="text-xs opacity-95">문자 속 가짜를 찾아내세요.</p>
                 <i class="fa-solid fa-magnifying-glass text-lg opacity-60"></i>
             </div>
         </div>
 
         <div class="quiz-card">
             <div class="font-bold text-gray-800 mb-1 text-sm">Q1. 모바일 청첩장</div>
-            <div class="quiz-msg">[Web발신] 김철수♥이영희 결혼합니다.<br>모바일 청첩장: <strong>wedding.invitation.apk</strong></div>
+            <div class="quiz-msg">[Web발신] 김철수♥이영희 결혼합니다.<br>청첩장 확인: <strong>wedding.invitation.apk</strong></div>
             <div class="flex gap-2">
-                <button onclick="checkSmishingQuiz(false, '정답! apk는 악성 앱 설치 파일입니다. 휴대폰의 모든 정보를 가로챕니다.')" class="flex-1 bg-red-100 text-red-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">🚨 스미싱이다</button>
-                <button onclick="checkSmishingQuiz(true, '틀렸습니다. .apk 확장자는 안드로이드 설치 파일로, 문자로 오면 100% 사기입니다.')" class="flex-1 bg-green-100 text-green-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">✅ 정상이다</button>
+                <button onclick="checkSmishingQuiz(false, '정답! apk는 악성 앱 파일입니다.<br>휴대폰 정보를 모두 가로챕니다.')" class="flex-1 bg-red-100 text-red-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">🚨 스미싱이다</button>
+                <button onclick="checkSmishingQuiz(true, '틀렸습니다. .apk는 안드로이드 설치 파일로,<br>문자로 오면 100% 사기입니다.')" class="flex-1 bg-green-100 text-green-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">✅ 정상이다</button>
             </div>
         </div>
 
         <div class="quiz-card">
             <div class="font-bold text-gray-800 mb-1 text-sm">Q2. 택배 주소지 확인</div>
-            <div class="quiz-msg">[CJ대한통운] 운송장번호[45***] 주소지 불분명.<br>확인하기: <strong>cj-gls.com.kr.xyz</strong></div>
+            <div class="quiz-msg">[CJ대한통운] 운송장번호 주소지 불분명.<br>확인하기: <strong>cj-gls.com.kr.xyz</strong></div>
             <div class="flex gap-2">
-                <button onclick="checkSmishingQuiz(false, '정답! 공식 주소 뒤에 .xyz 등 생소한 영어가 붙으면 100% 가짜 사이트입니다.')" class="flex-1 bg-red-100 text-red-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">🚨 스미싱이다</button>
-                <button onclick="checkSmishingQuiz(true, '틀렸습니다. 택배사는 절대 주소지 확인을 위해 링크 클릭을 요구하지 않습니다.')" class="flex-1 bg-green-100 text-green-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">✅ 정상이다</button>
+                <button onclick="checkSmishingQuiz(false, '정답! 주소 뒤에 .xyz가 붙으면 가짜입니다.<br>택배사는 링크를 보내지 않습니다.')" class="flex-1 bg-red-100 text-red-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">🚨 스미싱이다</button>
+                <button onclick="checkSmishingQuiz(true, '틀렸습니다. 택배사는 주소 확인을 위해<br>링크 클릭을 절대 요구하지 않습니다.')" class="flex-1 bg-green-100 text-green-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">✅ 정상이다</button>
             </div>
         </div>
 
         <div class="quiz-card">
             <div class="font-bold text-gray-800 mb-1 text-sm">Q3. 재난지원금 신청</div>
-            <div class="quiz-msg">[정부24] 귀하는 5차 재난지원금 지급 대상입니다. 마감전 신청하세요.<br>확인: <strong>gov-help.bit.ly</strong></div>
+            <div class="quiz-msg">[정부24] 귀하는 5차 지원금 지급 대상입니다.<br>확인: <strong>gov-help.bit.ly</strong></div>
             <div class="flex gap-2">
-                <button onclick="checkSmishingQuiz(false, '정답! 정부 기관은 단축 URL(bit.ly 등)을 절대 사용하지 않습니다.')" class="flex-1 bg-red-100 text-red-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">🚨 스미싱이다</button>
-                <button onclick="checkSmishingQuiz(true, '틀렸습니다. 공식 정부 도메인(go.kr)이 없는 링크는 절대 누르지 마세요.')" class="flex-1 bg-green-100 text-green-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">✅ 정상이다</button>
+                <button onclick="checkSmishingQuiz(false, '정답! 정부 기관은 단축 URL(bit.ly 등)을<br>절대 사용하지 않습니다.')" class="flex-1 bg-red-100 text-red-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">🚨 스미싱이다</button>
+                <button onclick="checkSmishingQuiz(true, '틀렸습니다. 공식 정부 도메인이 없는 링크는<br>절대 누르면 안 됩니다.')" class="flex-1 bg-green-100 text-green-600 py-3 rounded-xl font-bold text-xs active:scale-95 transition">✅ 정상이다</button>
             </div>
         </div>
     </div>
 
     <!-- 탭 3: 가이드 -->
     <div id="view-guide" class="content-view bg-gray-50">
-        <div class="guide-title-box">
+        <div class="guide-title-box px-1">
             <img src="logo.png" alt="CI" class="guide-ci" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'">
             <span class="text-[19px] font-black text-gray-800 tracking-tight">보이스피싱 예방 행동수칙</span>
         </div>
@@ -235,26 +225,26 @@
                 <div class="g-num">01</div>
                 <div class="g-txt">
                     <h3>링크(URL) 클릭 금지</h3>
-                    <p>출처를 알 수 없는 문자 속 인터넷 주소는 절대 누르지 마세요.</p>
+                    <p>출처 불분명한 문자 속 인터넷 주소는<br>절대 누르지 마세요.</p>
                 </div>
             </div>
             <div class="guide-item">
                 <div class="g-num">02</div>
                 <div class="g-txt">
                     <h3>앱 설치 요구는 사기</h3>
-                    <p>검찰, 경찰, 금감원은 전화로 '보안 앱' 설치를 요구하지 않습니다.</p>
+                    <p>수사기관과 금융기관은 전화로<br>앱 설치를 요구하지 않습니다.</p>
                 </div>
             </div>
             <div class="guide-item">
                 <div class="g-num">03</div>
                 <div class="g-txt">
                     <h3>끊고, 확인 전화</h3>
-                    <p>의심스러운 전화를 받았다면 일단 끊으세요. 그리고 112로 확인하세요.</p>
+                    <p>의심스러우면 일단 끊고 112나<br>해당 기관 공식 번호로 확인하세요.</p>
                 </div>
             </div>
         </div>
         
-        <div class="mt-8 p-5 bg-red-50 border border-red-200 rounded-2xl text-center text-red-600 font-black shadow-inner">
+        <div class="mt-8 p-5 bg-red-50 border border-red-200 rounded-2xl text-center text-red-600 font-black shadow-inner leading-relaxed">
             🚨 보이스피싱 신고: 국번없이 112<br>
             ☎️ 금융감독원 상담: 1332
         </div>
@@ -263,13 +253,13 @@
     <!-- 하단 고정 내비게이션 -->
     <nav class="bottom-nav">
         <div onclick="switchTab('home', this)" class="nav-item active">
-            <i class="fa-solid fa-house text-xl mb-1"></i><span class="text-[10px] font-bold">훈련소</span>
+            <i class="fa-solid fa-house mb-1"></i><span class="text-[10px] font-bold">훈련소</span>
         </div>
         <div onclick="switchTab('smishing', this)" class="nav-item">
-            <i class="fa-solid fa-comment-sms text-xl mb-1"></i><span class="text-[10px] font-bold">스미싱</span>
+            <i class="fa-solid fa-comment-sms mb-1"></i><span class="text-[10px] font-bold">스미싱</span>
         </div>
         <div onclick="switchTab('guide', this)" class="nav-item">
-            <i class="fa-solid fa-book-open text-xl mb-1"></i><span class="text-[10px] font-bold">가이드</span>
+            <i class="fa-solid fa-book-open mb-1"></i><span class="text-[10px] font-bold">가이드</span>
         </div>
     </nav>
 
@@ -277,79 +267,67 @@
     <div id="simScreen" class="sim-overlay">
         <div class="flex items-center justify-between p-4 bg-black/30 border-b border-white/10">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center shadow-lg"><i class="fa-solid fa-user text-white"></i></div>
+                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center shadow-lg text-white"><i class="fa-solid fa-user"></i></div>
                 <div>
                     <div id="simCaller" class="font-bold text-lg text-white">발신자</div>
                     <div id="simStepInfo" class="text-[10px] text-gray-400 font-medium tracking-wider">South Korea</div>
                 </div>
             </div>
-            <button onclick="quitSim()" class="text-xs text-gray-400 border border-gray-600 px-3 py-1 rounded-full hover:text-white transition">종료</button>
+            <button onclick="quitSim()" class="text-xs text-gray-400 border border-gray-600 px-3 py-1 rounded-full">종료</button>
         </div>
 
         <div class="flex-1 p-6 flex flex-col items-center justify-center text-center relative overflow-y-auto">
-            <!-- (1) 전화 수신 화면 -->
             <div id="callIncoming" class="w-full h-full flex flex-col justify-between pb-32 pt-10">
                 <div>
                     <div class="text-blue-400 text-sm font-bold mb-2 animate-pulse">수신 전화...</div>
                     <h2 class="text-4xl font-black text-white" id="incomingName">발신자 정보</h2>
                 </div>
-                
                 <div class="flex justify-between items-center px-10 w-full mt-auto">
                     <div class="flex flex-col items-center gap-3">
-                        <button onclick="declineCall()" class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-2xl active:scale-90 transition">
-                            <i class="fa-solid fa-phone-slash text-3xl text-white"></i>
-                        </button>
+                        <button onclick="declineCall()" class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-2xl active:scale-90 transition"><i class="fa-solid fa-phone-slash text-3xl text-white"></i></button>
                         <span class="text-sm font-bold text-gray-400">거절</span>
                     </div>
                     <div class="flex flex-col items-center gap-3">
-                        <button onclick="acceptCall()" class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center shadow-2xl animate-bounce active:scale-90 transition">
-                            <i class="fa-solid fa-phone text-3xl text-white"></i>
-                        </button>
+                        <button onclick="acceptCall()" class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center shadow-2xl animate-bounce active:scale-90 transition"><i class="fa-solid fa-phone text-3xl text-white"></i></button>
                         <span class="text-sm font-bold text-gray-400">통화</span>
                     </div>
                 </div>
             </div>
 
-            <!-- (2) 청취 화면 -->
             <div id="listeningBox" class="hidden w-full">
                 <div class="text-blue-400 font-black mb-8 text-2xl animate-pulse">범인 목소리 청취 중...</div>
                 <div class="voice-wave h-20 flex items-center justify-center gap-2 mb-10">
                     <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                 </div>
-                <p class="text-gray-400 text-sm leading-relaxed font-bold">가상의 범인 목소리가 재생 중입니다.<br>실제 상황처럼 집중해서 상황을 판단하세요.</p>
-                <button onclick="finishListening()" class="mt-20 text-xs text-gray-500 border-b border-gray-600 pb-1">SKIP (소리가 안 들리면 클릭)</button>
+                <p class="text-gray-400 text-sm leading-relaxed font-bold">가상의 범인 목소리가 재생 중입니다.<br>실제 상황처럼 집중해서 판단하세요.</p>
+                <button onclick="finishListening()" class="mt-20 text-xs text-gray-600 border-b border-gray-600 pb-1">SKIP (소리가 안 들리면 클릭)</button>
             </div>
 
-            <!-- (3) 시나리오 대응 화면 -->
             <div id="scenarioBox" class="hidden w-full text-left pt-5">
-                <div class="relative mb-6">
-                    <div class="text-blue-400 text-[10px] font-bold mb-1 ml-1 tracking-widest">사기꾼의 압박 📢</div>
-                    <div class="chat-bubble">
-                        <h3 id="scenarioText" class="text-lg font-bold leading-relaxed text-white">...</h3>
-                    </div>
+                <div class="chat-bubble">
+                    <p class="text-blue-400 text-[10px] font-bold mb-1 tracking-widest text-left">범죄자의 압박 📢</p>
+                    <h3 id="scenarioText" class="text-[17px] font-bold leading-relaxed text-white">...</h3>
                 </div>
                 <div id="optionsArea" class="space-y-3"></div>
                 <div id="feedbackArea" class="feedback-box"></div>
-                <button id="nextBtn" onclick="nextStep()" class="hidden w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-black mt-4 shadow-xl active:scale-95 transition text-white">
-                    다음 단계로 <i class="fa-solid fa-arrow-right ml-1"></i>
-                </button>
+                <button id="nextBtn" onclick="nextStep()" class="hidden w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-black mt-4 shadow-xl active:scale-95 transition text-white">다음 단계로 <i class="fa-solid fa-arrow-right ml-1"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- 최종 결과 리포트 -->
+    <!-- 결과 리포트 -->
     <div id="resultScreen" class="fixed inset-0 z-[120] bg-gray-100 hidden overflow-y-auto">
         <div class="bg-white p-8 rounded-b-[40px] shadow-lg text-center">
             <h2 class="text-2xl font-black text-gray-800 mb-2">훈련 리포트</h2>
-            <div class="relative w-36 h-36 mx-auto flex items-center justify-center rounded-full border-[10px] border-gray-100 mt-4" id="scoreCircle">
+            <div class="relative w-32 h-32 mx-auto flex items-center justify-center rounded-full border-[10px] border-gray-100 mt-4" id="scoreCircle">
                 <span class="text-5xl font-black text-gray-800" id="finalScore">0</span>
             </div>
-            <p class="text-sm mt-5 font-bold" id="finalGrade">판정중</p>
+            <p class="text-sm mt-5 font-bold" id="finalGrade">-</p>
         </div>
-        <div class="p-6 pb-24">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 mb-5">
+        <div class="p-6 pb-24 text-left">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-5">
                 <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 text-sm"><i class="fa-solid fa-shield-halved text-blue-600"></i> 경찰관의 맞춤 솔루션</h3>
-                <ul id="feedbackList" class="space-y-4 text-xs text-gray-600 list-disc pl-4 leading-relaxed font-medium"></ul>
+                <ul id="feedbackList" class="space-y-4 text-xs text-gray-700 list-disc pl-4 leading-relaxed font-bold"></ul>
             </div>
             <button id="resultBtn" onclick="quitSim()" class="w-full bg-[#1a237e] text-white py-4 rounded-xl font-black shadow-2xl transition active:scale-95">메인 화면으로</button>
         </div>
@@ -357,96 +335,96 @@
 </div>
 
 <script>
-    // === [리얼리티 5단계] 시나리오 DB ===
+    // === [Ver 12.0] 리얼 시나리오 데이터베이스 ===
     const SCENARIOS = {
         'prosecutor': {
-            caller: "서울중앙지검 김민수 검사", voice: "voice_prosecutor.mp3",
+            caller: "서울중앙지검 김민수검사", voice: "voice_prosecutor.mp3",
             steps: [
-                { txt: "서울중앙지검입니다. 귀하 명의의 통장이 사기 범죄에 연루되어 구속영장이 발부되었습니다. 본인이 직접 개설한 겁니까?", 
-                  opts: [{t:"네? 제가요? 전 그런 적 없는데.. 어떻게 하죠?", s:'bad', f:"🚨 [주의] 당황하면 범인의 페이스에 말려듭니다. 수사기관은 전화로 개인 금융 정보를 절대 묻지 않습니다."}, {t:"직접 방문해서 조사받겠습니다. 1301로 직접 확인하겠습니다.", s:'good', f:"✅ [정답] 전화를 끊고 공식번호(112, 1301)로 사실 여부를 확인하는 것이 최고입니다."}] },
-                { txt: "현재 녹취 조사를 진행 중입니다. 정보 유출 방지를 위해 주변에 아무도 없는 조용한 방으로 이동해 주세요.", 
-                  opts: [{t:"네, 지금 방으로 들어왔습니다. 아무도 없어요.", s:'bad', f:"🚨 [위험] 고립 수법입니다. 주변의 도움을 차단하여 냉정한 판단을 못하게 하려는 의도입니다."}, {t:"전화 조사는 거부합니다. 정식 소환장을 보내세요.", s:'good', f:"✅ [정답] 전화 조사는 법적 의무가 아닙니다. 공문서 기반의 공식 절차를 요구하세요."}] },
-                { txt: "사건 조회를 위해 지금 보내드리는 보안 링크를 눌러 '수사 지원 앱'을 설치하고 사건번호를 입력하세요.", 
-                  opts: [{t:"네, 설치 완료했습니다. 사건 확인해볼게요.", s:'bad', f:"🚨 [치명적] 설치 즉시 폰이 해킹됩니다. 이후 112에 걸어도 범인에게 연결되는 '전화 가로채기'가 시작됩니다."}, {t:"문자 링크는 안 누릅니다. 공문은 우편으로 보내세요.", s:'good', f:"✅ [정답] 수사기관은 절대로 문자로 앱 설치를 유도하지 않습니다. 100% 사기입니다."}] },
-                { txt: "자산 동결을 막으려면 금감원 '국가안전계좌'로 잔액을 일시 보관해야 합니다. 이체 후 검수되면 돌려드립니다.", 
-                  opts: [{t:"제 돈 묶이면 안 되는데.. 지금 바로 보낼게요.", s:'bad', f:"🚨 [피해발생] '국가안전계좌'는 세상에 존재하지 않습니다. 송금하는 순간 돈은 증발합니다."}, {t:"국가기관이 개인 계좌로 돈을 보관해주나요? 신고하겠습니다.", s:'good', f:"✅ [완벽해요] 금전 이체 요구는 보이스피싱의 최종 단계입니다. 절대 응하지 마세요."}] },
-                { txt: "(고함) 당신 지금 협조 안 하면 공무집행방해로 가중 처벌합니다! 지금 당장 체포조 보냅니다!", 
-                  opts: [{t:"잘못했습니다.. 시키는 대로 다 할 테니 체포 마세요.", s:'bad', f:"🚨 [위험] 심리적 압박으로 판단력을 흐리게 하는 단계입니다. 국가기관은 협박하지 않습니다."}, {t:"체포하려면 하세요. 저도 지금 112 신고 중입니다. (뚝)", s:'good', f:"✅ [정답] 전화를 과감히 끊는 용기가 가장 큰 무기입니다."}] }
+                { txt: "서울중앙지검 첨단범죄수사1부입니다.<br>귀하 명의의 통장이 사기 범죄에 도용되어<br>현재 구속영장이 발부된 상태입니다.<br>본인이 직접 통장을 개설하신 겁니까?", 
+                  opts: [{t:"네? 제가요? 전 그런 적 없는데 어떡하죠?", s:'bad', f:"🚨 [주의] 당황하면 범인의 페이스에 말려듭니다.<br>수사기관은 전화로 개인 금융 정보를 절대 묻지 않습니다."}, {t:"직접 방문해서 조사받겠습니다. 1301로 확인하겠습니다.", s:'good', f:"✅ [정답] 전화를 끊고 공식번호(112, 1301)로<br>사실 여부를 확인하는 것이 최선의 방어입니다."}] },
+                { txt: "현재 약식 녹취 조사를 진행 중입니다.<br>정보 유출 방지를 위해 주변에 아무도 없는<br>조용한 방으로 지금 이동해 주십시오.", 
+                  opts: [{t:"네, 지금 방으로 들어왔습니다. 말씀하세요.", s:'bad', f:"🚨 [위험] 고립 수법입니다. 조언을 차단하여<br>냉정한 판단을 못하게 하려는 범죄자의 의도입니다."}, {t:"전화 조사는 거부합니다. 정식 소환장을 보내세요.", s:'good', f:"✅ [정답] 전화 조사는 법적 의무가 아닙니다.<br>반드시 공문서 기반의 공식 절차를 요구하세요."}] },
+                { txt: "사건 조회를 위해 지금 보내드리는 보안 링크를 눌러<br>수사 지원 앱을 설치하고 사건번호를 입력하세요.<br>공문 확인 후 무죄를 입증하셔야 합니다.", 
+                  opts: [{t:"네, 설치 완료했습니다. 확인해 볼게요.", s:'bad', f:"🚨 [치명적] 설치 즉시 폰이 해킹됩니다.<br>이후 112에 걸어도 범인에게 연결되는 가로채기가 시작됩니다."}, {t:"문자 링크는 안 누릅니다. 공문은 우편으로 보내세요.", s:'good', f:"✅ [정답] 수사기관은 절대 문자로 앱 설치를 유도하지 않습니다.<br>100% 가짜입니다."}] },
+                { txt: "자산 동결을 막으려면 금감원 국가안전계좌로<br>예금을 일시 보관해야 검수 후 돌려드립니다.<br>안내하는 계좌로 즉시 송금하십시오.", 
+                  opts: [{t:"제 돈 묶이면 안 되는데.. 지금 바로 보낼게요.", s:'bad', f:"🚨 [피해발생] 국가안전계좌는 세상에 존재하지 않습니다.<br>송금하는 순간 전액 인출되어 증발합니다."}, {t:"국가기관이 개인 계좌로 돈을 보관하나요? 신고합니다.", s:'good', f:"✅ [완벽해요] 금전 요구는 피싱의 최종 단계입니다.<br>어떤 이유로든 이체는 절대 안 됩니다."}] },
+                { txt: "(격분하며) 당신 지금 협조 안 하면 공무집행방해로<br>가중 처벌합니다! 지금 당장 체포조 보냅니다!<br>구속 수사 원하십니까?!", 
+                  opts: [{t:"잘못했습니다.. 시키는 대로 다 할 테니 체포 마세요.", s:'bad', f:"🚨 [위험] 심리적 압박으로 판단력을 흐리게 하는 단계입니다.<br>국가기관은 전화로 협박하지 않습니다."}, {t:"체포하려면 하세요. 저도 지금 112 신고 중입니다. (뚝)", s:'good', f:"✅ [정답] 겁먹지 마세요! 전화를 과감히 끊는 용기가<br>재산을 지키는 가장 큰 무기입니다."}] }
             ]
         },
         'loan': {
             caller: "OO은행 김팀장", voice: "voice_loan.mp3",
             steps: [
-                { txt: "안녕하세요. 정부지원 소상공인 대환대출 대상자로 선정되셨습니다. 연 2.5% 고정금리로 전환 가능합니다.", 
-                  opts: [{t:"정말요? 요즘 이자가 너무 비싼데 신청하고 싶어요.", s:'bad', f:"🚨 [주의] 은행은 전화로 먼저 대출을 권유하지 않습니다. 저금리 미끼에 주의하세요."}, {t:"은행 가서 직접 상담받겠습니다. 끊습니다.", s:'good', f:"✅ [정답] 대출은 반드시 해당 은행 공식 창구를 직접 방문하여 진행해야 합니다."}] },
-                { txt: "사장님, 현재 기존 대출 상환이 지연되어 전산에 '부정 사용자'로 뜹니다. 대출 승인을 위해 공탁금이 필요합니다.", 
-                  opts: [{t:"공탁금이요? 얼마를 보내야 하죠?", s:'bad', f:"🚨 [위험] '공탁금', '수수료', '전산 작업비' 명목의 금전 요구는 100% 대출 빙자 사기입니다."}, {t:"은행에서 공탁금을 개인 계좌로 받나요? 거짓말 마세요.", s:'good', f:"✅ [정답] 정상적인 대출 과정에서 고객에게 현금을 미리 요구하는 경우는 절대로 없습니다."}] },
-                { txt: "전산 처리를 위해 지금 보내드리는 앱을 설치하시고 비대면 승인 신청서를 작성해 주세요.", 
-                  opts: [{t:"네, 앱 깔고 신청할게요.", s:'bad', f:"🚨 [치명적] 대출 앱으로 위장한 악성 앱입니다. 설치하는 순간 폰의 모든 정보가 사기꾼에게 전송됩니다."}, {t:"정식 앱스토어에 없는 앱은 깔지 않습니다.", s:'good', f:"✅ [정답] 출처 불명의 APK 파일 설치는 해킹의 지름길입니다. 절대 응하지 마세요."}] },
-                { txt: "전산망 오류로 계좌 이체가 안 됩니다. 저희 직원을 보낼 테니 현금을 인출해 전달해 주시면 바로 처리됩니다.", 
-                  opts: [{t:"네, 직원이 오면 전달하겠습니다. 가게 주소 보낼게요.", s:'bad', f:"🚨 [피해발생] 현금 수거책에게 돈을 주는 순간 범죄에 연루되며 돈은 절대 찾을 수 없습니다."}, {t:"금융기관이 현금을 직접 받으러 오나요? 경찰에 신고합니다.", s:'good', f:"✅ [완벽해요] 은행 직원은 어떤 경우에도 고객을 직접 찾아가 현금을 수거하지 않습니다."}] },
-                { txt: "사장님, 지금 의심하시는 거예요? 도움 드리려는데.. 이번 기회 놓치시면 다른 데서 절대 대출 못 받습니다.", 
-                  opts: [{t:"죄송해요.. 급해서 그래요. 진행해 주세요.", s:'bad', f:"🚨 [위험] 심리적 압박으로 조급함을 유도합니다. 평정심을 유지하고 즉시 전화를 끊으세요."}, {t:"필요 없습니다. 정식 은행 가서 확인하겠습니다. (뚝)", s:'good', f:"✅ [정답] 협박성 멘트에 흔들리지 않고 스스로 차단하는 것이 가장 중요합니다."}] }
+                { txt: "안녕하세요. 정부지원 소상공인 대환대출 대상자입니다.<br>현재 연 2.5% 저금리로 즉시 전환 가능합니다.<br>상담 진행해 드릴까요?", 
+                  opts: [{t:"정말요? 요즘 이자가 너무 비싼데 신청하고 싶어요.", s:'bad', f:"🚨 [주의] 은행은 전화로 대출을 권유하지 않습니다.<br>저금리 미끼는 전형적인 사기 수법입니다."}, {t:"은행 가서 직접 상담받겠습니다. 끊습니다.", s:'good', f:"✅ [정답] 대출은 반드시 해당 은행 공식 창구를<br>직접 방문하여 진행하는 것이 안전합니다."}] },
+                { txt: "사장님, 기존 대출 상환이 지연되어 전산에 뜹니다.<br>승인을 위해 공탁금 50만원이 먼저 필요합니다.<br>그래야 한도가 풀립니다.", 
+                  opts: [{t:"공탁금이요? 얼마를 어디로 보내야 하죠?", s:'bad', f:"🚨 [위험] 공탁금이나 작업비 명목의 선입금 요구는<br>100% 사기입니다. 절대 응하지 마세요."}, {t:"은행에서 돈을 개인 계좌로 받나요? 거짓말 마세요.", s:'good', f:"✅ [정답] 정상적인 대출 과정에서 고객에게<br>현금을 미리 요구하는 경우는 절대로 없습니다."}] },
+                { txt: "전산 처리를 위해 지금 보내드리는 전용 앱을 설치하고<br>비대면 승인 신청서를 작성해 주세요.", 
+                  opts: [{t:"네, 앱 깔고 신청할게요.", s:'bad', f:"🚨 [치명적] 대출 앱으로 위장한 악성 앱입니다.<br>설치 즉시 폰의 모든 개인 정보가 탈취됩니다."}, {t:"정식 앱스토어 외의 앱은 절대 깔지 않습니다.", s:'good', f:"✅ [정답] 출처 불명의 APK 파일 설치는 해킹의 지름길입니다.<br>어떤 링크도 클릭하지 마세요."}] },
+                { txt: "전산 오류로 이체가 안 됩니다. 직원을 보낼 테니<br>현금을 인출해 전달해 주시면 바로 처리됩니다.", 
+                  opts: [{t:"네, 직원이 오면 전달하겠습니다. 주소 보낼게요.", s:'bad', f:"🚨 [피해발생] 현금 수거책에게 돈을 주는 순간 범죄에<br>가담하게 되며 돈은 영영 사라집니다."}, {t:"현금을 직접 받으러 오나요? 경찰에 신고합니다.", s:'good', f:"✅ [완벽해요] 은행 직원은 어떤 경우에도 고객을<br>직접 찾아가 현금을 수거하지 않습니다."}] },
+                { txt: "사장님, 이 기회 놓치면 다른 데서 대출 절대 못 받습니다.<br>의심 그만하시고 빨리 진행하세요!", 
+                  opts: [{t:"죄송해요.. 급해서 그래요. 입금할게요.", s:'bad', f:"🚨 [위험] 심리적 압박으로 조급함을 유도합니다.<br>평정심을 유지하고 즉시 전화를 끊으세요."}, {t:"필요 없습니다. 직접 확인하겠습니다. (뚝)", s:'good', f:"✅ [정답] 겁먹지 마세요! 조급함을 버리고 정식 절차를<br>밟는 것이 재산을 지키는 유일한 길입니다."}] }
             ]
         },
         'family': {
             caller: "내 딸♡", voice: "voice_family.mp3",
             steps: [
-                { txt: "[1단계] 엄마.. 나 폰 액정 깨져서 수리 맡겼어. 지금 수리점 전화 빌려 쓰는 건데 급해서 그래. 내 말 들려?", 
-                  opts: [{t:"어머 딸! 큰일났네. 다친 데는 없어?", s:'bad', f:"🚨 [주의] 자녀의 사고 소식에 당황하여 의심을 거두는 순간 범인의 페이스에 말려듭니다."}, {t:"너 우리 딸 맞니? 원래 번호로 다시 전화해봐.", s:'good', f:"✅ [정답] 반드시 본인이 평소 사용하던 번호로 직접 전화를 걸어 실제 가족인지 확인해야 합니다."}] },
-                { txt: "[2단계] 아빠, 지금 수리비 보험 처리하려면 본인 인증이 필요하대. 아빠 폰으로 온 인증번호 6자리 좀 빨리 알려줘.", 
-                  opts: [{t:"번호 왔네. 123456.. 입력 완료!", s:'bad', f:"🚨 [치명적] 인증번호는 현금과 같습니다. 소액결제나 대포폰 개통에 도용되어 큰 금전 피해를 봅니다."}, {t:"인증번호는 절대 알려줄 수 없어. 수리점 가서 고쳐.", s:'good', f:"✅ [정답] 타인에게 인증번호를 넘겨주는 행위는 내 통장의 열쇠를 넘겨주는 것과 같습니다."}] },
-                { txt: "[3단계] 수리점 아저씨가 원격 지원 앱 설치해야 점검된다는데 링크 보낼 테니까 수락 좀 해줘.", 
-                  opts: [{t:"알았어.. 수리하려면 깔아야지. (클릭)", s:'bad', f:"🚨 [피해발생] 링크를 누르는 순간 폰의 모든 권한이 사기꾼에게 넘어가 정보가 유출됩니다."}, {t:"스토어 외의 파일은 절대 설치 안 한다.", s:'good', f:"✅ [완벽해요] 가족 사칭의 핵심은 원격 제어 앱 설치를 유도하는 것입니다."}] },
-                { txt: "[4단계] 아빠, 결제하려면 카드 번호랑 비밀번호도 적으래. 빨리 알려줘야 수리 시작한다고..", 
-                  opts: [{t:"카드 번호 여기 있어.. 적어줄게.", s:'bad', f:"🚨 [피해발생] 카드 정보와 비밀번호를 넘겨주는 즉시 모든 예금이 인출됩니다."}, {t:"비밀번호를 왜 물어봐? 이건 사기야!", s:'good', f:"✅ [정답] 가족이라 하더라도 비밀번호를 요구하는 것은 100% 보이스피싱입니다."}] },
-                { txt: "[5단계] 아빠 지금 수리 안 되면 내 폰에 있는 자료 다 날아간대! 왜 자꾸 의심해! 빨리 진행해!", 
-                  opts: [{t:"미안해.. 아빠가 몰라서 그랬어. 보낼게.", s:'bad', f:"🚨 [위험] 심리적 압박으로 판단력을 흐리게 하는 수법입니다. 겁먹지 마세요."}, {t:"너 우리 딸 아니지? 경찰에 신고하겠다. (뚝)", s:'good', f:"✅ [정답] 전화를 끊고 직접 얼굴을 보거나 음성을 확인하는 것이 유일한 해결책입니다."}] }
+                { txt: "엄마.. 나 폰 액정 깨져서 수리 맡겼어.<br>지금 수리점 전화 빌려 쓰는 건데 급해서 그래.<br>내 말 들려? 대답 좀 해봐.", 
+                  opts: [{t:"어머 딸! 큰일났네. 다친 데는 없어? 걱정 마.", s:'bad', f:"🚨 [주의] 자녀의 위기 상황에 당황하여 의심을 거두는 순간<br>범인의 트릭에 말려듭니다."}, {t:"너 우리 딸 맞니? 원래 번호로 다시 전화해봐.", s:'good', f:"✅ [정답] 반드시 본인이 평소 사용하던 번호로<br>직접 전화를 걸어 가족을 확인해야 합니다."}] },
+                { txt: "엄마, 지금 수리비 보험 처리하려면 본인 인증이 필요하대.<br>엄마 폰으로 온 인증번호 6자리 좀 빨리 알려줘.", 
+                  opts: [{t:"번호 왔네. 123456.. 입력 완료!", s:'bad', f:"🚨 [치명적] 인증번호는 현금과 같습니다.<br>소액결제나 대포폰 개통에 도용되어 큰 피해를 봅니다."}, {t:"인증번호는 절대 못 줘. 수리점 가서 고쳐.", s:'good', f:"✅ [정답] 타인에게 인증번호를 알려주는 것은<br>내 통장의 모든 열쇠를 넘겨주는 것과 같습니다."}] },
+                { txt: "수리점 아저씨가 원격 지원 앱 설치해야 점검된다는데<br>링크 보낼 테니까 수락 좀 해줘. 급해.", 
+                  opts: [{t:"알았어.. 수리하려면 깔아야지. (클릭)", s:'bad', f:"🚨 [피해발생] 링크를 누르는 순간 폰의 모든 권한이<br>사기꾼에게 넘어어가 정보가 유출됩니다."}, {t:"스토어 외의 파일은 절대 설치 안 한다.", s:'good', f:"✅ [완벽해요] 가족 사칭의 핵심은 원격 제어 앱<br>설치를 유도하는 것입니다."}] },
+                { txt: "엄마, 결제하려면 카드 번호랑 비밀번호도 적으래.<br>빨리 알려줘야 수리 시작한다고 하네.", 
+                  opts: [{t:"카드 번호 여기 있어.. 적어줄게.", s:'bad', f:"🚨 [피해발생] 카드 정보와 비밀번호를 넘겨주는 즉시<br>모든 예금이 인출됩니다."}, {t:"비밀번호를 왜 물어봐? 이건 사기야!", s:'good', f:"✅ [정답] 어떤 경우에도 비밀번호를 요구하는 것은<br>100% 보이스피싱입니다."}] },
+                { txt: "엄마 지금 수리 안 되면 폰 자료 다 날아간대!<br>왜 자꾸 의심해! 나 못 믿어? 빨리 진행해!", 
+                  opts: [{t:"미안해.. 엄마가 몰라서 그랬어. 보낼게.", s:'bad', f:"🚨 [위험] 정서적 압박을 통해 판단력을 흐리게 하는 수법입니다.<br>겁먹지 마세요."}, {t:"너 우리 딸 아니지? 경찰에 신고하겠다. (뚝)", s:'good', f:"✅ [정답] 겁먹지 마세요! 전화를 끊고 직접 얼굴을 보거나<br>음성을 확인하는 것이 유일한 해답입니다."}] }
             ]
         },
         'romance': {
             caller: "James Kim (SNS)", voice: "voice_romance.mp3",
             steps: [
-                { txt: "당신을 알게 되어 정말 행복합니다. 당신에게 줄 선물을 가방에 담아 한국으로 보냈습니다.", 
-                  opts: [{t:"정말요? 고마워요. 기다릴게요.", s:'bad', f:"🚨 [주의] 얼굴도 보지 않은 외국인이 고가의 선물을 보낸다는 말은 전형적인 로맨스 스캠입니다."}, {t:"모르는 사람이 보낸 선물은 거절합니다.", s:'good', f:"✅ [정답] SNS를 통한 과도한 호의와 선물 약속은 의심부터 해야 합니다."}] },
-                { txt: "큰일났습니다. 제 가방이 한국 통관 중에 압수되었습니다. 뇌물 수수 의심을 받고 있어요.", 
-                  opts: [{t:"네? 그럼 가방을 못 받는 건가요? 어떡하죠?", s:'bad', f:"🚨 [위험] 위기 상황을 연출하여 동정심과 불안감을 자극하는 수법입니다."}, {t:"관세청에 제가 직접 확인해 보겠습니다.", s:'good', f:"✅ [정답] 외부 기관을 통해 확인하겠다고 하면 사기꾼은 당황합니다."}] },
-                { txt: "지금 통관 요원에게 300만원만 지불하면 가방을 뺄 수 있습니다. 나중에 갚아드릴게요.", 
-                  opts: [{t:"300만원 정도면 제가 빌려줄게요.", s:'bad', f:"🚨 [피해발생] 소액을 미끼로 거액을 가로채는 방식입니다. 입금하는 순간 연락이 끊깁니다."}, {t:"돈을 보낼 수 없습니다. 사기 치지 마세요.", s:'good', f:"✅ [정답] 돈을 요구하는 모든 비대면 관계는 사기입니다."}] },
-                { txt: "제발 도와주세요. 당신은 제 유일한 희망입니다. 지금 안 보내면 전 감옥에 갈지도 몰라요.", 
-                  opts: [{t:"감옥이라니요.. 불쌍해서 어쩌나. 보낼게요.", s:'bad', f:"🚨 [위험] 감성적인 호소로 판단력을 마비시킵니다. 절대 속지 마세요."}, {t:"사랑을 돈으로 사려는 수법에 속지 않습니다.", s:'good', f:"✅ [완벽해요] 감정적 압박을 이성적으로 판단하여 차단해야 합니다."}] },
-                { txt: "(갑자기 돌변) 우리 대화 내용 다 캡처해 뒀어. 돈 안 보내면 다 퍼뜨리겠다! 협박이야!", 
-                  opts: [{t:"제발 그것만은.. 원하는 대로 할게요.", s:'bad', f:"🚨 [위험] 협박에 응하면 더 큰 돈을 요구합니다. 약점을 잡혔다고 생각지 마세요."}, {t:"협박죄로 고소하겠다. 마음대로 해라. (뚝)", s:'good', f:"✅ [정답] 협박에는 강력한 대응 의사를 밝히고 즉시 차단하는 것이 최선입니다."}] }
+                { txt: "당신을 알게 되어 정말 행복합니다.<br>당신에게 줄 고가의 선물을 가방에 담아<br>한국으로 보냈습니다. 기다려 주세요.", 
+                  opts: [{t:"정말요? 고마워요. 기대하고 있을게요.", s:'bad', f:"🚨 [주의] 얼굴도 보지 않은 외국인의 선물 제안은<br>로맨스 스캠의 전형적 수법입니다."}, {t:"모르는 사람이 보낸 선물은 거절합니다.", s:'good', f:"✅ [정답] SNS를 통한 과도한 호의와 선물 약속은<br>먼저 의심부터 해야 합니다."}] },
+                { txt: "가방이 통관 중에 압수되었습니다.<br>뇌물 수수 의심을 받고 있어요. 도와주세요.", 
+                  opts: [{t:"네? 그럼 가방을 못 받는 건가요? 어떡하죠?", s:'bad', f:"🚨 [위험] 위기 상황을 연출하여 동정심과<br>불안감을 자극하는 범죄자의 기술입니다."}, {t:"관세청에 제가 직접 확인해 보겠습니다.", s:'good', f:"✅ [정답] 공공기관을 통해 확인하겠다고 하면<br>사기꾼은 당황하고 연락을 끊습니다."}] },
+                { txt: "지금 통관 요원에게 300만원만 지불하면 가방을 뺄 수 있습니다.<br>돈이 없으니 먼저 빌려주시면 나중에 갚아드릴게요.", 
+                  opts: [{t:"300만원 정도면 제가 빌려줄게요.", s:'bad', f:"🚨 [피해발생] 소액을 미끼로 거액을 가로채는 방식입니다.<br>입금하는 순간 잠적합니다."}, {t:"돈을 보낼 수 없습니다. 사기 치지 마세요.", s:'good', f:"✅ [정답] 온라인으로만 만난 사람이 돈을 요구하면<br>100% 사기로 간주해야 합니다."}] },
+                { txt: "제발 도와주세요. 당신은 제 유일한 희망입니다.<br>지금 안 보내주시면 전 감옥에 갈지도 몰라요.", 
+                  opts: [{t:"감옥이라니요.. 불쌍해서 어쩌나. 보낼게요.", s:'bad', f:"🚨 [위험] 감성적인 호소로 판단력을 마비시킵니다.<br>절대 감정에 휘둘리지 마세요."}, {t:"사랑을 돈으로 사려는 수법에 속지 않습니다.", s:'good', f:"✅ [완벽해요] 정서적인 압박을 뿌리치고<br>이성적으로 차단하는 것이 중요합니다."}] },
+                { txt: "대화 내용 다 캡처해 뒀어. 돈 안 보내면<br>당신 지인들에게 다 퍼뜨리겠다! 이건 협박이야!", 
+                  opts: [{t:"제발 그것만은.. 원하는 대로 할게요.", s:'bad', f:"🚨 [위험] 협박에 응하면 평생 돈을 갈취당합니다.<br>절대 약점 잡혔다고 생각지 마세요."}, {t:"고소하겠다. 마음대로 해라. (뚝)", s:'good', f:"✅ [정답] 겁먹지 마세요! 강력한 대응 의사를 밝히고<br>즉시 모든 연락을 차단하십시오."}] }
             ]
         },
         'smishing': {
             caller: "재난지원금 안내", voice: "voice_smishing.mp3",
             steps: [
-                { txt: "[1단계] [국민재난안전처] 귀하는 '6차 재난지원금' 신청 대상입니다. 마감전 아래 링크로 신청하세요. bit.ly/gov_safe", 
-                  opts: [{t:"내 지원금? 마감 전이니까 얼른 클릭!", s:'bad', f:"🚨 [피해발생] 정부기관은 절대 단축 URL로 안내하지 않습니다. 클릭 즉시 가짜 피싱 사이트로 연결됩니다."}, {t:"이런 문자는 무시하고 정부24 공식 앱에서 확인한다.", s:'good', f:"✅ [정답] 문자의 링크는 절대 누르지 않는 것이 철칙입니다."}] },
-                { txt: "[2단계] (가짜 사이트 접속됨) 본인 확인 및 입금을 위해 성함, 주민번호, 계좌번호, 비밀번호를 모두 입력해 주세요.", 
-                  opts: [{t:"입금 받아야 하니까 다 적어야지. (전송)", s:'bad', f:"🚨 [위험] 은행이나 정부는 절대 비밀번호를 요구하지 않습니다. 개인정보 탈취가 목적입니다."}, {t:"비밀번호까지 묻다니 가짜다! 즉시 종료.", s:'good', f:"✅ [정답] 과도한 개인정보 입력을 요구하면 즉시 접속을 중단해야 합니다."}] },
-                { txt: "[3단계] 지원금 지급 승인을 위해 '정부 통합 보안 앱'을 설치해야 합니다. 다운로드하시겠습니까? (APK 파일)", 
-                  opts: [{t:"정식 앱이라니까 믿고 설치한다.", s:'bad', f:"🚨 [피해발생] 파일(.apk)을 설치하면 폰의 원격 제어권이 사기꾼에게 넘어갑니다."}, {t:"스토어 외의 파일은 절대 안 깐다.", s: 'good', f: "✅ [완벽해요] 문자로 보내주는 앱 설치 파일은 가장 위험한 해킹 도구입니다." }] },
-                { txt: "[4단계] 본인 인증을 위해 휴대폰으로 발송된 인증번호 6자리를 지금 입력해 주세요.", 
-                  opts: [{t:"문자 왔네. 123456.. 입력 완료!", s:'bad', f:"🚨 [피해발생] 이는 소액결제 승인번호이거나 대포폰 개통용 인증번호일 확률이 99%입니다."}, {t:"인증번호는 절대 누구에게도 안 알려준다.", s:'good', f:"✅ [정답] 인증번호는 현금과 같습니다. 타인의 요청에 절대 응하지 마세요."}] },
-                { txt: "[5단계: 지급 정지 압박] 사장님, 현재 전산망에 세금 체납 내역이 발견되어 지원금 지급이 보류되었습니다. 공탁금 명목으로 50만원을 먼저 입금하시면 600만원 전액을 즉시 입금해 드리겠습니다.", 
-                  opts: [{t:"지원금이 끊기면 안 되니까 지금 바로 보낼게요.", s:'bad', f:"🚨 [피해발생] 정부 지원금은 어떤 명목으로도 선입금을 요구하지 않습니다. 100% 사기입니다."}, {t:"돈을 요구하는 순간 사기임을 확신합니다. 신고합니다!", s:'good', f:"✅ [정답] 완벽합니다! 지원금을 미끼로 금전을 요구하는 것은 보이스피싱의 최종 단계입니다."}] }
+                { txt: "귀하는 6차 재난지원금 신청 대상자입니다.<br>신청 마감 전 아래 링크로 즉시 신청하세요.<br>bit.ly/gov_safe_center", 
+                  opts: [{t:"내 지원금? 마감 전이니까 얼른 클릭!", s:'bad', f:"🚨 [피해발생] 정부기관은 절대 단축 URL로 안내하지 않습니다.<br>클릭 즉시 가짜 피싱 사이트로 연결됩니다."}, {t:"이런 문자는 무시하고 정부24 앱에서 확인한다.", s:'good', f:"✅ [정답] 문자의 링크는 절대 누르지 않는 것이<br>안전의 최우선 철칙입니다."}] },
+                { txt: "본인 확인 및 지원금 입금을 위해<br>성함, 주민번호, 비밀번호를 모두 입력해 주세요.", 
+                  opts: [{t:"입금 받아야 하니까 다 적어야지. (전송)", s:'bad', f:"🚨 [위험] 은행이나 정부는 절대 비밀번호를 요구하지 않습니다.<br>철저히 정보 탈취가 목적입니다."}, {t:"비밀번호까지 묻다니 가짜다! 즉시 종료.", s:'good', f:"✅ [정답] 과도한 개인정보 입력을 요구하면<br>사기임을 직감하고 중단해야 합니다."}] },
+                { txt: "지급 승인을 위해 정부 통합 보안 앱을 설치해야 합니다.<br>다운로드하시겠습니까? (정부인증.apk)", 
+                  opts: [{t:"정식 앱이라니까 믿고 설치한다.", s:'bad', f:"🚨 [피해발생] 파일(.apk)을 설치하면 폰의 원격 제어권이<br>사기꾼에게 통째로 넘어갑니다."}, {t:"스토어 외의 파일은 절대 깔지 않는다.", s: 'good', f: "✅ [완벽해요] 문자로 보내주는 앱 설치 파일은<br>가장 전형적인 해킹 기법입니다." }] },
+                { txt: "본인 인증을 위해 발송된 인증번호 6자리를<br>지금 입력창에 입력해 주세요.", 
+                  opts: [{t:"문자 왔네. 123456.. 입력 완료!", s:'bad', f:"🚨 [피해발생] 결제 승인번호이거나 대포폰 개통용<br>인증번호일 확률이 매우 높습니다."}, {t:"인증번호는 절대 누구에게도 안 알려준다.", s:'good', f:"✅ [정답] 인증번호는 현금과 같습니다.<br>타인의 요구에는 무시로 일관하세요."}] },
+                { txt: "사장님, 세금 체납 내역이 발견되어 보류되었습니다.<br>공탁금 50만원을 먼저 보내시면 전액 입금됩니다.", 
+                  opts: [{t:"지원금이 끊기면 안 되니까 지금 보낼게요.", s:'bad', f:"🚨 [피해발생] 지원금은 어떤 명목으로도 선입금을<br>요구하지 않습니다. 100% 사기입니다."}, {t:"돈 요구하는 순간 사기임을 확신합니다. (뚝)", s:'good', f:"✅ [정답] 겁먹지 마세요! 지원금을 미끼로 금전을 요구하는 것은<br>보이스피싱의 최종 수단입니다."}] }
             ]
         },
         'invest': {
             caller: "김사부 팀장 (리딩방)", voice: "voice_invest.mp3",
             steps: [
-                { txt: "축하합니다! 주식 종목 추천률 1위 팀에 당첨되셨습니다. 상한가 종목 무료로 드립니다.", 
-                  opts: [{t:"오, 어떤 종목인가요? 알려주세요!", s:'bad', f:"🚨 [주의] 고수익을 보장하며 정보를 준다는 유혹은 리딩방 사기의 시작입니다."}, {t:"무료 수익은 없습니다. 차단합니다.", s:'good', f:"✅ [정답] 투자 권유 문자는 즉시 삭제하고 차단하는 것이 상책입니다."}] },
-                { txt: "지금 저희 VIP들은 가상화폐 정보로 하루 300% 수익을 내고 있습니다. 인증 샷 보여드릴게요.", 
-                  opts: [{t:"300%요? 대단하네요. 저도 가능할까요?", s:'bad', f:"🚨 [위험] 조작된 수익 인증 사진에 속지 마세요. 현혹하는 수법입니다."}, {t:"금융위에 등록된 업체인가요?", s:'good', f:"✅ [정답] 제도권 금융기관이 아닌 리딩방은 법적 보호를 받을 수 없습니다."}] },
-                { txt: "전산 처리를 위해 저희 전용 HTS 앱을 설치하세요. 입금하시면 AI가 매매해 드립니다.", 
-                  opts: [{t:"AI 매매 앱이군요. 설치하겠습니다.", s:'bad', f:"🚨 [치명적] 가짜 거래 앱입니다. 화면 숫자를 조작하여 입금을 유도합니다."}, {t:"공식 마켓 외의 앱은 안 깝니다.", s:'good', f:"✅ [정답] 사설 앱을 통한 투자는 원금 회수 자체가 불가능합니다."}] },
-                { txt: "첫 투자금 100만원이 1,000만원이 되셨네요! 출금하시려면 세금 20%를 먼저 입금하세요.", 
-                  opts: [{t:"세금만 내면 천만 원 찾네요? 보낼게요.", s:'bad', f:"🚨 [피해발생] 수수료, 세금 요구는 사기입니다. 입금해도 출금되지 않습니다."}, {t:"수익금에서 제하고 주세요. 신고하겠습니다.", s:'good', f:"✅ [완벽해요] 출금을 조건으로 선입금을 요구하는 곳은 100% 가짜입니다."}] },
-                { txt: "(격분하며) 입금 안 하면 당신 계좌 정지시키고 국세청에 탈세로 고발할 거야! 빨리 안 보내?!", 
-                  opts: [{t:"무서워요.. 시키는 대로 할게요.", s:'bad', f:"🚨 [위험] 피해자가 눈치챘을 때 사용하는 공포 마케팅입니다."}, {t:"마음대로 하세요. 경찰서에서 봅시다. (뚝)", s:'good', f:"✅ [정답] 전화를 끊고 모든 연락처를 차단한 뒤 수사기관에 신고하세요."}] }
+                { txt: "주식 종목 추천률 1위 팀에 당첨되셨습니다.<br>내일 상한가 갈 종목을 무료로 선취매 하세요.<br>상담 진행합니다.", 
+                  opts: [{t:"오, 어떤 종목인가요? 알려주세요!", s:'bad', f:"🚨 [주의] 고수익을 보장하며 정보를 준다는 유혹은<br>주식 사기의 전형적인 시작입니다."}, {t:"무료 수익은 없습니다. 차단합니다.", s:'good', f:"✅ [정답] 투자 권유 문자는 즉시 삭제하고<br>차단하는 것이 가장 안전한 방법입니다."}] },
+                { txt: "지금 VIP 멤버들은 코인 정보로 하루 300% 수익을<br>내고 있습니다. 실제 수익 인증 샷 보여드릴게요.", 
+                  opts: [{t:"300%요? 대단하네요. 저도 참여 가능할까요?", s:'bad', f:"🚨 [위험] 조작된 수익 인증 사진에 속지 마세요.<br>가짜 대화방을 통한 고전적인 현혹 수법입니다."}, {t:"금융위에 등록된 업체인가요?", s:'good', f:"✅ [정답] 제도권 금융기관이 아닌 리딩방은<br>법적 보호를 전혀 받을 수 없습니다."}] },
+                { txt: "전산 처리를 위해 저희가 개발한 전용 HTS 앱을<br>설치하세요. AI가 자동으로 매매해 드립니다.", 
+                  opts: [{t:"AI 매매 앱이군요. 설치하겠습니다.", s:'bad', f:"🚨 [치명적] 가짜 거래 앱입니다. 화면 숫자를 조작하여<br>계속해서 추가 입금을 유도합니다."}, {t:"공식 마켓 외의 앱은 설치 안 합니다.", s:'good', f:"✅ [정답] 사설 앱을 통한 투자는 원금 회수 자체가<br>불가능한 도박과 같습니다."}] },
+                { txt: "축하합니다! 수익금 1,000만원이 되셨네요.<br>출금하시려면 세금 20%를 먼저 입금하세요.", 
+                  opts: [{t:"세금만 내면 돈 찾네요? 보낼게요.", s:'bad', f:"🚨 [피해발생] 수수료나 세금 요구는 마지막까지<br>돈을 뜯어내려는 사기입니다. 절대 안 돌아옵니다."}, {t:"수익금에서 제하고 주세요. 신고합니다.", s:'good', f:"✅ [완벽해요] 출금을 조건으로 선입금을 요구하는 곳은<br>100% 가짜 거래소입니다."}] },
+                { txt: "(격분하며) 입금 안 하면 당신 계좌 정지시키고<br>탈세로 고발할 거야! 당신만 손해라고! 빨리!", 
+                  opts: [{t:"무서워요.. 시키는 대로 할게요.", s:'bad', f:"🚨 [위험] 피해자가 눈치챘을 때 사용하는 최후의<br>공포 협박 수법입니다. 법적 효력 없습니다."}, {t:"마음대로 하세요. 경찰서에서 봅시다. (뚝)", s:'good', f:"✅ [정답] 겁먹지 마세요! 전화를 끊고 모든 연락처를<br>차단한 뒤 신고하는 것이 정답입니다."}] }
             ]
         }
     };
@@ -469,101 +447,14 @@
         document.getElementById('simCaller').innerText = data.caller;
         document.getElementById('incomingName').innerText = data.caller;
         voicePlayer.src = data.voice;
-        
         document.getElementById('simScreen').classList.add('active');
         document.getElementById('callIncoming').style.display = 'flex';
         document.getElementById('listeningBox').classList.add('hidden');
         document.getElementById('scenarioBox').classList.add('hidden');
-        
-        ringtone.currentTime = 0;
-        ringtone.play().catch(e=>{});
+        ringtone.currentTime = 0; ringtone.play().catch(e=>{});
         if (navigator.vibrate) navigator.vibrate([1000, 1000, 1000]);
     }
 
-    // [수정됨] 수신 거절 시 즉시 결과 화면으로 연결
-    function declineCall() {
-        ringtone.pause();
-        if (navigator.vibrate) navigator.vibrate(0);
-        
-        // 거절 시 결과 세팅
-        curType = 'prosecutor'; // 더미 타입
-        totalScore = 100;
-        history = ["의심스러운 전화는 아예 받지 않는 것이 최고의 예방입니다. 완벽하게 차단하셨습니다."];
-        
-        document.getElementById('simScreen').classList.remove('active');
-        showResult();
-    }
-
-    function acceptCall() {
-        ringtone.pause();
-        if (navigator.vibrate) navigator.vibrate(0);
-        document.getElementById('callIncoming').style.display = 'none';
-        document.getElementById('listeningBox').classList.remove('hidden');
-        
-        voicePlayer.play()
-            .then(() => { voicePlayer.onended = finishListening; })
-            .catch(e => { finishListening(); });
-    }
-
-    function finishListening() {
-        voicePlayer.pause();
-        voicePlayer.currentTime = 0;
-        document.getElementById('listeningBox').classList.add('hidden');
-        document.getElementById('scenarioBox').classList.remove('hidden');
-        renderStep();
-    }
-
-    function renderStep() {
-        const step = SCENARIOS[curType].steps[curStep];
-        document.getElementById('simStepInfo').innerText = `진행 단계: ${curStep + 1} / 5`;
-        document.getElementById('scenarioText').innerText = step.txt;
-        
-        const optsArea = document.getElementById('optionsArea');
-        optsArea.innerHTML = '';
-        
-        step.opts.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt.t;
-            btn.onclick = function() { selectOpt(this, opt.s, opt.f); };
-            optsArea.appendChild(btn);
-        });
-
-        document.getElementById('feedbackArea').style.display = 'none';
-        document.getElementById('nextBtn').classList.add('hidden');
-    }
-
-    function selectOpt(btn, type, feedback) {
-        document.querySelectorAll('.option-btn').forEach(b => {
-            b.style.pointerEvents = 'none';
-            b.style.opacity = '0.3';
-        });
-        btn.style.opacity = '1';
-        
-        if (type === 'good') {
-            btn.classList.add('good');
-            totalScore += 20;
-        } else {
-            btn.classList.add('bad');
-            triggerSirenShock();
-        }
-
-        const fbBox = document.getElementById('feedbackArea');
-        fbBox.className = `feedback-box ${type === 'good' ? 'good' : 'bad'}`;
-        fbBox.style.display = 'block';
-        fbBox.innerHTML = `<strong>${type === 'good' ? '잘하셨습니다! 👍' : '위험합니다! 🚨'}</strong><br>${feedback}`;
-        
-        history.push(feedback);
-        
-        const nextBtn = document.getElementById('nextBtn');
-        nextBtn.classList.remove('hidden');
-        if (curStep >= 4) {
-            nextBtn.innerHTML = '진단 결과 확인 <i class="fa-solid fa-file-waveform ml-1"></i>';
-            nextBtn.onclick = showResult;
-        }
-    }
-
-    // [수정됨] 스미싱 퀴즈 핸들러 (내비게이션 모드 설정)
     function checkSmishingQuiz(isBad, msg) {
         isSmishingMode = true;
         if (isBad) {
@@ -575,75 +466,94 @@
     }
 
     function showSmishingResult(score, msg) {
-        curType = 'smishing';
-        history = [msg];
-        totalScore = score;
+        curType = 'smishing'; history = [msg]; totalScore = score; showResult();
+    }
+
+    function declineCall() {
+        ringtone.pause(); if (navigator.vibrate) navigator.vibrate(0);
+        curType = 'prosecutor'; totalScore = 100;
+        history = ["의심스러운 전화는 아예 받지 않는 것이 최고의 예방입니다.<br>완벽하게 차단하셨습니다."];
+        document.getElementById('simScreen').classList.remove('active');
         showResult();
+    }
+
+    function acceptCall() {
+        ringtone.pause(); if (navigator.vibrate) navigator.vibrate(0);
+        document.getElementById('callIncoming').style.display = 'none';
+        document.getElementById('listeningBox').classList.remove('hidden');
+        voicePlayer.play().then(() => { voicePlayer.onended = finishListening; }).catch(e => { finishListening(); });
+    }
+
+    function finishListening() {
+        voicePlayer.pause(); voicePlayer.currentTime = 0;
+        document.getElementById('listeningBox').classList.add('hidden');
+        document.getElementById('scenarioBox').classList.remove('hidden');
+        renderStep();
+    }
+
+    function renderStep() {
+        const step = SCENARIOS[curType].steps[curStep];
+        document.getElementById('simStepInfo').innerText = `진행 단계: ${curStep + 1} / 5`;
+        document.getElementById('scenarioText').innerHTML = step.txt;
+        const optsArea = document.getElementById('optionsArea');
+        optsArea.innerHTML = '';
+        step.opts.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.t;
+            btn.onclick = function() { selectOpt(this, opt.s, opt.f); };
+            optsArea.appendChild(btn);
+        });
+        document.getElementById('feedbackArea').style.display = 'none';
+        document.getElementById('nextBtn').classList.add('hidden');
+    }
+
+    function selectOpt(btn, type, feedback) {
+        document.querySelectorAll('.option-btn').forEach(b => { b.style.pointerEvents = 'none'; b.style.opacity = '0.3'; });
+        btn.style.opacity = '1';
+        if (type === 'good') { btn.classList.add('good'); totalScore += 20; }
+        else { btn.classList.add('bad'); triggerSirenShock(); }
+        const fbBox = document.getElementById('feedbackArea');
+        fbBox.className = `feedback-box ${type === 'good' ? 'good' : 'bad'}`;
+        fbBox.style.display = 'block';
+        fbBox.innerHTML = `<strong>${type === 'good' ? '잘하셨습니다! 👍' : '위험합니다! 🚨'}</strong><br>${feedback}`;
+        history.push(feedback);
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.classList.remove('hidden');
+        if (curStep >= 4) { nextBtn.innerHTML = '진단 결과 확인 <i class="fa-solid fa-file-waveform ml-1"></i>'; nextBtn.onclick = showResult; }
     }
 
     function triggerSirenShock() {
         const overlay = document.getElementById('siren-overlay');
-        overlay.classList.remove('hidden');
-        overlay.classList.add('siren-effect');
-        sirenPlayer.currentTime = 0;
-        sirenPlayer.play().catch(e=>{});
+        overlay.classList.remove('hidden'); overlay.classList.add('siren-effect');
+        sirenPlayer.currentTime = 0; sirenPlayer.play().catch(e=>{});
         if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300, 100]);
-        setTimeout(() => {
-            overlay.classList.add('hidden');
-            overlay.classList.remove('siren-effect');
-            sirenPlayer.pause();
-        }, 1500);
+        setTimeout(() => { overlay.classList.add('hidden'); overlay.classList.remove('siren-effect'); sirenPlayer.pause(); }, 1500);
     }
 
-    function nextStep() {
-        curStep++;
-        renderStep();
-    }
+    function nextStep() { curStep++; renderStep(); }
 
-    // [수정됨] 결과 화면 렌더링 (동적 버튼 텍스트/액션 적용)
     function showResult() {
         document.getElementById('simScreen').classList.remove('active');
         document.getElementById('resultScreen').classList.remove('hidden');
-        
         const score = Math.min(Math.round(totalScore), 100);
         document.getElementById('finalScore').innerText = score;
-        
         const circle = document.getElementById('scoreCircle');
         const grade = document.getElementById('finalGrade');
         const resultBtn = document.getElementById('resultBtn');
 
-        if (score >= 80) {
-            circle.className = "relative w-36 h-36 mx-auto flex items-center justify-center rounded-full border-[10px] border-blue-500 text-blue-600";
-            grade.innerText = "안전 등급: 양호 (Great)";
-            grade.style.color = "#2563eb";
-        } else {
-            circle.className = "relative w-36 h-36 mx-auto flex items-center justify-center rounded-full border-[10px] border-red-500 text-red-600";
-            grade.innerText = "안전 등급: 위험 (Danger)";
-            grade.style.color = "#dc2626";
-        }
+        if (score >= 80) { circle.className = "relative w-32 h-32 mx-auto flex items-center justify-center rounded-full border-[10px] border-blue-500 text-blue-600"; grade.innerText = "안전 등급: 양호 (Great)"; grade.style.color = "#2563eb"; }
+        else { circle.className = "relative w-32 h-32 mx-auto flex items-center justify-center rounded-full border-[10px] border-red-500 text-red-600"; grade.innerText = "안전 등급: 위험 (Danger)"; grade.style.color = "#dc2626"; }
 
-        // 스미싱 모드일 경우 뒤로가기 버튼으로 세팅
-        if (isSmishingMode) {
-            resultBtn.innerText = "퀴즈 목록으로 돌아가기";
-            resultBtn.onclick = function() {
-                document.getElementById('resultScreen').classList.add('hidden');
-                switchTab('smishing', document.querySelectorAll('.nav-item')[1]);
-            };
-        } else {
-            resultBtn.innerText = "메인 화면으로";
-            resultBtn.onclick = quitSim;
-        }
+        if (isSmishingMode) { resultBtn.innerText = "퀴즈 목록으로 돌아가기"; resultBtn.onclick = function() { document.getElementById('resultScreen').classList.add('hidden'); switchTab('smishing', document.querySelectorAll('.nav-item')[1]); }; }
+        else { resultBtn.innerText = "메인 화면으로"; resultBtn.onclick = quitSim; }
 
         const list = document.getElementById('feedbackList');
         list.innerHTML = '';
-        history.forEach(fb => {
-            list.innerHTML += `<li class="border-b border-gray-100 pb-2 mb-2 last:border-0 text-left text-gray-700 font-bold">${fb}</li>`;
-        });
+        history.forEach(fb => { list.innerHTML += `<li class="border-b border-gray-100 pb-2 mb-2 last:border-0 text-left text-gray-700 font-bold">${fb}</li>`; });
     }
 
-    function quitSim() {
-        location.reload();
-    }
+    function quitSim() { location.reload(); }
 </script>
 
 </body>
