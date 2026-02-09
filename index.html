@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>청주상당경찰서 범죄예방센터</title>
     
-    <!-- [중요] 홈 화면 추가 시 아이콘 설정 (로고 적용) -->
-    <link rel="apple-touch-icon" href="logo.png">
-    <link rel="icon" type="image/png" href="logo.png">
+    <!-- 홈 화면 추가 시 아이콘 설정 -->
+    <link rel="apple-touch-icon" href="https://www.police.go.kr/common/img/sub/img_symbol.png">
+    <link rel="icon" type="image/png" href="https://www.police.go.kr/common/img/sub/img_symbol.png">
     
     <!-- 웹앱 모드 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,8 +17,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f3f4f6; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
         .bg-police-dark { background-color: #1a237e; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
@@ -27,12 +29,13 @@
         
         <!-- 상단 헤더 -->
         <div class="bg-police-dark p-6 text-center relative">
-            <!-- [추가됨] 앱 설치 가이드 버튼 (우측 상단) -->
-            <button onclick="openInstallGuide()" class="absolute top-4 right-4 text-yellow-300 hover:text-white text-xs border border-yellow-300 rounded px-2 py-1 transition font-bold z-10">
-                <i class="fa-solid fa-download mr-1"></i>앱설치
+            <!-- [변경] 앱 설치 -> 바로가기 버튼 -->
+            <button onclick="openInstallGuide()" class="absolute top-4 right-4 text-yellow-300 hover:text-white text-xs border border-yellow-300 rounded px-2 py-1 transition font-bold z-10 flex items-center bg-transparent">
+                <i class="fa-solid fa-square-plus mr-1"></i>바로가기
             </button>
 
-            <img src="logo.png" onerror="this.style.display='none'" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1 relative z-0">
+            <!-- 로고: 미리보기를 위해 상당경찰서 기본 로고 적용 (실제 사용 시 logo.png로 교체) -->
+            <img src="https://www.police.go.kr/common/img/sub/img_symbol.png" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1 relative z-0">
             <h1 class="text-2xl font-black text-white mb-1 relative z-0">청주상당경찰서</h1>
             <p class="text-blue-200 text-sm relative z-0">범죄예방대응과 스마트 치안센터</p>
         </div>
@@ -41,8 +44,8 @@
         <div class="p-6 space-y-4">
             <p class="text-center text-gray-600 font-bold mb-4">이용하실 서비스를 선택해주세요</p>
 
-            <!-- 1. 폴-보이스 이동 버튼 (파랑) -->
-            <a href="./voice/" class="block w-full group">
+            <!-- 1. 폴-보이스 이동 -->
+            <a href="javascript:void(0)" onclick="alert('폴-보이스 페이지로 이동합니다. (경찰관님의 원본 코드가 필요합니다)')" class="block w-full group">
                 <div class="bg-blue-50 border-2 border-blue-100 hover:border-blue-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
                     <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
                         <i class="fa-solid fa-user-shield"></i>
@@ -55,8 +58,8 @@
                 </div>
             </a>
 
-            <!-- 2. 폴-매니저 이동 버튼 (남색) -->
-            <a href="./manager/" class="block w-full group">
+            <!-- 2. 폴-매니저 이동 -->
+            <a href="javascript:void(0)" onclick="alert('폴-매니저 페이지로 이동합니다. (경찰관님의 원본 코드가 필요합니다)')" class="block w-full group">
                 <div class="bg-indigo-50 border-2 border-indigo-100 hover:border-indigo-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
                     <div class="bg-indigo-900 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
                         <i class="fa-solid fa-store"></i>
@@ -69,8 +72,8 @@
                 </div>
             </a>
 
-            <!-- 3. 폴-체크 이동 버튼 (녹색) -->
-            <a href="./check/" class="block w-full group">
+            <!-- 3. 폴-체크 이동 -->
+            <a href="javascript:void(0)" onclick="alert('폴-체크 페이지로 이동합니다. (경찰관님의 원본 코드가 필요합니다)')" class="block w-full group">
                 <div class="bg-green-50 border-2 border-green-100 hover:border-green-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
                     <div class="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
                         <i class="fa-solid fa-clipboard-check"></i>
@@ -82,7 +85,6 @@
                     <i class="fa-solid fa-chevron-right ml-auto text-gray-300 group-hover:text-green-500"></i>
                 </div>
             </a>
-
         </div>
 
         <!-- 하단 푸터 -->
@@ -91,56 +93,58 @@
             Copyright © Sangdang Police Station
         </div>
 
-        <!-- ========================================== -->
-        <!-- [추가됨] 앱 설치 가이드 모달 -->
-        <!-- ========================================== -->
-        <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6 modal">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
-                <button onclick="closeInstallGuide()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h2 class="text-xl font-bold text-gray-800 mb-2">앱 아이콘 만들기</h2>
-                <p class="text-sm text-gray-600 mb-4">홈 화면에 추가하면 QR코드 없이 바로 실행됩니다.</p>
+        <!-- 바로가기 추가 가이드 모달 -->
+        <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative animate-fadeIn">
+                <button onclick="closeInstallGuide()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">홈 화면 바로가기 추가</h2>
+                <p class="text-sm text-gray-600 mb-4">바탕화면에 아이콘을 만들면 QR코드 없이 즉시 실행 가능합니다.</p>
                 
                 <!-- 탭 버튼 -->
                 <div class="flex border-b mb-3">
-                    <button id="btnAndroid" onclick="showGuide('android')" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition">안드로이드</button>
-                    <button id="btnIos" onclick="showGuide('ios')" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">아이폰</button>
+                    <button id="btnAndroid" onclick="showGuide('android')" class="flex-1 py-2 text-sm font-bold border-b-2 transition">안드로이드</button>
+                    <button id="btnIos" onclick="showGuide('ios')" class="flex-1 py-2 text-sm font-bold border-b-2 transition">아이폰</button>
                 </div>
 
                 <!-- 아이폰용 가이드 -->
-                <div id="iosGuide" class="hidden bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
-                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">아이폰 (Safari)</p>
-                    <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼 클릭</div>
-                    <div>2. 메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b> 선택</div>
-                    <div>3. 우측 상단 <b>추가</b> 버튼 클릭</div>
+                <div id="iosGuide" class="hidden bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[120px]">
+                    <p class="font-bold text-gray-800 border-b pb-1 mb-1 text-xs uppercase tracking-wider">아이폰 (Safari)</p>
+                    <div class="flex items-start"><span class="bg-blue-100 text-blue-800 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mr-2 mt-0.5 flex-shrink-0">1</span> <div>브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼 클릭</div></div>
+                    <div class="flex items-start"><span class="bg-blue-100 text-blue-800 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mr-2 mt-0.5 flex-shrink-0">2</span> <div>메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b> 선택</div></div>
+                    <div class="flex items-start"><span class="bg-blue-100 text-blue-800 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mr-2 mt-0.5 flex-shrink-0">3</span> <div>우측 상단 <b>추가</b> 버튼 클릭</div></div>
                 </div>
                 
                 <!-- 안드로이드용 가이드 -->
-                <div id="androidGuide" class="bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
-                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">안드로이드 (Chrome/Samsung)</p>
-                    <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴 클릭</div>
-                    <div class="text-xs text-gray-500">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
-                    <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 선택</div>
+                <div id="androidGuide" class="bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[120px]">
+                    <p class="font-bold text-gray-800 border-b pb-1 mb-1 text-xs uppercase tracking-wider">안드로이드 (Chrome/Samsung)</p>
+                    <div class="flex items-start"><span class="bg-indigo-100 text-indigo-800 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mr-2 mt-0.5 flex-shrink-0">1</span> <div>브라우저 우측 상단(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 더보기</b> 메뉴 클릭</div></div>
+                    <div class="flex items-start"><span class="bg-indigo-100 text-indigo-800 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mr-2 mt-0.5 flex-shrink-0">2</span> <div><b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> 항목 선택</div></div>
+                    <div class="pl-7 text-xs text-blue-500 font-medium">※ '앱 설치'라고 표시될 수도 있습니다.</div>
                 </div>
                 
-                <button onclick="closeInstallGuide()" class="w-full bg-police-dark text-white py-2 rounded-lg mt-4 font-bold" style="background-color: #1a237e;">확인</button>
+                <button onclick="closeInstallGuide()" class="w-full bg-police-dark text-white py-3 rounded-lg mt-4 font-bold shadow-lg hover:bg-blue-900 transition active:scale-95">확인</button>
             </div>
         </div>
 
     </div>
 
     <script>
-        // 가이드 로직 (탭 기능 포함)
         function openInstallGuide() {
             const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-            document.getElementById('installGuideModal').classList.remove('hidden');
+            const modal = document.getElementById('installGuideModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
             
-            // OS 자동 감지하여 해당 탭 먼저 보여주기
             if (isIOS) showGuide('ios');
             else showGuide('android');
         }
 
         function closeInstallGuide() { 
-            document.getElementById('installGuideModal').classList.add('hidden'); 
+            const modal = document.getElementById('installGuideModal');
+            modal.classList.add('hidden'); 
+            modal.classList.remove('flex'); 
         }
 
         function showGuide(os) {
@@ -148,33 +152,26 @@
             const iosGuide = document.getElementById('iosGuide');
             const btnAndroid = document.getElementById('btnAndroid');
             const btnIos = document.getElementById('btnIos');
-            const policeBlue = 'border-blue-900 text-blue-900'; // Tailwind 클래스 대용 스타일 변수
+
+            const activeColor = '#1a237e';
+            const inactiveColor = '#9ca3af';
 
             if (os === 'android') {
                 androidGuide.classList.remove('hidden');
                 iosGuide.classList.add('hidden');
-                
-                // 스타일 직접 조작 (Tailwind 클래스 충돌 방지)
-                btnAndroid.style.borderColor = '#1a237e';
-                btnAndroid.style.color = '#1a237e';
+                btnAndroid.style.borderColor = activeColor;
+                btnAndroid.style.color = activeColor;
                 btnIos.style.borderColor = 'transparent';
-                btnIos.style.color = '#9ca3af';
+                btnIos.style.color = inactiveColor;
             } else {
                 androidGuide.classList.add('hidden');
                 iosGuide.classList.remove('hidden');
-                
-                btnIos.style.borderColor = '#1a237e';
-                btnIos.style.color = '#1a237e';
+                btnIos.style.borderColor = activeColor;
+                btnIos.style.color = activeColor;
                 btnAndroid.style.borderColor = 'transparent';
-                btnAndroid.style.color = '#9ca3af';
+                btnAndroid.style.color = inactiveColor;
             }
         }
-        
-        // 최초 접속 시 가이드 자동 표시 (선택 사항 - 현재는 버튼 클릭시에만 뜨도록 함)
-        // if(!localStorage.getItem('pol_main_guide_shown')) {
-        //     openInstallGuide();
-        //     localStorage.setItem('pol_main_guide_shown', 'true');
-        // }
     </script>
 </body>
 </html>
