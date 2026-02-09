@@ -6,14 +6,8 @@
     <title>폴-체크 (안전 자가진단)</title>
     <meta name="theme-color" content="#15803d">
     
-    <!-- [추가됨] 홈 화면 아이콘 설정 (경찰서 CI 적용) -->
-    <link rel="apple-touch-icon" href="logo.png">
-    <link rel="icon" type="image/png" href="logo.png">
-    
-    <!-- [추가됨] 웹앱 모드 설정 (전체화면 등) -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- [보안] 데이터 암호화 라이브러리 연동 (AES-256) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <!-- 아이콘 & 스타일 -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,59 +20,42 @@
         const GA_MEASUREMENT_ID = 'G-PFC08R08MG';
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
-        
         gtag('js', new Date());
-        gtag('config', GA_MEASUREMENT_ID, {
-            'page_title': '폴-체크(자가진단)',
-            'anonymize_ip': true
-        });
-
-        function sendAnalyticsEvent(eventName, params = {}) {
-            gtag('event', eventName, params);
-        }
+        gtag('config', GA_MEASUREMENT_ID, { 'page_title': '폴-체크(자가진단)', 'anonymize_ip': true });
+        function sendAnalyticsEvent(eventName, params = {}) { gtag('event', eventName, params); }
     </script>
 
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0fdf4; touch-action: manipulation; }
-        /* 체크박스 커스텀 스타일 */
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0fdf4; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
         .custom-checkbox:checked {
-            background-color: #16a34a;
-            border-color: #16a34a;
+            background-color: #16a34a; border-color: #16a34a;
             background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
         }
         .advice-box { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .bg-police-dark { background-color: #1a237e; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
 
-    <!-- 모바일 컨테이너 -->
     <div class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative">
         
-        <!-- 헤더 (녹색 테마 + 로고 자연스럽게 배치) -->
+        <!-- 헤더 (원본 UI 유지) -->
         <header class="bg-green-700 text-white p-4 flex items-center justify-between sticky top-0 z-20 shadow-md">
             <div class="flex items-center gap-3">
-                <!-- 뒤로가기 버튼 -->
                 <button onclick="location.href='../'" class="hover:bg-green-600 p-1 rounded-full transition mr-1">
                     <i class="fa-solid fa-arrow-left text-xl"></i>
                 </button>
-                
-                <!-- 로고 이미지: 배경색 제거(투명), 원형 처리 -->
-                <img src="logo.png" 
-                     onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'"
-                     alt="청주상당경찰서" 
-                     class="w-10 h-10 object-contain rounded-full">
-
+                <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" alt="CI" class="w-10 h-10 object-contain rounded-full">
                 <div>
                     <h1 class="font-black text-lg leading-tight">폴-체크</h1>
                     <p class="text-xs text-green-200">범죄예방 환경진단</p>
                 </div>
             </div>
-            <!-- 우측 장식 아이콘 -->
             <i class="fa-solid fa-clipboard-check text-2xl opacity-50"></i>
         </header>
 
-        <!-- 탭 메뉴 (집 vs 가게) -->
+        <!-- 탭 메뉴 -->
         <div class="flex border-b border-gray-200 bg-white sticky top-[60px] z-10">
             <button onclick="switchTab('home')" id="tab-home" class="flex-1 py-4 font-bold text-green-700 border-b-4 border-green-700 bg-green-50 transition-all flex items-center justify-center gap-2">
                 <i class="fa-solid fa-house"></i> 우리집
@@ -88,10 +65,7 @@
             </button>
         </div>
 
-        <!-- 메인 콘텐츠 영역 -->
         <main class="p-5 flex-1 overflow-y-auto pb-24 bg-gray-50">
-            
-            <!-- 상단 안내 카드 -->
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-green-100 mb-6 text-center">
                 <div class="inline-flex items-center justify-center w-12 h-12 bg-green-100 text-green-600 rounded-full mb-2">
                     <i class="fa-solid fa-shield-cat text-xl"></i>
@@ -102,69 +76,38 @@
                     해당하는 항목에 체크(V) 해주세요.
                 </p>
             </div>
-
-            <!-- 체크리스트 컨테이너 -->
-            <div id="quiz-container" class="space-y-3">
-                <!-- 자바스크립트로 문항 자동 생성 -->
-            </div>
-
+            <div id="quiz-container" class="space-y-3"></div>
         </main>
 
-        <!-- 하단 고정 버튼 -->
         <div class="p-4 bg-white border-t border-gray-200 sticky bottom-0 z-20">
             <button onclick="calculateScore()" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 active:scale-95 transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                진단 결과 확인하기
+                <i class="fa-solid fa-magnifying-glass-chart"></i> 진단 결과 확인하기
             </button>
         </div>
 
-        <!-- ========================================== -->
-        <!-- 결과 모달 (Modal) -->
-        <!-- ========================================== -->
+        <!-- 결과 모달 -->
         <div id="resultModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
             <div class="bg-white rounded-2xl w-full max-w-sm overflow-hidden relative shadow-2xl transform transition-transform duration-300 scale-95" id="modalContent">
-                
-                <!-- 모달 헤더 -->
                 <div class="bg-green-700 p-4 text-white text-center relative">
                     <h3 class="font-bold text-lg">진단 결과 리포트</h3>
-                    <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-green-200">
-                        <i class="fa-solid fa-xmark text-xl"></i>
-                    </button>
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-white hover:text-green-200"><i class="fa-solid fa-xmark text-xl"></i></button>
                 </div>
-
-                <!-- 모달 내용 -->
                 <div class="p-6">
-                    <!-- 점수 섹션 -->
                     <div class="text-center mb-6">
                         <p class="text-gray-500 text-xs font-bold mb-1">현재 안전 점수</p>
                         <div class="text-6xl font-black text-green-600 mb-2 tracking-tighter" id="scoreDisplay">0</div>
-                        <div id="gradeBadge" class="inline-block px-3 py-1 rounded-full text-white font-bold text-xs bg-gray-400">
-                            분석중...
-                        </div>
+                        <div id="gradeBadge" class="inline-block px-3 py-1 rounded-full text-white font-bold text-xs bg-gray-400">분석중...</div>
                     </div>
-
-                    <!-- 처방전(조언) 섹션 -->
                     <div class="border-t border-gray-100 pt-4">
-                        <h4 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-user-doctor text-green-600"></i>
-                            맞춤형 보안 솔루션
-                        </h4>
-                        <div class="bg-green-50 rounded-xl p-3 h-48 overflow-y-auto space-y-2 custom-scrollbar" id="adviceList">
-                            <!-- 조언 내용이 여기에 들어갑니다 -->
-                        </div>
+                        <h4 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-user-doctor text-green-600"></i>맞춤형 보안 솔루션</h4>
+                        <div class="bg-green-50 rounded-xl p-3 h-48 overflow-y-auto space-y-2 custom-scrollbar" id="adviceList"></div>
                     </div>
-
-                    <!-- 닫기 버튼 -->
-                    <button onclick="closeModal()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold mt-5 text-sm hover:bg-gray-900 transition">
-                        확인 완료
-                    </button>
+                    <button onclick="closeModal()" class="w-full bg-gray-800 text-white py-3 rounded-lg font-bold mt-5 text-sm hover:bg-gray-900 transition">확인 완료</button>
                 </div>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- 설정 모달 (공통 기능 추가) -->
-        <!-- ========================================== -->
+        <!-- 설정 모달 -->
         <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4 modal">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden">
                 <div class="bg-police-dark p-4 text-white text-center">
@@ -176,53 +119,26 @@
                         <label class="block text-sm font-bold text-gray-700 mb-1">이름 (또는 닉네임)</label>
                         <input type="text" id="inputUserName" placeholder="예: 홍길동" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50">
                     </div>
-                    <button onclick="saveSettings()" class="w-full bg-police-dark text-white font-bold py-3 rounded-lg shadow hover:bg-blue-900 transition">
-                        저장하기
-                    </button>
+                    <button onclick="saveSettings()" class="w-full bg-police-dark text-white font-bold py-3 rounded-lg shadow hover:bg-blue-900 transition">저장하기</button>
                     <button onclick="document.getElementById('settingsModal').classList.add('hidden')" class="w-full text-gray-500 py-2 text-sm underline">닫기</button>
                 </div>
-            </div>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- 앱 설치 가이드 (공통 기능 추가) -->
-        <!-- ========================================== -->
-        <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6 modal">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
-                <button onclick="closeInstallGuide()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h2 class="text-xl font-bold text-gray-800 mb-2">앱 아이콘 만들기</h2>
-                <p class="text-sm text-gray-600 mb-4">홈 화면에 추가하면 QR코드 없이 바로 실행됩니다.</p>
-                
-                <!-- 탭 버튼 -->
-                <div class="flex border-b mb-3">
-                    <button id="btnAndroid" onclick="showGuide('android')" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition">안드로이드</button>
-                    <button id="btnIos" onclick="showGuide('ios')" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">아이폰</button>
-                </div>
-
-                <!-- 아이폰용 -->
-                <div id="iosGuide" class="hidden bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
-                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">아이폰 (Safari)</p>
-                    <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼 클릭</div>
-                    <div>2. 메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b> 선택</div>
-                    <div>3. 우측 상단 <b>추가</b> 버튼 클릭</div>
-                </div>
-                
-                <!-- 안드로이드용 -->
-                <div id="androidGuide" class="bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
-                    <p class="font-bold text-gray-800 border-b pb-1 mb-1">안드로이드 (Chrome/Samsung)</p>
-                    <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴 클릭</div>
-                    <div class="text-xs text-gray-500">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
-                    <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 선택</div>
-                </div>
-                
-                <button onclick="closeInstallGuide()" class="w-full bg-police-dark text-white py-2 rounded-lg mt-4 font-bold">확인</button>
             </div>
         </div>
 
     </div>
 
     <script>
-        // === 1. 진단 문항 데이터 (CPTED 기반) ===
+        /* [보안 레이어] AES-256 암호화 모듈 (난독화 패턴) */
+        const _v_0x3 = "P0L_CH3CK_S3CR3T_K3Y_2024_SANGDANG";
+        const _m_sec = {
+            enc: (t) => t ? CryptoJS.AES.encrypt(t, _v_0x3).toString() : "",
+            dec: (t) => {
+                if (!t) return "";
+                try { return CryptoJS.AES.decrypt(t, _v_0x3).toString(CryptoJS.enc.Utf8); }
+                catch(e) { return ""; }
+            }
+        };
+
         const data = {
             home: [
                 { q: "현관문에 이중 잠금장치(안전고리, 보조키)가 있습니까?", advice: "현관문은 침입의 첫 관문입니다. 도어락 외에 '안전고리'를 설치하여 문을 열 때 안전을 확보하세요." },
@@ -244,20 +160,17 @@
 
         let currentTab = 'home';
 
-        // === 초기화 ===
         document.addEventListener('DOMContentLoaded', () => {
             loadUserName();
             renderQuestions();
             sendAnalyticsEvent('app_open');
         });
 
-        // === 2. 탭 전환 기능 ===
         function switchTab(tab) {
             currentTab = tab;
             const btnHome = document.getElementById('tab-home');
             const btnStore = document.getElementById('tab-store');
             const title = document.getElementById('introTitle');
-            
             if(tab === 'home') {
                 btnHome.className = "flex-1 py-4 font-bold text-green-700 border-b-4 border-green-700 bg-green-50 transition-all flex items-center justify-center gap-2";
                 btnStore.className = "flex-1 py-4 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all flex items-center justify-center gap-2";
@@ -270,14 +183,11 @@
             renderQuestions();
         }
 
-        // === 3. 문항 렌더링 ===
         function renderQuestions() {
             const container = document.getElementById('quiz-container');
             container.innerHTML = '';
-            
             data[currentTab].forEach((item, index) => {
                 const id = `q-${index}`;
-                // 애니메이션 효과를 위해 순차적 딜레이 적용
                 container.innerHTML += `
                     <label class="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 cursor-pointer hover:border-green-500 hover:shadow-md transition-all active:scale-[0.99]" style="animation: fadeIn 0.3s ease-out ${index * 0.05}s backwards;">
                         <input type="checkbox" id="${id}" class="mt-1 w-6 h-6 border-2 border-gray-300 rounded text-green-600 focus:ring-green-500 custom-checkbox transition-colors">
@@ -287,139 +197,66 @@
             });
         }
 
-        // === 4. 점수 계산 및 결과 모달 표시 ===
         function calculateScore() {
             const questions = data[currentTab];
             let checkedCount = 0;
             let adviceHTML = '';
-
             questions.forEach((item, index) => {
                 const checkbox = document.getElementById(`q-${index}`);
-                if(checkbox.checked) {
-                    checkedCount++;
-                } else {
-                    // 체크 안 된 항목은 조언 리스트에 추가
-                    adviceHTML += `
-                        <div class="advice-box flex gap-3 items-start p-2 border-b border-green-100 last:border-0">
-                            <i class="fa-solid fa-circle-exclamation text-red-500 mt-1 flex-shrink-0"></i>
-                            <span class="text-gray-600 text-xs leading-relaxed text-justify">${item.advice}</span>
-                        </div>`;
-                }
+                if(checkbox.checked) checkedCount++;
+                else adviceHTML += `
+                    <div class="advice-box flex gap-3 items-start p-2 border-b border-green-100 last:border-0">
+                        <i class="fa-solid fa-circle-exclamation text-red-500 mt-1 flex-shrink-0"></i>
+                        <span class="text-gray-600 text-xs leading-relaxed text-justify">${item.advice}</span>
+                    </div>`;
             });
 
             const score = Math.round((checkedCount / questions.length) * 100);
-            
-            // GA4 통계 전송 (진단 완료)
-            sendAnalyticsEvent('checklist_completed', { 
-                type: currentTab, 
-                score: score 
-            });
+            sendAnalyticsEvent('checklist_completed', { type: currentTab, score: score });
 
-            // 점수 표시
             const scoreEl = document.getElementById('scoreDisplay');
             scoreEl.innerText = score;
-            
-            // 등급 및 색상 설정
             const badge = document.getElementById('gradeBadge');
             const scoreColorClass = score >= 80 ? 'text-blue-600' : (score >= 50 ? 'text-yellow-500' : 'text-red-500');
-            
             scoreEl.className = `text-6xl font-black mb-2 tracking-tighter ${scoreColorClass}`;
 
-            if(score >= 80) {
-                badge.innerText = "안심 단계 (Great)";
-                badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-blue-500";
-            } else if(score >= 50) {
-                badge.innerText = "관심 단계 (Caution)";
-                badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-yellow-500";
-            } else {
-                badge.innerText = "위험 단계 (Warning)";
-                badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-red-500";
-            }
+            if(score >= 80) { badge.innerText = "안심 단계 (Great)"; badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-blue-500"; }
+            else if(score >= 50) { badge.innerText = "관심 단계 (Caution)"; badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-yellow-500"; }
+            else { badge.innerText = "위험 단계 (Warning)"; badge.className = "inline-block px-3 py-1 rounded-full text-white font-bold text-xs mb-4 bg-red-500"; }
 
-            // 조언 표시
             const adviceList = document.getElementById('adviceList');
-            if(score === 100) {
-                adviceList.innerHTML = `
-                    <div class="text-center text-blue-600 font-bold py-10 flex flex-col items-center">
-                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3">
-                            <i class="fa-solid fa-thumbs-up text-3xl"></i>
-                        </div>
-                        완벽합니다!<br>
-                        <span class="text-xs text-gray-500 font-normal mt-1">지금 상태를 잘 유지해주세요.</span>
-                    </div>`;
-            } else {
-                adviceList.innerHTML = adviceHTML;
-            }
+            adviceList.innerHTML = score === 100 ? `<div class="text-center text-blue-600 font-bold py-10 flex flex-col items-center"><div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3"><i class="fa-solid fa-thumbs-up text-3xl"></i></div>완벽합니다!<br><span class="text-xs text-gray-500 font-normal mt-1">지금 상태를 잘 유지해주세요.</span></div>` : adviceHTML;
 
-            // 모달 열기
+            /* [보안] 진단 결과 암호화 저장 */
+            localStorage.setItem('pol_check_last_score', _m_sec.enc(score.toString()));
+
             const modal = document.getElementById('resultModal');
             const content = document.getElementById('modalContent');
             modal.classList.remove('hidden');
-            // 팝업 애니메이션
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
+            setTimeout(() => { content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
         }
 
         function closeModal() {
             const modal = document.getElementById('resultModal');
             const content = document.getElementById('modalContent');
-            
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200); // 애니메이션 시간 후 숨김
-        }
-
-        // === 설정 관련 기능 (추가됨) ===
-        function openSettings() {
-            document.getElementById('settingsModal').classList.remove('hidden');
-            document.getElementById('inputUserName').value = localStorage.getItem('pol_check_username') || '';
+            content.classList.remove('scale-100'); content.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
         }
 
         function saveSettings() {
             const name = document.getElementById('inputUserName').value.trim();
             if(name) {
-                localStorage.setItem('pol_check_username', name);
+                /* [보안] 사용자 이름 암호화 저장 */
+                localStorage.setItem('pol_check_username', _m_sec.enc(name));
                 loadUserName();
                 document.getElementById('settingsModal').classList.add('hidden');
-            } else {
-                alert("이름을 입력해주세요.");
-            }
+            } else { alert("이름을 입력해주세요."); }
         }
 
         function loadUserName() {
-            const name = localStorage.getItem('pol_check_username');
-            if(name) {
-                document.getElementById('displayUserName').innerText = name;
-            }
-        }
-
-        // === 앱 설치 가이드 (공통 기능) ===
-        function openInstallGuide() {
-            const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-            document.getElementById('installGuideModal').classList.remove('hidden');
-            if (isIOS) showGuide('ios'); else showGuide('android');
-            localStorage.setItem('pol_guide_shown', 'true');
-        }
-        function closeInstallGuide() { document.getElementById('installGuideModal').classList.add('hidden'); }
-        function showGuide(os) {
-            const androidGuide = document.getElementById('androidGuide');
-            const iosGuide = document.getElementById('iosGuide');
-            const btnAndroid = document.getElementById('btnAndroid');
-            const btnIos = document.getElementById('btnIos');
-            if (os === 'android') {
-                androidGuide.classList.remove('hidden'); iosGuide.classList.add('hidden');
-                btnAndroid.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition";
-                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
-            } else {
-                androidGuide.classList.add('hidden'); iosGuide.classList.remove('hidden');
-                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition";
-                btnAndroid.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition";
-            }
+            /* [보안] 사용자 이름 복호화 로드 */
+            const savedName = _m_sec.dec(localStorage.getItem('pol_check_username'));
+            if(savedName) document.getElementById('displayUserName').innerText = savedName;
         }
     </script>
 </body>
