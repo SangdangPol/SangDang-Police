@@ -27,14 +27,6 @@
         /* 기록 로그 등장 애니메이션 */
         .log-item { animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* [복구] 이전 버전 원본 바운스 애니메이션 */
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-30px);}
-            60% {transform: translateY(-15px);}
-        }
-        .animate-bounce-original { animation: bounce 2s infinite; }
 
         /* 스크롤바 숨기기 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -137,8 +129,8 @@
                     <!-- 체크리스트 문항 삽입됨 -->
                 </div>
                 
-                <!-- [복구] 원본 바운스 애니메이션 적용된 축하 메시지 영역 -->
-                <div id="completeMessage" class="hidden mt-4 p-4 bg-green-50 rounded-xl border-2 border-green-200 text-center animate-bounce-original">
+                <!-- [복구] 원본 Tailwind animate-bounce 클래스 적용 -->
+                <div id="completeMessage" class="hidden mt-4 p-4 bg-green-50 rounded-xl border-2 border-green-200 text-center animate-bounce">
                     <i class="fa-solid fa-circle-check text-green-600 text-3xl mb-1"></i>
                     <p class="font-black text-green-800 text-lg">오늘 하루도 고생하셨습니다!</p>
                     <p class="text-xs text-green-600">모든 안전 점검이 완료되었습니다.</p>
@@ -179,7 +171,7 @@
             </div>
         </div>
 
-        <!-- 가이드 모달 (원본의 상세 설명 복구) -->
+        <!-- 가이드 모달 -->
         <div id="guideModal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center p-6 text-center text-gray-800">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
                 <button onclick="closeGuide()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -199,7 +191,7 @@
     </div>
 
     <script>
-        // --- 보안 엔진 ---
+        // --- 보안 엔진 (AES-256) ---
         const _v_0x2 = "P0L_MGR_S3CR3T_K3Y_2024_SANGDANG";
         const _m_sec = {
             enc: (t) => t ? CryptoJS.AES.encrypt(t, _v_0x2).toString() : "",
@@ -210,7 +202,6 @@
             }
         };
 
-        // --- 상태 변수 ---
         let logs = [];
         let checklistState = [];
         let currentTraits = [];
@@ -222,7 +213,6 @@
             "가스/전기 차단 및 소등 확인"
         ];
 
-        // --- 초기화 ---
         window.onload = () => {
             const now = new Date();
             document.getElementById('currentDateDisplay').innerText = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
@@ -266,20 +256,13 @@
             const name = document.getElementById('inputStoreName').value.trim();
             const addr = document.getElementById('inputAddress').value.trim();
             const phone = document.getElementById('inputGuardianPhone').value.trim();
-
             if (!name || !addr) { alert("상호명과 주소는 필수입니다."); return; }
-
             localStorage.setItem('pol_storeName', _m_sec.enc(name));
             localStorage.setItem('pol_address', _m_sec.enc(addr));
             localStorage.setItem('pol_guardianPhone', _m_sec.enc(phone));
-
             document.getElementById('displayStoreName').innerText = name;
             document.getElementById('settingsModal').style.display = 'none';
-
-            if (!localStorage.getItem('pol_guide_shown')) {
-                openInstallGuide();
-                localStorage.setItem('pol_guide_shown', 'true');
-            }
+            if (!localStorage.getItem('pol_guide_shown')) { openInstallGuide(); localStorage.setItem('pol_guide_shown', 'true'); }
         }
 
         function sendEmergencySMS() {
