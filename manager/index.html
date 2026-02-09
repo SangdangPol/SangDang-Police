@@ -28,12 +28,13 @@
         .log-item { animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* 축하 메시지 바운스 애니메이션 */
-        @keyframes bounce-subtle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        /* [복구] 이전 버전 원본 바운스 애니메이션 */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
         }
-        .animate-bounce-subtle { animation: bounce-subtle 1s infinite; }
+        .animate-bounce-original { animation: bounce 2s infinite; }
 
         /* 스크롤바 숨기기 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -42,7 +43,7 @@
 </head>
 <body class="min-h-screen flex justify-center">
 
-    <div id="app" class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative overflow-hidden">
+    <div id="app" class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative overflow-hidden text-police-blue">
         
         <!-- 헤더 -->
         <header class="bg-police-dark text-white p-4 flex items-center justify-between shadow-md z-20">
@@ -57,7 +58,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <!-- [유지] 바로가기 명칭 -->
                 <button onclick="openInstallGuide()" class="text-yellow-300 hover:text-white text-[10px] border border-yellow-300 rounded px-2 py-1 font-bold flex items-center gap-1">
                     <i class="fa-solid fa-square-plus text-[10px]"></i>바로가기
                 </button>
@@ -83,7 +83,7 @@
                 <button onclick="sendEmergencySMS()" class="w-full py-6 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 text-white shadow-lg active:scale-95 transition-transform border-4 border-red-400 flex flex-col items-center justify-center gap-1 animate-pulse-red">
                     <i class="fa-solid fa-lightbulb text-3xl mb-1"></i>
                     <span class="text-xl font-black">112 긴급 문자 신고</span>
-                    <span class="text-[10px] opacity-80">위치+주소 자동 입력</span>
+                    <span class="text-[10px] opacity-80 font-normal">위치+주소 자동 입력</span>
                 </button>
                 <button onclick="sendGuardianSMS()" class="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold rounded-xl shadow active:scale-95 transition flex items-center justify-center gap-2 font-black">
                     <i class="fa-solid fa-comment-sms text-lg"></i>
@@ -93,9 +93,9 @@
             </section>
 
             <!-- 스마트 위트니스 (기록) -->
-            <section class="bg-white rounded-xl border-2 border-indigo-100 shadow-sm p-4">
+            <section class="bg-white rounded-xl border-2 border-indigo-100 shadow-sm p-4 text-gray-800">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
                         <i class="fa-solid fa-eye text-indigo-600"></i>수상한 사람 기록
                     </h3>
                     <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-bold">수사 단서</span>
@@ -120,15 +120,15 @@
                         </div>
                     </div>
                     <ul id="witnessLogList" class="space-y-1.5 min-h-[40px]">
-                        <li class="text-[11px] text-gray-400 text-center py-2">기록이 없습니다.</li>
+                        <li class="text-[11px] text-gray-400 text-center py-2 font-normal">기록이 없습니다.</li>
                     </ul>
                 </div>
             </section>
 
             <!-- 안전 점검 섹션 -->
-            <section class="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+            <section class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 text-gray-800">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
                         <i class="fa-solid fa-circle-check text-green-600"></i>퇴근 전 안전 점검
                     </h3>
                     <span id="checkProgress" class="text-[10px] font-bold px-2 py-1 rounded bg-gray-100 text-gray-500 transition-colors">0% 완료</span>
@@ -137,11 +137,11 @@
                     <!-- 체크리스트 문항 삽입됨 -->
                 </div>
                 
-                <!-- 100% 완료 시 축하 메시지 영역 -->
-                <div id="completeMessage" class="hidden mt-4 p-4 bg-green-50 rounded-xl border-2 border-green-200 text-center animate-bounce-subtle">
-                    <i class="fa-solid fa-circle-check text-green-600 text-2xl mb-1"></i>
-                    <p class="font-black text-green-800">오늘 하루도 고생하셨습니다!</p>
-                    <p class="text-[10px] text-green-600">모든 안전 점검이 완료되었습니다.</p>
+                <!-- [복구] 원본 바운스 애니메이션 적용된 축하 메시지 영역 -->
+                <div id="completeMessage" class="hidden mt-4 p-4 bg-green-50 rounded-xl border-2 border-green-200 text-center animate-bounce-original">
+                    <i class="fa-solid fa-circle-check text-green-600 text-3xl mb-1"></i>
+                    <p class="font-black text-green-800 text-lg">오늘 하루도 고생하셨습니다!</p>
+                    <p class="text-xs text-green-600">모든 안전 점검이 완료되었습니다.</p>
                 </div>
             </section>
         </main>
@@ -153,7 +153,7 @@
 
         <!-- 설정 모달 -->
         <div id="settingsModal" class="fixed inset-0 bg-black/70 z-[100] hidden items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden text-gray-800">
                 <div class="bg-police-dark p-4 text-white text-center">
                     <h2 class="font-bold text-lg">정보 설정</h2>
                     <p class="text-[10px] opacity-80">위급 상황 대비를 위한 기초 정보</p>
@@ -161,15 +161,15 @@
                 <div class="p-6 space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">상호명</label>
-                        <input type="text" id="inputStoreName" placeholder="예: 상당헤어샵" class="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:border-indigo-500 outline-none">
+                        <input type="text" id="inputStoreName" placeholder="예: 상당헤어샵" class="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:border-indigo-500 outline-none font-bold">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-700 mb-1">매장 주소 (도로명)</label>
-                        <textarea id="inputAddress" rows="2" placeholder="예: 상당구 1순환로 1234, 1층" class="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:border-indigo-500 outline-none"></textarea>
+                        <textarea id="inputAddress" rows="2" placeholder="예: 상당구 1순환로 1234, 1층" class="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:border-indigo-500 outline-none font-bold"></textarea>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-indigo-700 mb-1 flex items-center gap-1"><i class="fa-solid fa-shield-halved"></i>보호자 연락처</label>
-                        <input type="tel" id="inputGuardianPhone" placeholder="예: 010-1234-5678" class="w-full p-3 border border-indigo-200 rounded-xl bg-indigo-50 text-sm focus:border-indigo-500 outline-none">
+                        <input type="tel" id="inputGuardianPhone" placeholder="예: 010-1234-5678" class="w-full p-3 border border-indigo-200 rounded-xl bg-indigo-50 text-sm focus:border-indigo-500 outline-none font-bold text-indigo-800">
                     </div>
                     <div class="pt-2 flex flex-col gap-2">
                         <button onclick="saveSettings()" class="w-full bg-police-dark text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition">저장하기</button>
@@ -179,18 +179,18 @@
             </div>
         </div>
 
-        <!-- 가이드 모달 (상세 내용으로 롤백됨) -->
-        <div id="guideModal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center p-6 text-center">
+        <!-- 가이드 모달 (원본의 상세 설명 복구) -->
+        <div id="guideModal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center p-6 text-center text-gray-800">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
                 <button onclick="closeGuide()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h2 class="text-xl font-bold text-gray-800 mb-2">홈 화면 바로가기 추가</h2>
+                <h2 class="text-xl font-bold mb-2">홈 화면 바로가기 추가</h2>
                 <p class="text-sm text-gray-600 mb-4 tracking-tight">아이콘을 만들면 QR코드 없이 바로 실행됩니다.</p>
                 <div class="flex border-b mb-4">
-                    <button onclick="switchGuide('android')" id="guideTabAndroid" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition">안드로이드</button>
+                    <button onclick="switchGuide('android')" id="guideTabAndroid" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark">안드로이드</button>
                     <button onclick="switchGuide('ios')" id="guideTabIos" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition">아이폰</button>
                 </div>
-                <div id="guideContent" class="bg-gray-50 p-4 rounded-xl text-[13px] text-left space-y-4 min-h-[160px]">
-                    <!-- 상세 가이드 내용 삽입 -->
+                <div id="guideContent" class="bg-gray-50 p-4 rounded-xl text-[13px] text-left space-y-4 min-h-[160px] leading-relaxed">
+                    <!-- 상세 가이드 내용 -->
                 </div>
                 <button onclick="closeGuide()" class="w-full bg-police-dark text-white py-4 rounded-xl mt-4 font-bold shadow-lg active:scale-95 transition">확인 완료</button>
             </div>
@@ -199,7 +199,7 @@
     </div>
 
     <script>
-        // --- 보안 엔진 (AES-256) ---
+        // --- 보안 엔진 ---
         const _v_0x2 = "P0L_MGR_S3CR3T_K3Y_2024_SANGDANG";
         const _m_sec = {
             enc: (t) => t ? CryptoJS.AES.encrypt(t, _v_0x2).toString() : "",
@@ -210,6 +210,7 @@
             }
         };
 
+        // --- 상태 변수 ---
         let logs = [];
         let checklistState = [];
         let currentTraits = [];
@@ -221,6 +222,7 @@
             "가스/전기 차단 및 소등 확인"
         ];
 
+        // --- 초기화 ---
         window.onload = () => {
             const now = new Date();
             document.getElementById('currentDateDisplay').innerText = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
@@ -255,7 +257,8 @@
 
         function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
         function closeSettings() {
-            if (!_m_sec.dec(localStorage.getItem('pol_storeName'))) { alert("최초 정보를 저장해야 합니다."); return; }
+            const name = _m_sec.dec(localStorage.getItem('pol_storeName'));
+            if (!name) { alert("기본 정보를 먼저 저장해야 합니다."); return; }
             document.getElementById('settingsModal').style.display = 'none';
         }
 
@@ -263,13 +266,20 @@
             const name = document.getElementById('inputStoreName').value.trim();
             const addr = document.getElementById('inputAddress').value.trim();
             const phone = document.getElementById('inputGuardianPhone').value.trim();
+
             if (!name || !addr) { alert("상호명과 주소는 필수입니다."); return; }
+
             localStorage.setItem('pol_storeName', _m_sec.enc(name));
             localStorage.setItem('pol_address', _m_sec.enc(addr));
             localStorage.setItem('pol_guardianPhone', _m_sec.enc(phone));
+
             document.getElementById('displayStoreName').innerText = name;
             document.getElementById('settingsModal').style.display = 'none';
-            if (!localStorage.getItem('pol_guide_shown')) { openInstallGuide(); localStorage.setItem('pol_guide_shown', 'true'); }
+
+            if (!localStorage.getItem('pol_guide_shown')) {
+                openInstallGuide();
+                localStorage.setItem('pol_guide_shown', 'true');
+            }
         }
 
         function sendEmergencySMS() {
@@ -313,7 +323,7 @@
             list.innerHTML = logs.length === 0 ? '<li class="text-[11px] text-gray-400 text-center py-2">기록이 없습니다.</li>' : '';
             logs.slice(0, 3).forEach(log => {
                 const li = document.createElement('li');
-                li.className = 'log-item text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 truncate font-bold';
+                li.className = 'log-item text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 truncate font-bold shadow-sm';
                 li.innerText = log;
                 list.appendChild(li);
             });
@@ -333,8 +343,8 @@
             area.innerHTML = '';
             CHECKLIST_ITEMS.forEach((item, idx) => {
                 const label = document.createElement('label');
-                label.className = 'flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition';
-                label.innerHTML = `<input type="checkbox" ${checklistState[idx] ? 'checked' : ''} onchange="toggleCheck(${idx})" class="w-5 h-5 accent-green-600 rounded"><span class="text-xs text-gray-700 font-medium">${item}</span>`;
+                label.className = 'flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition font-bold text-gray-600';
+                label.innerHTML = `<input type="checkbox" ${checklistState[idx] ? 'checked' : ''} onchange="toggleCheck(${idx})" class="w-5 h-5 accent-green-600 rounded"><span class="text-xs">${item}</span>`;
                 area.appendChild(label);
             });
             updateProgress();
@@ -375,19 +385,19 @@
             const content = document.getElementById('guideContent');
             if (os === 'android') {
                 btnAnd.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark";
-                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400";
+                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition";
                 content.innerHTML = `
                     <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단<br>(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴를 클릭합니다.</div>
                     <div class="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
                     <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 항목을 선택합니다.</div>`;
             } else {
                 btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark";
-                btnAnd.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400";
+                btnAnd.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition";
                 content.innerHTML = `
                     <div class="font-bold text-gray-800 border-b pb-1">아이폰 (Safari 브라우저 전용)</div>
                     <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼을 클릭합니다.</div>
                     <div>2. 메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b>를 선택합니다.</div>
-                    <div>3. 우측 상단의 <b class="text-indigo-700">추가</b> 버튼을 클릭하면 완료됩니다.</div>`;
+                    <div>3. 우측 상단의 <b class="text-indigo-700 font-black">추가</b> 버튼을 클릭하면 완료됩니다.</div>`;
             }
         }
     </script>
