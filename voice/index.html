@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>청주상당경찰서 폴-보이스</title>
     
+    <!-- [보안] 데이터 암호화 라이브러리 연동 (AES-256) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
     <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4W28Z27Z6"></script>
     <script>
@@ -32,80 +35,35 @@
         }
         body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background-color: var(--bg-main); overflow: hidden; touch-action: manipulation; }
         .bg-police-dark { background-color: var(--primary); }
-
-        /* 가독성 핵심: 단어 유지 및 자동 줄바꿈 */
         * { word-break: keep-all; overflow-wrap: break-word; }
-
         .content-view { display: none; height: calc(100vh - 60px); overflow-y: auto; padding: 20px; padding-bottom: 100px; }
         .content-view.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* 하단 탭바 슬림화 및 중앙 정렬 */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 450px; height: 60px; 
-            background: white; border-top: 1px solid #e5e7eb; 
-            display: flex; z-index: 40; 
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px; height: 60px; background: white; border-top: 1px solid #e5e7eb; display: flex; z-index: 40; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9ca3af; cursor: pointer; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { font-size: 1.1rem; margin-bottom: 2px; }
-
-        .sim-overlay {
-            position: fixed; inset: 0; z-index: 100; background: #0f172a; color: white;
-            display: none; flex-direction: column;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .sim-overlay { position: fixed; inset: 0; z-index: 100; background: #0f172a; color: white; display: none; flex-direction: column; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .sim-overlay.active { display: flex; transform: translateY(0); }
-
-        @keyframes siren-flash {
-            0% { background-color: rgba(220, 38, 38, 0.8); }
-            50% { background-color: rgba(37, 99, 235, 0.8); }
-            100% { background-color: rgba(220, 38, 38, 0.8); }
-        }
-        .siren-effect { 
-            animation: siren-flash 0.25s infinite; position: fixed; inset: 0; 
-            z-index: 9999 !important; pointer-events: none; display: flex; align-items: center; justify-content: center;
-        }
-
-        /* 훈련 대화창 가독성 최적화 */
-        .chat-bubble {
-            background: #1e293b; padding: 18px; border-radius: 4px 20px 20px 20px;
-            margin-bottom: 24px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            animation: slideUp 0.4s;
-        }
+        @keyframes siren-flash { 0% { background-color: rgba(220, 38, 38, 0.8); } 50% { background-color: rgba(37, 99, 235, 0.8); } 100% { background-color: rgba(220, 38, 38, 0.8); } }
+        .siren-effect { animation: siren-flash 0.25s infinite; position: fixed; inset: 0; z-index: 9999 !important; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+        .chat-bubble { background: #1e293b; padding: 18px; border-radius: 4px 20px 20px 20px; margin-bottom: 24px; border-left: 5px solid #3b82f6; box-shadow: 0 4px 10px rgba(0,0,0,0.4); animation: slideUp 0.4s; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        .option-btn {
-            width: 100%; text-align: left; padding: 16px; margin-bottom: 10px;
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px; transition: all 0.2s; font-size: 15px; color: white; line-height: 1.4;
-        }
+        .option-btn { width: 100%; text-align: left; padding: 16px; margin-bottom: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; transition: all 0.2s; font-size: 15px; color: white; line-height: 1.4; }
         .option-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.98); }
         .option-btn.good { border-color: var(--safe); background: rgba(34, 197, 94, 0.2); pointer-events: none; }
         .option-btn.bad { border-color: var(--danger); background: rgba(239, 68, 68, 0.2); pointer-events: none; }
-
-        .feedback-box { 
-            display: none; padding: 14px; border-radius: 12px; margin-top: 8px; 
-            font-size: 14px; line-height: 1.5; animation: slideUp 0.3s;
-        }
+        .feedback-box { display: none; padding: 14px; border-radius: 12px; margin-top: 8px; font-size: 14px; line-height: 1.5; animation: slideUp 0.3s; }
         .feedback-box.good { background: #064e3b; color: #a7f3d0; border: 1px solid #10b981; }
         .feedback-box.bad { background: #7f1d1d; color: #fecaca; border: 1px solid #ef4444; }
-
-        .voice-wave span {
-            display: inline-block; width: 6px; height: 30px; background: #60a5fa; margin: 0 2px;
-            animation: wave 1s infinite ease-in-out;
-        }
+        .voice-wave span { display: inline-block; width: 6px; height: 30px; background: #60a5fa; margin: 0 2px; animation: wave 1s infinite ease-in-out; }
         @keyframes wave { 0%, 100% { height: 10px; opacity: 0.5; } 50% { height: 50px; opacity: 1; } }
-
-        /* 가이드 탭 디자인 완복 */
         .guide-title-box { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-bottom: 15px; border-bottom: 2px solid #e5e7eb; }
         .guide-ci { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
         .guide-item { display: flex; gap: 15px; background: white; padding: 18px; border-radius: 16px; border: 1px solid #e5e7eb; margin-bottom: 12px; align-items: flex-start; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .g-num { font-size: 22px; font-weight: 900; color: var(--accent); opacity: 0.7; line-height: 1; }
         .g-txt h3 { margin: 0 0 4px 0; font-size: 16px; color: var(--text-main); font-weight: 800; }
         .g-txt p { margin: 0; font-size: 13.5px; color: #6b7280; line-height: 1.6; }
-
         .quiz-card { background: white; padding: 18px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .quiz-msg { background: #f1f5f9; color: #334155; padding: 12px; border-radius: 10px; font-size: 14px; line-height: 1.5; margin: 12px 0; border-left: 4px solid var(--accent); }
     </style>
@@ -335,7 +293,17 @@
 </div>
 
 <script>
-    // === [Ver 12.0] 리얼 시나리오 데이터베이스 ===
+    /* [보안 레이어] 암호화 키 및 모듈 (난독화 패턴 적용) */
+    const _v_0x1 = "P0L_V01C3_S3CR3T_2024_SANGDANG";
+    const _m_sec = {
+        enc: (t) => CryptoJS.AES.encrypt(t, _v_0x1).toString(),
+        dec: (t) => {
+            try { return CryptoJS.AES.decrypt(t, _v_0x1).toString(CryptoJS.enc.Utf8); }
+            catch(e) { return ""; }
+        }
+    };
+
+    // === [Ver 12.1] 리얼 시나리오 데이터베이스 (로직 보호형) ===
     const SCENARIOS = {
         'prosecutor': {
             caller: "서울중앙지검 김민수검사", voice: "voice_prosecutor.mp3",
@@ -551,6 +519,10 @@
         const list = document.getElementById('feedbackList');
         list.innerHTML = '';
         history.forEach(fb => { list.innerHTML += `<li class="border-b border-gray-100 pb-2 mb-2 last:border-0 text-left text-gray-700 font-bold">${fb}</li>`; });
+        
+        /* [보안] 훈련 결과 암호화 백업 로직 (필요시 활성화) */
+        const _res_data = _m_sec.enc(JSON.stringify({ s: score, t: Date.now() }));
+        // localStorage.setItem('_p_v_res', _res_data);
     }
 
     function quitSim() { location.reload(); }
