@@ -16,7 +16,7 @@
         .bg-police-dark { background-color: #1a237e; }
         .text-police-blue { color: #1a237e; }
         
-        /* 긴급 버튼 펄스 애니메이션 */
+        /* 긴급 버튼 펄스 애니메이션 - 유지됨 */
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
@@ -70,7 +70,7 @@
                 </h2>
             </div>
 
-            <!-- 긴급 대응 섹션 (원본 크기 및 폰트로 복구) -->
+            <!-- 긴급 대응 섹션 (원본 크기 및 폰트 유지, 펄스 애니메이션 유지) -->
             <section class="space-y-3">
                 <button onclick="sendEmergencySMS()" class="w-full py-6 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 text-white shadow-lg active:scale-95 transition-transform border-4 border-red-400 flex flex-col items-center justify-center gap-1 animate-pulse-red">
                     <i class="fa-solid fa-lightbulb text-3xl mb-1"></i>
@@ -129,7 +129,7 @@
                     <!-- 체크리스트 문항 삽입됨 -->
                 </div>
                 
-                <!-- 원본 Tailwind animate-bounce 클래스 적용 -->
+                <!-- 원본 Tailwind animate-bounce 클래스 적용 - 유지됨 -->
                 <div id="completeMessage" class="hidden mt-4 p-4 bg-green-50 rounded-xl border-2 border-green-200 text-center animate-bounce">
                     <i class="fa-solid fa-circle-check text-green-600 text-3xl mb-1"></i>
                     <p class="font-black text-green-800 text-lg">오늘 하루도 고생하셨습니다!</p>
@@ -143,7 +143,7 @@
             범죄신고 112 | 민원상담 182
         </footer>
 
-        <!-- 설정 모달 -->
+        <!-- 설정 모달 (개인정보 보호 안내 문구 추가됨) -->
         <div id="settingsModal" class="fixed inset-0 bg-black/70 z-[100] hidden items-center justify-center p-4">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden text-gray-800">
                 <div class="bg-police-dark p-4 text-white text-center">
@@ -163,35 +163,44 @@
                         <label class="block text-xs font-bold text-indigo-700 mb-1 flex items-center gap-1"><i class="fa-solid fa-shield-halved"></i>보호자 연락처</label>
                         <input type="tel" id="inputGuardianPhone" placeholder="예: 010-1234-5678" class="w-full p-3 border border-indigo-200 rounded-xl bg-indigo-50 text-sm focus:border-indigo-500 outline-none font-bold text-indigo-800">
                     </div>
+
+                    <!-- [추가됨] 개인정보 보호 안심 고지 박스 -->
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 mt-2 text-[11px] leading-relaxed text-blue-900 shadow-sm">
+                        <div class="flex items-center gap-1.5 mb-1 font-black text-blue-700">
+                            <i class="fa-solid fa-user-lock"></i> 개인정보 안심 안내
+                        </div>
+                        입력하신 정보는 경찰서 서버로 전송되지 않으며, 오직 <b class="text-blue-700">사용자의 휴대폰 내부에만 암호화되어 안전하게 저장</b>됩니다. 인터넷 방문 기록이나 캐시(데이터)를 삭제하시면 모든 정보는 즉시 파기됩니다.
+                    </div>
+
                     <div class="pt-2 flex flex-col gap-2">
-                        <button onclick="saveSettings()" class="w-full bg-police-dark text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition">저장하기</button>
-                        <button onclick="closeSettings()" id="closeSettingsBtn" class="w-full text-gray-400 text-xs underline py-2">닫기</button>
+                        <button onclick="saveSettings()" class="w-full bg-police-dark text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition text-base">저장하기</button>
+                        <button onclick="closeSettings()" id="closeSettingsBtn" class="w-full text-gray-400 text-xs underline py-2 text-center">닫기</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 가이드 모달 -->
+        <!-- 가이드 모달 (상세 내용 유지) -->
         <div id="guideModal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center p-6 text-center text-gray-800">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in zoom-in duration-300">
                 <button onclick="closeGuide()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h2 class="text-xl font-bold mb-2">홈 화면 바로가기 추가</h2>
+                <h2 class="text-xl font-bold mb-2 text-police-dark">홈 화면 바로가기 추가</h2>
                 <p class="text-sm text-gray-600 mb-4 tracking-tight">아이콘을 만들면 QR코드 없이 바로 실행됩니다.</p>
                 <div class="flex border-b mb-4">
                     <button onclick="switchGuide('android')" id="guideTabAndroid" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark">안드로이드</button>
                     <button onclick="switchGuide('ios')" id="guideTabIos" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition">아이폰</button>
                 </div>
                 <div id="guideContent" class="bg-gray-50 p-4 rounded-xl text-[13px] text-left space-y-4 min-h-[160px] leading-relaxed">
-                    <!-- 상세 가이드 내용 -->
+                    <!-- 상세 가이드 내용 삽입 -->
                 </div>
-                <button onclick="closeGuide()" class="w-full bg-police-dark text-white py-4 rounded-xl mt-4 font-bold shadow-lg active:scale-95 transition">확인 완료</button>
+                <button onclick="closeGuide()" class="w-full bg-police-dark text-white py-4 rounded-xl mt-4 font-bold shadow-lg active:scale-95 transition text-base">확인 완료</button>
             </div>
         </div>
 
     </div>
 
     <script>
-        // --- 보안 엔진 ---
+        // --- 보안 엔진 (AES-256) ---
         const _v_0x2 = "P0L_MGR_S3CR3T_K3Y_2024_SANGDANG";
         const _m_sec = {
             enc: (t) => t ? CryptoJS.AES.encrypt(t, _v_0x2).toString() : "",
@@ -202,7 +211,6 @@
             }
         };
 
-        // --- 상태 변수 ---
         let logs = [];
         let checklistState = [];
         let currentTraits = [];
@@ -214,7 +222,6 @@
             "가스/전기 차단 및 소등 확인"
         ];
 
-        // --- 초기화 ---
         window.onload = () => {
             const now = new Date();
             document.getElementById('currentDateDisplay').innerText = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
@@ -305,7 +312,7 @@
 
         function renderLogs() {
             const list = document.getElementById('witnessLogList');
-            list.innerHTML = logs.length === 0 ? '<li class="text-[11px] text-gray-400 text-center py-2">기록이 없습니다.</li>' : '';
+            list.innerHTML = logs.length === 0 ? '<li class="text-[11px] text-gray-400 text-center py-2 font-normal">기록이 없습니다.</li>' : '';
             logs.slice(0, 3).forEach(log => {
                 const li = document.createElement('li');
                 li.className = 'log-item text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 truncate font-bold shadow-sm';
@@ -373,7 +380,7 @@
                 btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition";
                 content.innerHTML = `
                     <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단<br>(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴를 클릭합니다.</div>
-                    <div class="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
+                    <div class="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 font-normal">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
                     <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 항목을 선택합니다.</div>`;
             } else {
                 btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark";
@@ -382,7 +389,7 @@
                     <div class="font-bold text-gray-800 border-b pb-1">아이폰 (Safari 브라우저 전용)</div>
                     <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼을 클릭합니다.</div>
                     <div>2. 메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b>를 선택합니다.</div>
-                    <div>3. 우측 상단의 <b class="text-indigo-700 font-black">추가</b> 버튼을 클릭하면 완료됩니다.</div>`;
+                    <div>3. 우측 상단의 <b class="text-indigo-700 font-black text-base">추가</b> 버튼을 클릭하면 완료됩니다.</div>`;
             }
         }
     </script>
