@@ -2,12 +2,11 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>상당 폴-매니저 (보안강화)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>상당경찰서 치안소식지</title>
     
     <!-- 라이브러리 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -16,352 +15,192 @@
         .bg-police-dark { background-color: #1a237e; }
         .text-police-blue { color: #1a237e; }
         
-        /* 긴급 버튼 펄스 애니메이션 - 유지됨 */
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        .animate-pulse-red { animation: pulse-red 2s infinite; }
-        
-        /* 기록 로그 등장 애니메이션 */
-        .log-item { animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
         /* 스크롤바 숨기기 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 소식지 카드 등장 애니메이션 수정 (투명도 오류 해결) */
+        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; animation-fill-mode: both; }
+        @keyframes fadeInUp { 
+            0% { opacity: 0; transform: translateY(20px); } 
+            100% { opacity: 1; transform: translateY(0); } 
+        }
+        
+        /* 카드 클릭 효과 */
+        .news-card { transition: transform 0.2s, box-shadow 0.2s; }
+        .news-card:active { transform: scale(0.98); }
     </style>
 </head>
-<body class="min-h-screen flex justify-center">
+<body class="min-h-screen flex justify-center bg-gray-200">
 
-    <div id="app" class="w-full max-w-md bg-white min-h-screen shadow-2xl flex flex-col relative overflow-hidden text-police-blue">
+    <div id="app" class="w-full max-w-md bg-gray-50 min-h-screen shadow-2xl flex flex-col relative overflow-hidden text-gray-800">
         
         <!-- 헤더 -->
-        <header class="bg-police-dark text-white p-4 flex items-center justify-between shadow-md z-20">
+        <header class="bg-police-dark text-white p-4 flex items-center justify-between shadow-md z-20 sticky top-0">
             <div class="flex items-center gap-3">
-                <button onclick="location.href='../'" class="p-1 rounded-full hover:bg-blue-900 transition">
-                    <i class="fa-solid fa-arrow-left text-xl"></i>
-                </button>
-                <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" class="w-10 h-10 object-contain rounded-full bg-white p-0.5">
-                <div>
-                    <h1 class="font-black text-lg leading-tight">폴-매니저</h1>
-                    <p class="text-[10px] text-gray-300">소상공인 안심 파트너</p>
+                <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" class="w-10 h-10 object-contain rounded-full bg-white p-0.5 shadow-sm">
+                <div class="flex flex-col justify-center">
+                    <h1 class="font-black text-lg leading-tight tracking-tight">상당 치안 브리핑</h1>
+                    <p class="text-[10px] text-gray-300 font-medium">청주상당경찰서 범죄예방대응과</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="openInstallGuide()" class="text-yellow-300 hover:text-white text-[10px] border border-yellow-300 rounded px-2 py-1 font-bold flex items-center gap-1">
-                    <i class="fa-solid fa-square-plus text-[10px]"></i>바로가기
-                </button>
-                <button onclick="openSettings()" class="text-gray-300 hover:text-white transition">
-                    <i class="fa-solid fa-gear text-xl"></i>
+            <div>
+                <button onclick="openInstallGuide()" class="text-white bg-white/20 hover:bg-white/30 text-xs rounded-lg px-3 py-1.5 font-bold transition flex items-center gap-1.5 shadow-inner">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>바로가기
                 </button>
             </div>
         </header>
 
-        <!-- 메인 콘텐츠 -->
-        <main class="flex-1 overflow-y-auto p-4 space-y-6 pb-20 no-scrollbar">
-            
-            <div class="bg-blue-50 border-l-4 border-[#1a237e] p-4 rounded-r-lg shadow-sm">
-                <p class="text-[10px] text-gray-500 mb-1" id="currentDateDisplay"></p>
-                <h2 class="text-lg font-bold text-gray-800 leading-tight">
-                    <span id="displayStoreName" class="text-[#1a237e]">사장님</span>, <br>
-                    오늘도 안전하게 지켜드릴게요.
-                </h2>
+        <div class="bg-white border-b border-gray-200 p-5 text-center shadow-sm z-10 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 opacity-5">
+                <i class="fa-solid fa-shield-halved text-9xl text-police-blue"></i>
             </div>
-
-            <!-- 긴급 대응 섹션 (원본 크기 및 폰트 유지, 펄스 애니메이션 유지) -->
-            <section class="space-y-3">
-                <button onclick="sendEmergencySMS()" class="w-full py-6 rounded-2xl bg-gradient-to-br from-red-600 to-red-700 text-white shadow-lg active:scale-95 transition-transform border-4 border-red-400 flex flex-col items-center justify-center gap-1 animate-pulse-red">
-                    <i class="fa-solid fa-lightbulb text-3xl mb-1"></i>
-                    <span class="text-2xl font-black">112 긴급 문자 신고</span>
-                    <span class="text-xs opacity-80 font-normal">위치+주소 자동 입력</span>
-                </button>
-                <button onclick="sendGuardianSMS()" class="w-full py-3 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold rounded-xl shadow active:scale-95 transition flex items-center justify-center gap-2 font-black">
-                    <i class="fa-solid fa-comment-sms text-lg"></i>
-                    <span>보호자(가족) 호출 문자</span>
-                    <span class="text-[10px] bg-yellow-600 text-white px-2 py-0.5 rounded-full font-bold">조용히</span>
-                </button>
-            </section>
-
-            <!-- 스마트 위트니스 (기록) -->
-            <section class="bg-white rounded-xl border-2 border-indigo-100 shadow-sm p-4 text-gray-800">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-eye text-indigo-600"></i>수상한 사람 기록
-                    </h3>
-                    <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-bold">수사 단서</span>
-                </div>
-                <div class="grid grid-cols-3 gap-2 mb-4">
-                    <button onclick="addTrait('남성')" class="trait-btn bg-gray-50 py-2 rounded-lg text-xs font-bold border border-gray-100 text-gray-600 hover:bg-indigo-50 transition">남성</button>
-                    <button onclick="addTrait('여성')" class="trait-btn bg-gray-50 py-2 rounded-lg text-xs font-bold border border-gray-100 text-gray-600 hover:bg-indigo-50 transition">여성</button>
-                    <button onclick="addTrait('아는사람')" class="trait-btn bg-gray-50 py-2 rounded-lg text-xs font-bold border border-gray-100 text-gray-600 hover:bg-indigo-50 transition">아는사람</button>
-                    <button onclick="addTrait('검정의상')" class="trait-btn bg-gray-800 py-2 rounded-lg text-xs font-bold text-white hover:bg-black transition">검정의상</button>
-                    <button onclick="addTrait('밝은의상')" class="trait-btn bg-white py-2 rounded-lg text-xs font-bold border border-gray-300 text-gray-600 hover:bg-gray-50 transition">밝은의상</button>
-                    <button onclick="addTrait('마스크')" class="trait-btn bg-gray-50 py-2 rounded-lg text-xs font-bold border border-gray-100 text-gray-600 hover:bg-indigo-50 transition">마스크</button>
-                </div>
-                <button onclick="saveWitnessLog()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg shadow-md mb-4 flex items-center justify-center gap-2 text-sm active:scale-95 transition">
-                    <i class="fa-solid fa-floppy-disk"></i> 지금 상황 저장하기
-                </button>
-                <div class="bg-gray-50 rounded-lg p-3">
-                    <div class="flex justify-between items-center mb-2 border-b pb-1">
-                        <span class="text-[10px] font-bold text-gray-500">최근 기록</span>
-                        <div class="flex gap-2">
-                            <button onclick="clearLogs()" class="text-[10px] text-red-500 underline font-medium flex items-center gap-1">삭제</button>
-                            <button onclick="copyLogs()" class="text-[10px] text-blue-600 underline font-medium flex items-center gap-1">복사</button>
-                        </div>
-                    </div>
-                    <ul id="witnessLogList" class="space-y-1.5 min-h-[40px]">
-                        <li class="text-[11px] text-gray-400 text-center py-2 font-normal">기록이 없습니다.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- 안전 점검 섹션 -->
-            <section class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 text-gray-800">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-green-600"></i>퇴근 전 안전 점검
-                    </h3>
-                    <span id="checkProgress" class="text-[10px] font-bold px-2 py-1 rounded bg-gray-100 text-gray-500 transition-colors">0% 완료</span>
-                </div>
-                <div class="space-y-2.5" id="checklistArea">
-                    <!-- 체크리스트 문항 삽입됨 -->
-                </div>
-                
-                <!-- 원본 Tailwind animate-bounce 클래스 적용 - 유지됨 -->
-                <div id="completeMessage" class="hidden mt-4 p-4 bg-green-50 rounded-xl border-2 border-green-200 text-center animate-bounce">
-                    <i class="fa-solid fa-circle-check text-green-600 text-3xl mb-1"></i>
-                    <p class="font-black text-green-800 text-lg">오늘 하루도 고생하셨습니다!</p>
-                    <p class="text-xs text-green-600">모든 안전 점검이 완료되었습니다.</p>
-                </div>
-            </section>
-        </main>
-
-        <footer class="bg-gray-100 p-4 text-center border-t text-[10px] text-gray-400 pb-8">
-            청주상당경찰서 범죄예방대응과<br>
-            범죄신고 112 | 민원상담 182
-        </footer>
-
-        <!-- 설정 모달 (개인정보 보호 안내 문구 추가됨) -->
-        <div id="settingsModal" class="fixed inset-0 bg-black/70 z-[100] hidden items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden text-gray-800">
-                <div class="bg-police-dark p-4 text-white text-center">
-                    <h2 class="font-bold text-lg">정보 설정</h2>
-                    <p class="text-[10px] opacity-80">위급 상황 대비를 위한 기초 정보</p>
-                </div>
-                <div class="p-6 space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">상호명</label>
-                        <input type="text" id="inputStoreName" placeholder="예: 상당헤어샵" class="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:border-indigo-500 outline-none font-bold">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1">매장 주소 (도로명)</label>
-                        <textarea id="inputAddress" rows="2" placeholder="예: 상당구 1순환로 1234, 1층" class="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 text-sm focus:border-indigo-500 outline-none font-bold"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-indigo-700 mb-1 flex items-center gap-1"><i class="fa-solid fa-shield-halved"></i>보호자 연락처</label>
-                        <input type="tel" id="inputGuardianPhone" placeholder="예: 010-1234-5678" class="w-full p-3 border border-indigo-200 rounded-xl bg-indigo-50 text-sm focus:border-indigo-500 outline-none font-bold text-indigo-800">
-                    </div>
-
-                    <!-- [추가됨] 개인정보 보호 안심 고지 박스 -->
-                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 mt-2 text-[11px] leading-relaxed text-blue-900 shadow-sm">
-                        <div class="flex items-center gap-1.5 mb-1 font-black text-blue-700">
-                            <i class="fa-solid fa-user-lock"></i> 개인정보 안심 안내
-                        </div>
-                        입력하신 정보는 경찰서 서버로 전송되지 않으며, 오직 <b class="text-blue-700">사용자의 휴대폰 내부에만 암호화되어 안전하게 저장</b>됩니다. 인터넷 방문 기록이나 캐시(데이터)를 삭제하시면 모든 정보는 즉시 파기됩니다.
-                    </div>
-
-                    <div class="pt-2 flex flex-col gap-2">
-                        <button onclick="saveSettings()" class="w-full bg-police-dark text-white font-bold py-3 rounded-xl shadow-lg active:scale-95 transition text-base">저장하기</button>
-                        <button onclick="closeSettings()" id="closeSettingsBtn" class="w-full text-gray-400 text-xs underline py-2 text-center">닫기</button>
-                    </div>
-                </div>
-            </div>
+            <p class="text-xs font-bold text-gray-500 mb-1 tracking-wider uppercase" id="currentDateDisplay"></p>
+            <h2 class="text-xl font-black text-police-blue leading-snug">
+                시민과 함께 만드는<br>안전한 지역사회
+            </h2>
+            <p class="text-xs text-gray-500 mt-2">최신 범죄예방 소식과 정책을 확인하세요.</p>
         </div>
 
-        <!-- 가이드 모달 (상세 내용 유지) -->
+        <main class="flex-1 overflow-y-auto p-4 pb-12 no-scrollbar">
+            <div id="newsFeed" class="space-y-4">
+                <!-- 자바스크립트로 뉴스레터 카드가 삽입됩니다. -->
+            </div>
+            
+            <div class="mt-8 text-center opacity-50">
+                <i class="fa-solid fa-check-circle text-gray-400 text-3xl mb-2"></i>
+                <p class="text-xs font-bold text-gray-500">모든 소식을 확인하셨습니다.</p>
+            </div>
+        </main>
+
+        <footer class="bg-white p-5 text-center border-t border-gray-200 text-[10px] text-gray-400 font-medium pb-8">
+            <p class="mb-1 text-gray-500 font-bold">청주상당경찰서 범죄예방대응과</p>
+            범죄신고 112 | 민원상담 182 | 사이버범죄신고 118<br>
+            ⓒ 2026 Sangdang Police Station. All rights reserved.
+        </footer>
+
         <div id="guideModal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center p-6 text-center text-gray-800">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative animate-in zoom-in duration-300">
-                <button onclick="closeGuide()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark text-xl"></i></button>
-                <h2 class="text-xl font-bold mb-2 text-police-dark">홈 화면 바로가기 추가</h2>
-                <p class="text-sm text-gray-600 mb-4 tracking-tight">아이콘을 만들면 QR코드 없이 바로 실행됩니다.</p>
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 relative">
+                <button onclick="closeGuide()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+                
+                <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3 text-police-blue text-2xl">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                
+                <h2 class="text-xl font-black mb-1 text-police-dark">바탕화면에 설치하기</h2>
+                <p class="text-xs text-gray-500 mb-5 tracking-tight font-medium">아이콘을 만들어 두면 언제든 빠르게 접속할 수 있습니다.</p>
+                
                 <div class="flex border-b mb-4">
-                    <button onclick="switchGuide('android')" id="guideTabAndroid" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark">안드로이드</button>
-                    <button onclick="switchGuide('ios')" id="guideTabIos" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition">아이폰</button>
+                    <button onclick="switchGuide('android')" id="guideTabAndroid" class="flex-1 py-2.5 text-sm font-bold border-b-2 border-police-dark text-police-dark transition-colors">안드로이드</button>
+                    <button onclick="switchGuide('ios')" id="guideTabIos" class="flex-1 py-2.5 text-sm font-bold border-b-2 border-transparent text-gray-400 transition-colors">아이폰</button>
                 </div>
-                <div id="guideContent" class="bg-gray-50 p-4 rounded-xl text-[13px] text-left space-y-4 min-h-[160px] leading-relaxed">
-                    <!-- 상세 가이드 내용 삽입 -->
+                
+                <div id="guideContent" class="bg-gray-50 p-5 rounded-2xl text-[13px] text-left space-y-4 min-h-[160px] leading-relaxed border border-gray-100">
+                    <!-- 가이드 내용이 동적으로 삽입됨 -->
                 </div>
-                <button onclick="closeGuide()" class="w-full bg-police-dark text-white py-4 rounded-xl mt-4 font-bold shadow-lg active:scale-95 transition text-base">확인 완료</button>
+                
+                <button onclick="closeGuide()" class="w-full bg-police-dark hover:bg-blue-900 text-white py-4 rounded-xl mt-5 font-black shadow-lg active:scale-95 transition text-base">확인했습니다</button>
             </div>
         </div>
 
     </div>
 
     <script>
-        // --- 보안 엔진 (AES-256) ---
-        const _v_0x2 = "P0L_MGR_S3CR3T_K3Y_2024_SANGDANG";
-        const _m_sec = {
-            enc: (t) => t ? CryptoJS.AES.encrypt(t, _v_0x2).toString() : "",
-            dec: (t) => {
-                if (!t) return "";
-                try { return CryptoJS.AES.decrypt(t, _v_0x2).toString(CryptoJS.enc.Utf8); }
-                catch(e) { return ""; }
+        // ==========================================
+        // [작성 구역] 치안 소식지 데이터
+        // ==========================================
+        // type: '긴급'(빨간색), '알림'(파란색), '정책'(초록색)
+        const NEWS_LETTERS = [
+            {
+                type: '알림',
+                title: '본격 여름철, 창문 개방 노린 침입절도 주의',
+                date: '2026.06.05',
+                desc: '이른 무더위로 야간에 창문을 열어두고 주무시거나 외출하는 세대가 늘면서, 이를 노린 <b>침입 절도</b> 발생이 우려되고 있습니다.<br><br><b>[예방 수칙]</b><br>1. 외출 시 2층 이상 고층이라도 베란다/창문 반드시 시정<br>2. 방범창이 훼손된 곳은 즉시 보수<br>3. 장기간 부재 시 순찰신문고 활용 <b>탄력순찰</b> 적극 신청<br><br>작은 주의가 큰 피해를 예방합니다!'
+            },
+            {
+                type: '긴급',
+                title: '무인점포 / 잡화점 절도 급증 주의보',
+                date: '2026.06.05',
+                desc: '최근 무인점포 / 잡화점에서 감시 소홀을 이용한 절도가 빈발하고 있습니다.<br><br><b>[예방 수칙]</b><br>1. 고가 물품은 반드시 카운터에 보관·결제 후 지급<br>2. 매장 내 CCTV 사각지대 확인<br>3. <b>상당경찰서 자전거 등록제(안심자전거)</b> 참여 적극 권장'
+            },
+            {
+                type: '알림',
+                title: '자영업자 타겟 신종 노쇼(No-show) 사기',
+                date: '2026.06.05',
+                desc: '공공기관 및 군부대를 사칭하여 단체 예약을 한 뒤, "특정 업체의 와인/식자재 대납"을 유도하는 신종 사기가 발생하고 있습니다.<br><br>어떠한 핑계라도 <b>"선결제, 대납 요구"</b>를 한다면 100% 사기이므로 즉시 112로 신고 바랍니다.'
+            },
+            {
+                type: '정책',
+                title: '보이스피싱 예방수칙 <b>어서끊자!</b>',
+                date: '2026.06.05',
+                desc: '최근 다양한 시나리오의 보이스피싱 범죄가 증가함에 따라 피싱 범죄를 예방하기 위해 <b>어서끊자!</b> 캠페인을 추진하고 있습니다.<br><br>최고의 피싱범죄 예방은 <b>"전화를 끊는 것"</b> 부터 시작이라는 점 기억하세요.'
+            },
+            {
+                type: '알림',
+                title: '보이스피싱 예방 훈련소 "폴-보이스" 운영',
+                date: '2026.05.20',
+                desc: '범인의 실제 목소리를 듣고 가상으로 대처해볼 수 있는 <b>보이스피싱 예방 훈련소(폴-보이스)</b>가 정식 오픈했습니다.<br>신종 수법을 미리 체험하고 피해를 예방하세요.'
             }
-        };
-
-        let logs = [];
-        let checklistState = [];
-        let currentTraits = [];
-        const CHECKLIST_ITEMS = [
-            "출입문 시정장치 및 경보음 작동 확인",
-            "CCTV 녹화 상태 및 카메라 각도 점검",
-            "현금·귀금속 시재 금고 보관 및 잠금 확인",
-            "가게 내·외부 사각지대 확인",
-            "가스/전기 차단 및 소등 확인"
         ];
 
-        window.onload = () => {
+        // 페이지 로드 시 즉시 실행 (안정적인 실행을 위해 DOMContentLoaded로 변경)
+        document.addEventListener('DOMContentLoaded', () => {
+            // 오늘 날짜 세팅
             const now = new Date();
             document.getElementById('currentDateDisplay').innerText = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
-            loadData();
-            renderChecklist();
-            renderLogs();
-        };
+            
+            // 뉴스레터 렌더링
+            renderNewsletters();
+        });
 
-        function loadData() {
-            const name = _m_sec.dec(localStorage.getItem('pol_storeName'));
-            const logsData = _m_sec.dec(localStorage.getItem('pol_witness_logs'));
-            const checkData = _m_sec.dec(localStorage.getItem('pol_checklist_data'));
+        function renderNewsletters() {
+            const feed = document.getElementById('newsFeed');
+            let contentHTML = ''; // 한 번에 업데이트하기 위한 변수 (성능 최적화)
+            
+            NEWS_LETTERS.forEach((news, index) => {
+                // 타입별 뱃지 및 아이콘 색상 설정
+                let badgeColor = '';
+                let iconHtml = '';
+                
+                if (news.type === '긴급') {
+                    badgeColor = 'bg-red-100 text-red-600 border-red-200';
+                    iconHtml = '<i class="fa-solid fa-triangle-exclamation text-red-500 animate-pulse"></i>';
+                } else if (news.type === '정책') {
+                    badgeColor = 'bg-green-100 text-green-700 border-green-200';
+                    iconHtml = '<i class="fa-solid fa-landmark text-green-600"></i>';
+                } else {
+                    badgeColor = 'bg-blue-100 text-blue-600 border-blue-200';
+                    iconHtml = '<i class="fa-solid fa-bell text-blue-500"></i>';
+                }
 
-            if (name) {
-                document.getElementById('displayStoreName').innerText = name;
-                document.getElementById('inputStoreName').value = name;
-                document.getElementById('inputAddress').value = _m_sec.dec(localStorage.getItem('pol_address'));
-                document.getElementById('inputGuardianPhone').value = _m_sec.dec(localStorage.getItem('pol_guardianPhone'));
-            } else {
-                openSettings();
-            }
+                // 애니메이션 딜레이 설정 (순차적으로 나타나게 함)
+                const delay = index * 0.1;
 
-            if (logsData) { try { logs = JSON.parse(logsData); } catch(e) { logs = []; } }
-            if (checkData) {
-                try {
-                    const parsed = JSON.parse(checkData);
-                    const today = new Date().toISOString().split('T')[0];
-                    checklistState = (parsed.date === today) ? (parsed.checks || []) : new Array(CHECKLIST_ITEMS.length).fill(false);
-                } catch(e) { checklistState = new Array(CHECKLIST_ITEMS.length).fill(false); }
-            } else { checklistState = new Array(CHECKLIST_ITEMS.length).fill(false); }
-        }
-
-        function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
-        function closeSettings() {
-            const name = _m_sec.dec(localStorage.getItem('pol_storeName'));
-            if (!name) { alert("기본 정보를 먼저 저장해야 합니다."); return; }
-            document.getElementById('settingsModal').style.display = 'none';
-        }
-
-        function saveSettings() {
-            const name = document.getElementById('inputStoreName').value.trim();
-            const addr = document.getElementById('inputAddress').value.trim();
-            const phone = document.getElementById('inputGuardianPhone').value.trim();
-            if (!name || !addr) { alert("상호명과 주소는 필수입니다."); return; }
-            localStorage.setItem('pol_storeName', _m_sec.enc(name));
-            localStorage.setItem('pol_address', _m_sec.enc(addr));
-            localStorage.setItem('pol_guardianPhone', _m_sec.enc(phone));
-            document.getElementById('displayStoreName').innerText = name;
-            document.getElementById('settingsModal').style.display = 'none';
-            if (!localStorage.getItem('pol_guide_shown')) { openInstallGuide(); localStorage.setItem('pol_guide_shown', 'true'); }
-        }
-
-        function sendEmergencySMS() {
-            const name = _m_sec.dec(localStorage.getItem('pol_storeName'));
-            const addr = _m_sec.dec(localStorage.getItem('pol_address'));
-            if (!name) { openSettings(); return; }
-            const msg = `[긴급신고/상당경찰서] 위급상황 발생!\n장소: ${addr}\n상호: ${name}\n즉시 출동 바랍니다.`;
-            if (confirm("112 문자 신고창으로 이동하시겠습니까?")) window.location.href = `sms:112?body=${encodeURIComponent(msg)}`;
-        }
-
-        function sendGuardianSMS() {
-            const phone = _m_sec.dec(localStorage.getItem('pol_guardianPhone'));
-            const name = _m_sec.dec(localStorage.getItem('pol_storeName'));
-            if (!phone) { alert("보호자 연락처를 먼저 등록해주세요."); openSettings(); return; }
-            const msg = `[긴급연락] ${name}입니다. 지금 가게로 급히 와주세요. 도움이 필요합니다.`;
-            if (confirm(`보호자(${phone})에게 문자를 보내시겠습니까?`)) {
-                const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-                window.location.href = `sms:${phone}${isIOS ? '&' : '?'}body=${encodeURIComponent(msg)}`;
-            }
-        }
-
-        function addTrait(t) {
-            currentTraits.push(t);
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "선택됨!";
-            setTimeout(() => { btn.innerText = originalText; }, 500);
-        }
-
-        function saveWitnessLog() {
-            if (currentTraits.length === 0) { alert("특징을 선택해주세요."); return; }
-            const now = new Date();
-            const logEntry = `${now.toLocaleDateString()} ${now.toLocaleTimeString()} - ${currentTraits.join(', ')}`;
-            logs.unshift(logEntry); logs = logs.slice(0, 50);
-            localStorage.setItem('pol_witness_logs', _m_sec.enc(JSON.stringify(logs)));
-            currentTraits = []; renderLogs(); alert("저장되었습니다.");
-        }
-
-        function renderLogs() {
-            const list = document.getElementById('witnessLogList');
-            list.innerHTML = logs.length === 0 ? '<li class="text-[11px] text-gray-400 text-center py-2 font-normal">기록이 없습니다.</li>' : '';
-            logs.slice(0, 3).forEach(log => {
-                const li = document.createElement('li');
-                li.className = 'log-item text-[11px] text-gray-700 bg-white p-2 rounded border border-gray-200 truncate font-bold shadow-sm';
-                li.innerText = log;
-                list.appendChild(li);
+                const cardHTML = `
+                    <article class="news-card bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 overflow-hidden fade-in-up" style="animation-delay: ${delay}s">
+                        <div class="p-5">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[11px] font-black px-2.5 py-1 rounded-md border ${badgeColor} flex items-center gap-1.5 tracking-tight">
+                                    ${iconHtml} ${news.type}
+                                </span>
+                                <span class="text-[11px] text-gray-400 font-bold"><i class="fa-regular fa-calendar mr-1"></i>${news.date}</span>
+                            </div>
+                            <h3 class="font-black text-gray-800 text-[17px] mb-2.5 leading-snug break-keep">
+                                ${news.title}
+                            </h3>
+                            <div class="text-[13.5px] text-gray-600 leading-relaxed font-medium break-keep bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                ${news.desc}
+                            </div>
+                        </div>
+                    </article>
+                `;
+                contentHTML += cardHTML;
             });
-        }
-
-        function clearLogs() { if (confirm("기록을 모두 삭제하시겠습니까?")) { localStorage.removeItem('pol_witness_logs'); logs = []; renderLogs(); } }
-        function copyLogs() {
-            if (logs.length === 0) return;
-            const text = "[상당 폴-매니저 기록]\n" + logs.join('\n');
-            const el = document.createElement('textarea'); el.value = text;
-            document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-            alert("기록이 복사되었습니다.");
-        }
-
-        function renderChecklist() {
-            const area = document.getElementById('checklistArea');
-            area.innerHTML = '';
-            CHECKLIST_ITEMS.forEach((item, idx) => {
-                const label = document.createElement('label');
-                label.className = 'flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition font-bold text-gray-600';
-                label.innerHTML = `<input type="checkbox" ${checklistState[idx] ? 'checked' : ''} onchange="toggleCheck(${idx})" class="w-5 h-5 accent-green-600 rounded"><span class="text-xs">${item}</span>`;
-                area.appendChild(label);
-            });
-            updateProgress();
-        }
-
-        function toggleCheck(idx) {
-            checklistState[idx] = event.target.checked;
-            const today = new Date().toISOString().split('T')[0];
-            localStorage.setItem('pol_checklist_data', _m_sec.enc(JSON.stringify({ date: today, checks: checklistState })));
-            updateProgress();
-        }
-
-        function updateProgress() {
-            const count = checklistState.filter(Boolean).length;
-            const percent = Math.round((count / CHECKLIST_ITEMS.length) * 100);
-            const el = document.getElementById('checkProgress');
-            const msg = document.getElementById('completeMessage');
-            el.innerText = `${percent}% 완료`;
-            if (percent === 100) {
-                el.className = "text-[10px] font-bold px-2 py-1 rounded bg-green-100 text-green-700";
-                msg.classList.remove('hidden');
-            } else {
-                el.className = "text-[10px] font-bold px-2 py-1 rounded bg-gray-100 text-gray-500";
-                msg.classList.add('hidden');
-            }
+            
+            // 완성된 HTML을 한 번에 삽입하여 렌더링 오류 방지
+            feed.innerHTML = contentHTML; 
         }
 
         function openInstallGuide() {
@@ -369,27 +208,46 @@
             switchGuide(isIOS ? 'ios' : 'android');
             document.getElementById('guideModal').style.display = 'flex';
         }
-        function closeGuide() { document.getElementById('guideModal').style.display = 'none'; }
+        
+        function closeGuide() { 
+            document.getElementById('guideModal').style.display = 'none'; 
+        }
         
         function switchGuide(os) {
             const btnAnd = document.getElementById('guideTabAndroid');
             const btnIos = document.getElementById('guideTabIos');
             const content = document.getElementById('guideContent');
+            
+            const activeClass = "flex-1 py-2.5 text-sm font-black border-b-2 border-police-dark text-police-dark transition-colors";
+            const inactiveClass = "flex-1 py-2.5 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-colors";
+            
             if (os === 'android') {
-                btnAnd.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark";
-                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition";
+                btnAnd.className = activeClass;
+                btnIos.className = inactiveClass;
                 content.innerHTML = `
-                    <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단<br>(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴를 클릭합니다.</div>
-                    <div class="text-[11px] text-blue-600 bg-blue-50 p-2 rounded border border-blue-100 font-normal">※ 파란색 앱 헤더가 아닌, 인터넷 창 테두리에 있습니다.</div>
-                    <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 항목을 선택합니다.</div>`;
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 font-black flex items-center justify-center shrink-0 mt-0.5">1</div>
+                        <div>현재 창 우측 상단(또는 하단)의 <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical mx-1"></i>점 3개 메뉴</b>를 클릭합니다.</div>
+                    </div>
+                    <div class="flex items-start gap-3 mt-3">
+                        <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 font-black flex items-center justify-center shrink-0 mt-0.5">2</div>
+                        <div><b class="text-gray-800"><i class="fa-solid fa-mobile-screen mx-1"></i>홈 화면에 추가</b> 항목을 찾아 선택합니다.</div>
+                    </div>`;
             } else {
-                btnIos.className = "flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark";
-                btnAnd.className = "flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 transition";
+                btnIos.className = activeClass;
+                btnAnd.className = inactiveClass;
                 content.innerHTML = `
-                    <div class="font-bold text-gray-800 border-b pb-1">아이폰 (Safari 브라우저 전용)</div>
-                    <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼을 클릭합니다.</div>
-                    <div>2. 메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus"></i> 홈 화면에 추가</b>를 선택합니다.</div>
-                    <div>3. 우측 상단의 <b class="text-indigo-700 font-black text-base">추가</b> 버튼을 클릭하면 완료됩니다.</div>`;
+                    <div class="text-[11px] text-blue-600 bg-blue-50 p-2 rounded-lg border border-blue-100 font-bold mb-3 flex items-center gap-1.5">
+                        <i class="fa-brands fa-safari"></i> 아이폰은 Safari 브라우저에서만 가능합니다.
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 font-black flex items-center justify-center shrink-0 mt-0.5">1</div>
+                        <div>브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket mx-1"></i>공유</b> 버튼을 클릭합니다.</div>
+                    </div>
+                    <div class="flex items-start gap-3 mt-3">
+                        <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 font-black flex items-center justify-center shrink-0 mt-0.5">2</div>
+                        <div>메뉴를 위로 올려 <b class="text-gray-800"><i class="fa-regular fa-square-plus mx-1"></i>홈 화면에 추가</b>를 선택합니다.</div>
+                    </div>`;
             }
         }
     </script>
