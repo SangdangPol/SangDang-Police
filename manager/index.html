@@ -37,16 +37,19 @@
         
         <!-- 헤더 -->
         <header class="bg-police-dark text-white p-4 flex items-center justify-between shadow-md z-20 sticky top-0">
-            <div class="flex items-center gap-3">
-                <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" class="w-10 h-10 object-contain rounded-full bg-white p-0.5 shadow-sm">
+            <div class="flex items-center gap-2.5">
+                <button onclick="location.href='../'" class="p-1 -ml-1 rounded-full hover:bg-blue-900 transition flex-shrink-0">
+                    <i class="fa-solid fa-arrow-left text-xl"></i>
+                </button>
+                <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" class="w-10 h-10 object-contain rounded-full bg-white p-0.5 shadow-sm flex-shrink-0">
                 <div class="flex flex-col justify-center">
-                    <h1 class="font-black text-lg leading-tight tracking-tight">상당 치안 소식지</h1>
+                    <h1 class="font-black text-lg leading-tight tracking-tight">폴-치안 소식지</h1>
                     <p class="text-[10px] text-gray-300 font-medium">청주상당경찰서 범죄예방대응과</p>
                 </div>
             </div>
             <div>
                 <button onclick="openInstallGuide()" class="text-white bg-white/20 hover:bg-white/30 text-xs rounded-lg px-3 py-1.5 font-bold transition flex items-center gap-1.5 shadow-inner">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>바로가기
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>앱 설치
                 </button>
             </div>
         </header>
