@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>상당경찰서 치안소식지</title>
+    <title>폴-치안 소식지</title>
     
     <!-- 라이브러리 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -112,7 +112,7 @@
 
     <script>
         // ==========================================
-        // [작성 구역] 치안 소식지 데이터
+        // [경찰관님 작성 구역] 치안 소식지 데이터
         // ==========================================
         // type: '긴급'(빨간색), '알림'(파란색), '정책'(초록색)
         const NEWS_LETTERS = [
@@ -120,7 +120,7 @@
                 type: '알림',
                 title: '본격 여름철, 창문 개방 노린 침입절도 주의',
                 date: '2026.06.05',
-                desc: '이른 무더위로 야간에 창문을 열어두고 주무시거나 외출하는 세대가 늘면서, 이를 노린 <b>침입 절도</b> 발생이 우려되고 있습니다.<br><br><b>[예방 수칙]</b><br>1. 외출 시 2층 이상 고층이라도 베란다/창문 반드시 시정<br>2. 방범창이 훼손된 곳은 즉시 보수<br>3. 장기간 부재 시 순찰신문고 활용 <b>탄력순찰</b> 적극 신청<br><br>작은 주의가 큰 피해를 예방합니다!'
+                desc: '이른 무더위로 야간에 창문을 열어두고 주무시거나 외출하는 세대가 늘면서, 이를 노린 <b>침입 절도</b> 발생이 우려되고 있습니다.<br><br><b>[예방 수칙]</b><br>1. 외출 시 2층 이상 고층이라도 베란다/창문 반드시 시정<br>2. 방범창이 훼손된 곳은 즉시 보수<br>3. 장기간 부재 시 순찰 신문고 활용 <b>탄력순찰</b> 신청<br><br>작은 주의가 큰 피해를 예방합니다!'
             },
             {
                 type: '긴급',
@@ -131,7 +131,7 @@
             {
                 type: '알림',
                 title: '자영업자 타겟 신종 노쇼(No-show) 사기',
-                date: '2026.06.05',
+                date: '2026.06.01',
                 desc: '공공기관 및 군부대를 사칭하여 단체 예약을 한 뒤, "특정 업체의 와인/식자재 대납"을 유도하는 신종 사기가 발생하고 있습니다.<br><br>어떠한 핑계라도 <b>"선결제, 대납 요구"</b>를 한다면 100% 사기이므로 즉시 112로 신고 바랍니다.'
             },
             {
@@ -139,7 +139,6 @@
                 title: '보이스피싱 예방수칙 "어서끊자!" 캠페인
                 date: '2026.06.05',
                 desc: '최근 다양한 시나리오의 보이스피싱 범죄가 증가함에 따라 피싱 범죄를 예방하기 위해 <b>"어서끊자!"</b> 캠페인을 추진하고 있습니다.<br><br>최고의 피싱범죄 예방은 <b>"전화를 끊는 것"</b> 부터 시작이라는 점 기억하세요.'
-            },
             {
                 type: '알림',
                 title: '보이스피싱 예방 훈련소 "폴-보이스" 운영',
@@ -148,15 +147,21 @@
             }
         ];
 
-        // 페이지 로드 시 즉시 실행 (안정적인 실행을 위해 DOMContentLoaded로 변경)
-        document.addEventListener('DOMContentLoaded', () => {
+        function initApp() {
             // 오늘 날짜 세팅
             const now = new Date();
             document.getElementById('currentDateDisplay').innerText = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
             
             // 뉴스레터 렌더링
             renderNewsletters();
-        });
+        }
+
+        // 페이지 로딩 상태를 체크하여 무조건 실행되도록 보장
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
 
         function renderNewsletters() {
             const feed = document.getElementById('newsFeed');
