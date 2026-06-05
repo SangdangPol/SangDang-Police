@@ -27,7 +27,7 @@
         
         <!-- 상단 헤더 -->
         <div class="bg-police-dark p-6 text-center relative">
-            <!-- 바로가기 버튼 아래에 공유 버튼 배치 -->
+            <!-- [추가됨] 공유 및 앱 설치 버튼 그룹 -->
             <div class="absolute top-4 right-4 flex flex-col gap-1.5 items-end z-10">
                 <button onclick="openInstallGuide()" class="text-yellow-300 hover:text-white text-xs border border-yellow-300 rounded px-2 py-1 transition font-bold">
                     <i class="fa-solid fa-square-plus mr-1"></i>바로가기
@@ -37,9 +37,9 @@
                 </button>
             </div>
 
-            <img src="logo.png" onerror="this.style.display='none'" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1 relative z-0">
-            <h1 class="text-2xl font-black text-white mb-1 relative z-0">청주상당경찰서</h1>
-            <p class="text-blue-200 text-sm relative z-0">범죄예방대응과 스마트 치안센터</p>
+            <img src="logo.png" onerror="this.style.display='none'" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1 relative z-0 shadow-md">
+            <h1 class="text-2xl font-black text-white mb-1 relative z-0 tracking-tight">청주상당경찰서</h1>
+            <p class="text-blue-200 text-sm relative z-0 font-medium">범죄예방대응과 스마트 치안센터</p>
         </div>
 
         <!-- 메뉴 선택 -->
@@ -88,6 +88,20 @@
                 </div>
             </a>
 
+            <!-- 4. [신규] 피싱-디펜더 이동 버튼 (빨강) -->
+            <a href="./defender/" class="block w-full group">
+                <div class="bg-red-50 border-2 border-red-100 hover:border-red-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
+                    <div class="bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-shield-virus"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800 group-hover:text-red-700">피싱-디펜더</h2>
+                        <p class="text-xs text-gray-500">전기통신금융사기 대응가이드</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right ml-auto text-gray-300 group-hover:text-red-500"></i>
+                </div>
+            </a>
+
         </div>
 
         <!-- 하단 푸터 -->
@@ -96,22 +110,18 @@
             Copyright © Sangdang Police Station
         </div>
 
-        <!-- ========================================== -->
-        <!-- 홈 화면 바로가기 추가 가이드 모달 -->
-        <!-- ========================================== -->
+        <!-- 가이드 모달 -->
         <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6 modal">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
                 <button onclick="closeInstallGuide()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
                 <h2 class="text-xl font-bold text-gray-800 mb-2">홈 화면 바로가기 추가</h2>
                 <p class="text-sm text-gray-600 mb-4">바탕화면에 아이콘을 만들면 QR코드 없이 바로 실행됩니다.</p>
                 
-                <!-- 탭 버튼 -->
                 <div class="flex border-b mb-3">
                     <button id="btnAndroid" onclick="showGuide('android')" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition">안드로이드</button>
                     <button id="btnIos" onclick="showGuide('ios')" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">아이폰</button>
                 </div>
 
-                <!-- 아이폰용 가이드 -->
                 <div id="iosGuide" class="hidden bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
                     <p class="font-bold text-gray-800 border-b pb-1 mb-1">아이폰 (Safari)</p>
                     <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼 클릭</div>
@@ -119,7 +129,6 @@
                     <div>3. 우측 상단 <b>추가</b> 버튼 클릭</div>
                 </div>
                 
-                <!-- 안드로이드용 가이드 -->
                 <div id="androidGuide" class="bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
                     <p class="font-bold text-gray-800 border-b pb-1 mb-1">안드로이드 (Chrome/Samsung)</p>
                     <div>1. <b>현재 보고 계신 인터넷 창</b>의 우측 상단<br>(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴 클릭</div>
@@ -134,44 +143,27 @@
     </div>
 
     <script>
-        // ==========================================
-        // [추가됨] Web Share API 기반 공유하기 로직
-        // ==========================================
         function shareApp() {
             const shareData = {
                 title: '청주상당경찰서 범죄예방센터',
                 text: '우리 동네 치안은 우리가 지킨다!\n청주상당경찰서 범죄예방대응과에서 제공하는 스마트 치안센터(피싱 예방, 치안 소식, 안전 점검)를 확인해보세요.',
                 url: window.location.href
             };
-
-            // 모바일 최신 브라우저 지원 시 (카카오톡, 문자 등 네이티브 공유 창 호출)
             if (navigator.share) {
-                navigator.share(shareData)
-                    .catch((error) => console.log('공유 취소 또는 실패', error));
+                navigator.share(shareData).catch((error) => console.log('공유 실패', error));
             } else {
-                // 구형 브라우저나 데스크탑인 경우: 클립보드에 텍스트 복사 (Fallback)
                 const fallbackText = `${shareData.title}\n${shareData.text}\n바로가기: ${shareData.url}`;
-                navigator.clipboard.writeText(fallbackText).then(() => {
-                    alert('안내 문구와 링크가 복사되었습니다.\n원하시는 곳(카카오톡, 밴드 등)에 붙여넣기 하세요!');
-                }).catch(err => {
-                    alert('현재 환경에서는 공유 기능을 지원하지 않습니다.');
-                });
+                navigator.clipboard.writeText(fallbackText).then(() => alert('링크가 복사되었습니다.')).catch(err => alert('공유 기능을 지원하지 않습니다.'));
             }
         }
 
-        // 가이드 로직 (탭 기능 포함)
         function openInstallGuide() {
             const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
             document.getElementById('installGuideModal').classList.remove('hidden');
-            
-            // OS 자동 감지하여 해당 탭 먼저 보여주기
             if (isIOS) showGuide('ios');
             else showGuide('android');
         }
-
-        function closeInstallGuide() { 
-            document.getElementById('installGuideModal').classList.add('hidden'); 
-        }
+        function closeInstallGuide() { document.getElementById('installGuideModal').classList.add('hidden'); }
 
         function showGuide(os) {
             const androidGuide = document.getElementById('androidGuide');
@@ -182,8 +174,6 @@
             if (os === 'android') {
                 androidGuide.classList.remove('hidden');
                 iosGuide.classList.add('hidden');
-                
-                // 스타일 직접 조작
                 btnAndroid.style.borderColor = '#1a237e';
                 btnAndroid.style.color = '#1a237e';
                 btnIos.style.borderColor = 'transparent';
@@ -191,7 +181,6 @@
             } else {
                 androidGuide.classList.add('hidden');
                 iosGuide.classList.remove('hidden');
-                
                 btnIos.style.borderColor = '#1a237e';
                 btnIos.style.color = '#1a237e';
                 btnAndroid.style.borderColor = 'transparent';
