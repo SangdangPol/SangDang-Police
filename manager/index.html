@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>폴-치안 소식지</title>
     
+    <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CPSKM0VVYP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        // page_title 속성을 추가하여 통계 화면에서 직관적으로 보이게 설정했습니다.
+        gtag('config', 'G-CPSKM0VVYP', { 'page_title': '폴-치안 소식지' });
+    </script>
+    
     <!-- 라이브러리 로드 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
