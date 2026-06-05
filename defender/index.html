@@ -29,7 +29,7 @@
             padding-bottom: 0;
         }
         .accordion-content.open {
-            max-height: 500px; /* 충분히 큰 값 지정 */
+            max-height: 800px; /* 상세내용 많아질 것을 대비해 높이 확보 */
             opacity: 1;
             padding-top: 1rem;
             padding-bottom: 1rem;
@@ -48,14 +48,12 @@
                 <button onclick="location.href='../'" class="p-1 -ml-1 rounded-full hover:bg-blue-900 transition flex-shrink-0">
                     <i class="fa-solid fa-arrow-left text-xl"></i>
                 </button>
-                <!-- 공통 CI 로고 (기존 로직 유지) -->
                 <img src="../logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" class="w-9 h-9 object-contain rounded-full bg-white p-0.5 shadow-sm">
                 <div class="flex flex-col justify-center">
                     <h1 class="font-black text-lg leading-tight tracking-tight">피싱-디펜더</h1>
                     <p class="text-[10px] text-gray-300 font-medium">청주상당경찰서 스마트 치안센터</p>
                 </div>
             </div>
-            <!-- 공유 기능 (Web Share API 연동) -->
             <button onclick="shareGuide()" class="text-white hover:text-blue-200 transition">
                 <i class="fa-solid fa-share-nodes text-xl"></i>
             </button>
@@ -74,26 +72,21 @@
 
         <!-- 본문 (아코디언 리스트) -->
         <main class="flex-1 overflow-y-auto p-4 space-y-3 pb-12 no-scrollbar" id="accordionContainer">
-            <!-- 자바스크립트로 8개 항목 렌더링 -->
+            <!-- 자바스크립트로 렌더링 -->
         </main>
 
-        <!-- 하단 푸터 (강조) -->
+        <!-- 하단 푸터 -->
         <footer class="bg-white p-5 text-center border-t border-gray-200 z-10">
             <div class="flex items-center justify-center gap-2 text-police-dark font-black mb-2">
-                <i class="fa-solid fa-user-lock"></i>
-                금융사기 예방은 작은 실천에서 시작됩니다!
+                <i class="fa-solid fa-user-lock"></i> 금융사기 예방은 작은 실천에서 시작됩니다!
             </div>
             <p class="text-[11px] text-gray-500 font-medium break-keep">
                 의심스러운 연락이나 앱 설치 요구는 즉시 거절하고, <br>피해 발생 시 <b>112</b> 또는 가까운 경찰서로 신고하세요.
             </p>
         </footer>
-
     </div>
 
     <script>
-        // ==========================================
-        // 8대 대응 방법 데이터 구성 (이미지 내용 기반)
-        // ==========================================
         const DEFENSE_STEPS = [
             {
                 id: 'step1',
@@ -113,7 +106,7 @@
                 desc: '내 명의로 각종 통신서비스(알뜰폰 등)에 가입하지 못하도록 막는 잠금장치입니다.<br><br>• <b>Msafer (엠세이퍼):</b> 웹사이트에서 신청 가능 (인증서 필요)<br>• <b>PASS 앱:</b> 첫 화면 → 명의도용방지서비스<br>• 통신사 직영점 방문 신청 가능',
                 warning: '※ 본인 명의 휴대전화 신규 개통 시 해제 필요',
                 buttons: [
-                    { name: '엠세이퍼 (웹사이트)', icon: 'fa-solid fa-globe', link: 'https://www.msafer.or.kr/', color: 'bg-blue-600' }
+                    { name: '엠세이퍼 (웹사이트)', icon: 'fa-solid fa-globe', link: 'https://www.msafer.or.kr/', color: 'bg-blue-600' },
                     { name: 'PASS (Play스토어)', icon: 'fa-google-play', link: 'https://play.google.com/store/search?q=PASS%EC%9D%B8%EC%A6%9D%EC%95%B1&c=apps', color: 'bg-green-600' },
                     { name: 'PASS (App스토어)', icon: 'fa-apple', link: 'https://apps.apple.com/kr/search?term=PASS%EC%95%B1', color: 'bg-gray-800' }
                 ]
@@ -135,7 +128,7 @@
                 title: '여신거래 안심차단 서비스',
                 desc: '본인이 원하지 않는 여신거래(신용대출, 카드론, 신용카드 발급 등)로 피해를 입지 않도록 사전 차단하는 서비스입니다.<br><br>• 거래 중인 <b>은행 방문</b> 또는 <b>은행 모바일 앱</b>을 통해 신청 가능합니다.',
                 warning: '※ 단, 차단 해제 시에는 반드시 은행 방문 필수!',
-                buttons: [] // 안내 위주이므로 아웃링크 없음
+                buttons: [] 
             },
             {
                 id: 'step5',
@@ -184,13 +177,11 @@
             }
         ];
 
-        // 렌더링 로직
         const container = document.getElementById('accordionContainer');
 
         DEFENSE_STEPS.forEach((step, index) => {
-            // 버튼 HTML 생성
             let buttonsHtml = '';
-            if (step.buttons.length > 0) {
+            if (step.buttons && step.buttons.length > 0) {
                 buttonsHtml = '<div class="mt-4 flex flex-col gap-2">';
                 step.buttons.forEach(btn => {
                     buttonsHtml += `
@@ -202,13 +193,11 @@
                 buttonsHtml += '</div>';
             }
 
-            // 경고문구 HTML 생성
             let warningHtml = '';
             if (step.warning) {
                 warningHtml = `<p class="mt-3 text-[12px] font-bold text-red-500 bg-red-50 p-2 rounded border border-red-100">${step.warning}</p>`;
             }
 
-            // 아코디언 카드 생성
             const cardHtml = `
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <button class="w-full px-4 py-3.5 flex items-center justify-between bg-white focus:outline-none active:bg-gray-50 transition" onclick="toggleAccordion('${step.id}')">
@@ -230,26 +219,20 @@
             container.innerHTML += cardHtml;
         });
 
-        // 아코디언 열기/닫기 제어 함수
         function toggleAccordion(id) {
             const content = document.getElementById(`content-${id}`);
             const icon = document.getElementById(`icon-${id}`);
-            
-            // 열려있는 경우 닫기
             if (content.classList.contains('open')) {
                 content.classList.remove('open');
                 icon.classList.remove('rotate');
             } else {
-                // 닫혀있는 경우 열기 (기존에 열린 다른 탭을 닫는 로직 추가 가능 - 현재는 다중 열림 허용)
                 content.classList.add('open');
                 icon.classList.add('rotate');
             }
         }
-
-        // 최상단 첫 번째 항목 자동 열어두기 (직관성 강화)
+        
         setTimeout(() => { toggleAccordion('step1'); }, 100);
 
-        // 공유 기능
         function shareGuide() {
             if (navigator.share) {
                 navigator.share({
