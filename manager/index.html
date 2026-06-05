@@ -67,7 +67,7 @@
 
         <main class="flex-1 overflow-y-auto p-4 pb-12 no-scrollbar">
             <div id="newsFeed" class="space-y-4">
-                <!-- 자바스크립트로 뉴스레터 카드가 삽입됩니다. -->
+                <!-- 자바스크립트 뉴스레터 카드 삽입. -->
             </div>
             
             <div class="mt-8 text-center opacity-50">
@@ -101,7 +101,7 @@
                 </div>
                 
                 <div id="guideContent" class="bg-gray-50 p-5 rounded-2xl text-[13px] text-left space-y-4 min-h-[160px] leading-relaxed border border-gray-100">
-                    <!-- 가이드 내용이 동적으로 삽입됨 -->
+                    <!-- 가이드 내용 동적 삽입 -->
                 </div>
                 
                 <button onclick="closeGuide()" class="w-full bg-police-dark hover:bg-blue-900 text-white py-4 rounded-xl mt-5 font-black shadow-lg active:scale-95 transition text-base">확인했습니다</button>
@@ -157,7 +157,7 @@
             renderNewsletters();
         }
 
-        // 페이지 로딩 상태를 체크하여 무조건 실행되도록 보장
+        // 페이지 로딩 상태 체크
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initApp);
         } else {
@@ -184,7 +184,7 @@
                     iconHtml = '<i class="fa-solid fa-bell text-blue-500"></i>';
                 }
 
-                // 애니메이션 딜레이 설정 (순차적으로 나타나게 함)
+                // 애니메이션 딜레이 설정 (순차적으로 나타나게)
                 const delay = index * 0.1;
 
                 const cardHTML = `
