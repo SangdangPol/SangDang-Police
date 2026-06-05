@@ -27,10 +27,15 @@
         
         <!-- 상단 헤더 -->
         <div class="bg-police-dark p-6 text-center relative">
-            <!-- [변경됨] 앱 설치 -> 바로가기 가이드 버튼 -->
-            <button onclick="openInstallGuide()" class="absolute top-4 right-4 text-yellow-300 hover:text-white text-xs border border-yellow-300 rounded px-2 py-1 transition font-bold z-10">
-                <i class="fa-solid fa-square-plus mr-1"></i>바로가기
-            </button>
+            <!-- [추가됨] 바로가기 버튼 아래에 공유 버튼 수직 배치 -->
+            <div class="absolute top-4 right-4 flex flex-col gap-1.5 items-end z-10">
+                <button onclick="openInstallGuide()" class="text-yellow-300 hover:text-white text-xs border border-yellow-300 rounded px-2 py-1 transition font-bold">
+                    <i class="fa-solid fa-square-plus mr-1"></i>바로가기
+                </button>
+                <button onclick="shareApp()" class="text-white bg-indigo-500/80 hover:bg-indigo-400 text-xs rounded px-2 py-1 font-bold transition flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-share-nodes"></i> 공유
+                </button>
+            </div>
 
             <img src="logo.png" onerror="this.style.display='none'" class="w-20 h-20 mx-auto mb-3 object-contain bg-white rounded-full p-1 relative z-0">
             <h1 class="text-2xl font-black text-white mb-1 relative z-0">청주상당경찰서</h1>
@@ -92,7 +97,7 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- [변경됨] 홈 화면 바로가기 추가 가이드 모달 -->
+        <!-- 홈 화면 바로가기 추가 가이드 모달 -->
         <!-- ========================================== -->
         <div id="installGuideModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden flex flex-col items-center justify-center p-6 modal">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 relative">
@@ -129,6 +134,31 @@
     </div>
 
     <script>
+        // ==========================================
+        // [추가됨] Web Share API 기반 공유하기 로직
+        // ==========================================
+        function shareApp() {
+            const shareData = {
+                title: '청주상당경찰서 범죄예방센터',
+                text: '우리 동네 치안은 우리가 지킨다!\n청주상당경찰서 범죄예방대응과에서 제공하는 스마트 치안센터(피싱 예방, 치안 소식, 안전 점검)를 확인해보세요.',
+                url: window.location.href
+            };
+
+            // 모바일 최신 브라우저 지원 시 (카카오톡, 문자 등 네이티브 공유 창 호출)
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .catch((error) => console.log('공유 취소 또는 실패', error));
+            } else {
+                // 구형 브라우저나 데스크탑인 경우: 클립보드에 텍스트 복사 (Fallback)
+                const fallbackText = `${shareData.title}\n${shareData.text}\n바로가기: ${shareData.url}`;
+                navigator.clipboard.writeText(fallbackText).then(() => {
+                    alert('안내 문구와 링크가 복사되었습니다.\n원하시는 곳(카카오톡, 밴드 등)에 붙여넣기 하세요!');
+                }).catch(err => {
+                    alert('현재 환경에서는 공유 기능을 지원하지 않습니다.');
+                });
+            }
+        }
+
         // 가이드 로직 (탭 기능 포함)
         function openInstallGuide() {
             const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
@@ -171,4 +201,3 @@
     </script>
 </body>
 </html>
-
