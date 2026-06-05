@@ -26,7 +26,7 @@
             padding-bottom: 0;
         }
         .accordion-content.open {
-            max-height: 800px; 
+            max-height: 500px; 
             opacity: 1;
             padding-top: 1rem;
             padding-bottom: 1rem;
@@ -87,7 +87,7 @@
                 desc: '구글 플레이스토어 또는 애플 앱스토어에서 <b>알약</b> 또는 <b>V3 모바일 플러스</b>를 검색하여 즉시 설치 및 검사하세요.',
                 warning: '',
                 buttons: [
-                    { name: '안드로이드 (V3 설치)', icon: 'fa-google-play', link: 'https://play.google.com/store/apps/details?id=com.ahnlab.v3mobileplus', color: 'bg-green-600' },
+                    { name: '안드로이드 (V3 설치)', icon: 'fa-google-play', link: 'https://play.google.com/store/apps/details?id=com.ahnlab.v3mobilepus', color: 'bg-green-600' },
                     { name: '아이폰 (V3 설치)', icon: 'fa-apple', link: 'https://apps.apple.com/kr/app/v3-mobile-security/id1256561142', color: 'bg-gray-800' }
                 ]
             },
@@ -111,7 +111,7 @@
                 warning: '',
                 buttons: [
                     { name: '금감원 예방시스템 접속', icon: 'fa-solid fa-shield-halved', link: 'https://pd.fss.or.kr/', color: 'bg-police-dark' },
-                    { name: '1332 콜센터 전화연결', icon: 'fa-solid fa-phone', link: 'tel:1332', color: 'bg-red-600', isCall: true }
+                    { name: '1332 콜센터 전화연결', icon: 'fa-solid fa-phone', link: 'tel:1332', color: 'bg-red-600' }
                 ]
             },
             {
@@ -176,10 +176,14 @@
             if (step.buttons && step.buttons.length > 0) {
                 buttonsHtml = '<div class="mt-4 flex flex-col gap-2">';
                 step.buttons.forEach(btn => {
-                    const animationClass = btn.isCall ? 'animate-pulse' : '';
+                    // [수정된 핵심 로직] tel: 로 시작하면 target="_blank"를 지우고, 아니면 넣습니다.
+                    const targetAttr = btn.link.startsWith('tel:') ? '' : 'target="_blank"';
+                    // 112 버튼처럼 전화 버튼이면 깜빡이는(pulse) 효과를 줍니다.
+                    const animationClass = btn.link.startsWith('tel:') ? 'animate-pulse' : '';
+
                     buttonsHtml += `
-                        <a href="${btn.link}" target="_blank" class="${btn.color} text-white text-sm font-bold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition ${animationClass}">
-                            <i class="fa-solid ${btn.icon}"></i> ${btn.name}
+                        <a href="${btn.link}" ${targetAttr} class="${btn.color} text-white text-sm font-bold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition ${animationClass}">
+                            <i class="${btn.icon}"></i> ${btn.name}
                         </a>
                     `;
                 });
