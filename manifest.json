@@ -5,6 +5,8 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a237e",
+  "categories": ["utilities", "security"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "logo.png",
