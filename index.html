@@ -59,7 +59,7 @@
             <p class="text-blue-200 text-sm relative z-0 font-medium tracking-tight">범죄예방대응과 스마트 치안센터</p>
         </div>
 
-        <!-- [개선됨] 카카오톡 내부 브라우저 이탈 버튼 UI -->
+        <!-- 카카오톡 내부 브라우저 이탈 버튼 UI -->
         <div id="kakaotalk-warning" class="hidden bg-amber-100 border-b-2 border-amber-300 p-5 text-center text-sm text-amber-900 font-medium">
             <div class="mb-3">
                 <i class="fa-solid fa-triangle-exclamation text-amber-600 text-2xl mb-2"></i><br>
@@ -76,7 +76,6 @@
         <div class="p-6 space-y-4">
             <p class="text-center text-gray-600 font-bold mb-2">이용하실 서비스를 선택해주세요</p>
 
-            <!-- 1. 피싱-백신 -->
             <a href="./voice/" class="block w-full group">
                 <div class="bg-blue-50 border-2 border-blue-100 hover:border-blue-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
                     <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
@@ -90,7 +89,6 @@
                 </div>
             </a>
 
-            <!-- 2. 치안-일기예보 -->
             <a href="./manager/" class="block w-full group">
                 <div class="bg-sky-50 border-2 border-sky-100 hover:border-sky-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
                     <div class="bg-sky-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
@@ -104,7 +102,6 @@
                 </div>
             </a>
 
-            <!-- 3. 세이프-스캐너 -->
             <a href="./check/" class="block w-full group">
                 <div class="bg-indigo-50 border-2 border-indigo-100 hover:border-indigo-500 rounded-xl p-4 flex items-center transition shadow-sm hover:shadow-md">
                     <div class="bg-indigo-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-2xl mr-4 group-hover:scale-110 transition">
@@ -118,7 +115,6 @@
                 </div>
             </a>
 
-            <!-- 4. 피싱-디펜더 -->
             <a href="./defender/" class="block w-full group relative overflow-hidden">
                 <div class="absolute right-10 top-0 bottom-0 flex items-center opacity-5">
                     <i class="fa-solid fa-triangle-exclamation text-7xl text-red-600"></i>
@@ -159,6 +155,30 @@
             </button>
         </div>
         
+        <!-- [신규] 안드로이드 자동 설치 전용: 공식 사전 안내 모달 -->
+        <div id="preInstallModal" class="fixed inset-0 bg-black/80 z-[120] hidden items-center justify-center p-6">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative flex flex-col">
+                <button onclick="closePreInstall()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+                
+                <div class="text-center mb-4 mt-2">
+                    <i class="fa-solid fa-shield-halved text-5xl text-blue-600 mb-3 drop-shadow-md"></i>
+                    <h2 class="text-xl font-black text-gray-800 tracking-tight">공식 서비스 안내</h2>
+                </div>
+                
+                <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl mb-5">
+                    <p class="text-[11px] text-blue-900 leading-relaxed font-medium break-keep text-left">
+                        본 서비스는 청주상당경찰서에서 운영하는 모바일 웹 서비스입니다.<br>
+                        앱 설치 시 표시되는 안내문은 Play Store 앱이 아닌 웹앱(PWA) 설치 과정에서 Android 운영체제가 표시하는 일반 경고이며, 
+                        <b>개인정보 수집 권한이나 기기 접근 권한을 요구하지 않습니다.</b>
+                    </p>
+                </div>
+                
+                <button onclick="proceedPwaInstall()" class="w-full bg-police-dark text-white py-3.5 rounded-xl font-black active:scale-95 transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> 동의하고 설치 진행하기
+                </button>
+            </div>
+        </div>
+
         <!-- 수동 설치 가이드 모달 (iOS 및 팝업 차단 환경용) -->
         <div id="installGuideModal" class="fixed inset-0 bg-black/80 z-[100] hidden items-center justify-center p-6">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative flex flex-col max-h-[90vh]">
@@ -166,15 +186,12 @@
                 <h2 class="text-xl font-bold text-gray-800 mb-2">홈 화면 바로가기 추가</h2>
                 <p class="text-sm text-gray-600 mb-4">현재 환경에서는 자동 설치가 지원되지 않습니다. 아래 안내에 따라 추가해 주세요.</p>
                 
-                <!-- 탭 버튼 -->
                 <div class="flex border-b mb-3">
                     <button id="btnAndroid" onclick="showGuide('android')" class="flex-1 py-2 text-sm font-bold border-b-2 border-police-dark text-police-dark transition">안드로이드</button>
                     <button id="btnIos" onclick="showGuide('ios')" class="flex-1 py-2 text-sm font-bold border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">아이폰</button>
                 </div>
 
-                <!-- 콘텐츠 영역 (스크롤 가능하도록) -->
                 <div class="overflow-y-auto flex-1 no-scrollbar">
-                    <!-- 아이폰용 가이드 -->
                     <div id="iosGuide" class="hidden bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
                         <p class="font-bold text-gray-800 border-b pb-1 mb-1">아이폰 (Safari)</p>
                         <div>1. 브라우저 하단 중앙의 <b class="text-blue-600"><i class="fa-solid fa-arrow-up-from-bracket"></i> 공유</b> 버튼 클릭</div>
@@ -182,18 +199,16 @@
                         <div>3. 우측 상단 <b>추가</b> 버튼 클릭</div>
                     </div>
                     
-                    <!-- 안드로이드용 가이드 -->
                     <div id="androidGuide" class="bg-gray-50 p-3 rounded-lg border mb-2 text-sm space-y-2 min-h-[100px]">
                         <p class="font-bold text-gray-800 border-b pb-1 mb-1">안드로이드 (Chrome/Samsung)</p>
                         <div>1. <b>현재 인터넷 창</b>의 우측 상단<br>(또는 하단) <b class="text-gray-800"><i class="fa-solid fa-ellipsis-vertical"></i> 점 3개</b> 메뉴 클릭</div>
                         <div>2. <b class="text-gray-800"><i class="fa-solid fa-mobile-screen"></i> 홈 화면에 추가</b> (또는 앱 설치) 선택</div>
                     </div>
 
-                    <!-- [추가됨] 경찰서 공식 안내 문구 -->
                     <div class="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                         <p class="text-[11px] text-blue-900 leading-relaxed font-medium break-keep text-left">
+                        <p class="text-[11px] text-blue-900 leading-relaxed font-medium break-keep text-left">
                             <i class="fa-solid fa-shield-halved text-blue-600 mr-1"></i> 
-                            본 서비스는 청주상당경찰서에서 운영하는 모바일 웹 서비스입니다.<br>
+                            본 서비스는 청주상당경찰서에서 운영하는 모바일 웹 서비스입니다.<br><br>
                             앱 설치 시 표시되는 안내문은 Play Store 앱이 아닌 웹앱(PWA) 설치 과정에서 Android 운영체제가 표시하는 일반 경고이며, 
                             <b>개인정보 수집 권한이나 기기 접근 권한을 요구하지 않습니다.</b>
                         </p>
@@ -208,14 +223,13 @@
 
     <script>
         // ==========================================
-        // 0. 토스트 메시지 팝업 함수 (alert 대체)
+        // 0. 토스트 메시지 팝업 함수
         // ==========================================
         function showToast(msg) {
             const toast = document.getElementById('toastMessage');
             toast.innerText = msg;
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.remove('opacity-0'), 10);
-            
             setTimeout(() => {
                 toast.classList.add('opacity-0');
                 setTimeout(() => toast.classList.add('hidden'), 300);
@@ -244,26 +258,22 @@
         }
 
         // ==========================================
-        // 2. PWA 하이브리드 앱 설치 및 외부 브라우저 호출 로직
+        // 2. PWA 하이브리드 앱 설치 로직 (사전 안내 모달 연동)
         // ==========================================
         let deferredPrompt;
         const installBanner = document.getElementById('install-banner');
         const kakaoWarning = document.getElementById('kakaotalk-warning');
 
-        // 카카오톡 내인앱브라우저 여부 검증
         const isKakaoTalk = navigator.userAgent.toLowerCase().includes('kakaotalk');
         if (isKakaoTalk) {
             kakaoWarning.classList.remove('hidden');
         }
 
-        // [추가됨] 카카오톡 외부 브라우저 호출 함수
         function openExternalBrowser() {
             const currentUrl = window.location.href;
-            // 카카오톡 전용 외부 브라우저 호출 스킴 실행
             location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(currentUrl);
         }
 
-        // 서비스 워커 등록
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -272,18 +282,39 @@
             });
         }
 
-        // 브라우저 PWA 감지 시 이벤트 저장 및 하단 배너 노출
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             if (!isKakaoTalk) installBanner.classList.remove('hidden');
         });
 
-        // 상단 '앱 설치' 버튼 또는 하단 배너 클릭 시 실행
+        // [변경] 앱 설치 클릭 시 바로 팝업을 띄우지 않고, '사전 안내 모달'을 먼저 띄움
         function triggerPwaInstall() {
             if (deferredPrompt) {
-                // PWA 자동 팝업이 가능한 상태 (안드로이드)
                 installBanner.classList.add('hidden');
+                const preModal = document.getElementById('preInstallModal');
+                preModal.classList.remove('hidden');
+                preModal.classList.add('flex');
+            } else {
+                openInstallGuide();
+            }
+        }
+
+        // 사전 안내 모달 닫기
+        function closePreInstall() {
+            const preModal = document.getElementById('preInstallModal');
+            preModal.classList.add('hidden');
+            preModal.classList.remove('flex');
+            if (deferredPrompt && !isKakaoTalk) installBanner.classList.remove('hidden');
+        }
+
+        // [신규] 사전 안내 모달에서 '동의하고 설치'를 눌렀을 때 실행되는 실제 설치 팝업 호출
+        function proceedPwaInstall() {
+            const preModal = document.getElementById('preInstallModal');
+            preModal.classList.add('hidden');
+            preModal.classList.remove('flex');
+            
+            if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
@@ -293,37 +324,28 @@
                     }
                     deferredPrompt = null;
                 });
-            } else {
-                // PWA 불가 상태 (아이폰, PC, 카카오톡 등) -> 수동 가이드 모달 띄우기
-                openInstallGuide();
             }
         }
 
         window.addEventListener('appinstalled', (evt) => {
-            console.log('설치 완료됨');
             installBanner.classList.add('hidden');
             showToast('홈 화면에 설치가 완료되었습니다!');
         });
 
         // ==========================================
-        // 3. 수동 설치 가이드 모달 제어
+        // 3. 수동 설치 가이드 모달 제어 (기존 유지)
         // ==========================================
         function openInstallGuide() {
             const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
             const modal = document.getElementById('installGuideModal');
-            
-            // 모달을 보이게 할 때 정중앙 정렬(flex) 속성 부여
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            
             if (isIOS) showGuide('ios');
             else showGuide('android');
         }
 
         function closeInstallGuide() { 
             const modal = document.getElementById('installGuideModal');
-            
-            // 모달을 숨길 때 flex 속성 해제
             modal.classList.add('hidden'); 
             modal.classList.remove('flex');
         }
