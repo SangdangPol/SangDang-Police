@@ -92,9 +92,12 @@
     </div>
 
     <!-- 헤더 -->
-    <header class="h-[60px] px-4 flex items-center justify-between bg-police-dark text-white z-50 shadow-md">
+  <header class="bg-police-dark text-white z-50 shadow-md sticky top-0" style="padding: 1rem; padding-top: max(1rem, env(safe-area-inset-top)); min-height: 70px;">
+    <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <button onclick="location.href='../'" class="p-1 rounded-full hover:bg-blue-900 transition"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+            <button onclick="location.href='../'" class="p-1 rounded-full hover:bg-blue-900 transition">
+                <i class="fa-solid fa-arrow-left text-xl"></i>
+            </button>
             <img src="logo.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Emblem_of_the_Korean_National_Police_Agency.svg/150px-Emblem_of_the_Korean_National_Police_Agency.svg.png'" class="w-10 h-10 object-contain bg-white rounded-full p-0.5">
             <div class="flex flex-col">
                 <span class="text-lg font-black leading-none">피싱-백신</span>
@@ -102,8 +105,9 @@
             </div>
         </div>
         <span class="text-[10px] bg-white/10 px-2 py-1 rounded font-medium">청주상당경찰서</span>
-    </header>
-
+    </div>
+</header>
+    
     <!-- 탭 1: 훈련소 -->
     <div id="view-home" class="content-view active bg-gray-50">
         <div class="bg-gradient-to-br from-blue-800 to-blue-600 rounded-2xl p-6 text-white text-center shadow-lg mb-6">
