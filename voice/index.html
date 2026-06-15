@@ -8,7 +8,7 @@
     <!-- [보안] 데이터 암호화 라이브러리 연동 (AES-256) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
-    <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 -->
+    <!-- 구글 애널리틱스 (GA4) 연동 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-J4W28Z27Z6"></script>
     <script>
         const GA_MEASUREMENT_ID = 'G-J4W28Z27Z6';
@@ -130,7 +130,7 @@
                 </div>
             </button>
 
-            <!-- 기존 시나리오 -->
+            <!-- 시나리오 -->
             <button onclick="startSim('prosecutor')" class="bg-white border p-4 rounded-xl shadow-sm active:scale-95 flex flex-col items-center">
                 <span class="text-3xl mb-2">⚖️</span><span class="text-sm font-bold text-gray-800">기관 사칭</span>
                 <span class="text-[10px] text-gray-500">검사/수사관</span>
@@ -196,7 +196,7 @@
         </div>
     </div>
 
-    <!-- 탭 3: 영상관 (새로 추가) -->
+    <!-- 탭 3: 영상관 -->
     <div id="view-video" class="content-view bg-gray-50">
         <div class="bg-gradient-to-r from-red-600 to-red-500 rounded-2xl p-4 text-white text-center mb-6 shadow-lg flex flex-col items-center justify-center">
             <h1 class="text-lg font-black tracking-tight mb-0.5"><i class="fa-brands fa-youtube mr-2"></i>공식 예방 영상관</h1>
@@ -323,7 +323,7 @@
         </div>
     </div>
 
-    <!-- 하단 고정 내비게이션 (4개 탭으로 확장) -->
+    <!-- 하단 고정 내비게이션 (4개 탭 확장) -->
     <nav class="bottom-nav">
         <div onclick="switchTab('home', this)" class="nav-item active">
             <i class="fa-solid fa-house mb-1"></i><span class="text-[10px] font-bold">훈련소</span>
