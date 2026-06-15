@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>청주상당경찰서 스마트 치안센터</title>
     
-    <!-- [중요] PWA 설정 파일 연동 -->
+    <!-- PWA 설정 파일 연동 -->
     <link rel="manifest" href="./manifest.json">
     <link rel="apple-touch-icon" href="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
@@ -15,7 +15,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1a237e">
 
-   <!-- [성과분석] 구글 애널리틱스 (GA4) 연동 -->
+   <!-- 구글 애널리틱스 (GA4) 연동 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZE8YMVYMHH"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -155,7 +155,7 @@
             </button>
         </div>
         
-        <!-- [신규] 안드로이드 자동 설치 전용: 공식 사전 안내 모달 -->
+        <!-- 안드로이드 자동 설치 전용: 공식 사전 안내 모달 -->
         <div id="preInstallModal" class="fixed inset-0 bg-black/80 z-[120] hidden items-center justify-center p-6">
             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative flex flex-col">
                 <button onclick="closePreInstall()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -288,7 +288,7 @@
             if (!isKakaoTalk) installBanner.classList.remove('hidden');
         });
 
-        // [변경] 앱 설치 클릭 시 바로 팝업을 띄우지 않고, '사전 안내 모달'을 먼저 띄움
+        // 앱 설치 클릭 시 바로 팝업을 띄우지 않고, '사전 안내 모달' 먼저
         function triggerPwaInstall() {
             if (deferredPrompt) {
                 installBanner.classList.add('hidden');
@@ -333,7 +333,7 @@
         });
 
         // ==========================================
-        // 3. 수동 설치 가이드 모달 제어 (기존 유지)
+        // 3. 수동 설치 가이드 모달 제어 
         // ==========================================
         function openInstallGuide() {
             const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
