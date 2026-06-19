@@ -204,9 +204,9 @@
             if (step.buttons && step.buttons.length > 0) {
                 buttonsHtml = '<div class="mt-4 flex flex-col gap-2">';
                 step.buttons.forEach(btn => {
-                    // [수정된 핵심 로직] tel: 로 시작하면 target="_blank"를 지우고, 아니면 넣습니다.
+                    
                     const targetAttr = btn.link.startsWith('tel:') ? '' : 'target="_blank"';
-                    // 112 버튼처럼 전화 버튼이면 깜빡이는(pulse) 효과를 줍니다.
+                    
                     const animationClass = btn.link.startsWith('tel:') ? 'animate-pulse' : '';
 
                     buttonsHtml += `
