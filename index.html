@@ -293,8 +293,7 @@
             deferredPrompt = e;
             if (!isKakaoTalk) installBanner.classList.remove('hidden');
         });
-
-        // 앱 설치 클릭 시 바로 팝업을 띄우지 않고, '사전 안내 모달' 먼저
+        
         function triggerPwaInstall() {
             if (deferredPrompt) {
                 installBanner.classList.add('hidden');
@@ -306,7 +305,7 @@
             }
         }
 
-        // 사전 안내 모달 닫기
+        
         function closePreInstall() {
             const preModal = document.getElementById('preInstallModal');
             preModal.classList.add('hidden');
@@ -314,7 +313,7 @@
             if (deferredPrompt && !isKakaoTalk) installBanner.classList.remove('hidden');
         }
 
-        // [신규] 사전 안내 모달에서 '동의하고 설치'를 눌렀을 때 실행되는 실제 설치 팝업 호출
+         
         function proceedPwaInstall() {
             const preModal = document.getElementById('preInstallModal');
             preModal.classList.add('hidden');
