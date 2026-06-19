@@ -210,7 +210,7 @@
                     const animationClass = btn.link.startsWith('tel:') ? 'animate-pulse' : '';
 
                     buttonsHtml += `
-                        <a href="${btn.link}" ${targetAttr} class="${btn.color} text-white text-sm font-bold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition ${animationClass}">
+                        <a href="${btn.link}" ${targetAttr} rel="noopener noreferrer" class="${btn.color} text-white text-sm font-bold py-2.5 px-4 rounded-lg flex items-center justify-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition ${animationClass}">
                             <i class="${btn.icon}"></i> ${btn.name}
                         </a>
                     `;
