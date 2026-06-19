@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>치안-일기예보</title>
 
-    <!-- [보안] 데이터 암호화 라이브러리 연동 (AES-256) -->
+    <!-- 데이터 암호화 라이브러리 연동 (AES-256) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <!-- 구글 애널리틱스 (GA4) 연동 -->
@@ -230,9 +230,8 @@
                     </article>
                 `;
                 contentHTML += cardHTML;
-            });
-            
-            // 완성된 HTML을 한 번에 삽입하여 렌더링 오류 방지
+            });            
+          
             feed.innerHTML = contentHTML; 
         }
 
