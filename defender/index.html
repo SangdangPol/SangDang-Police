@@ -186,6 +186,17 @@
                     { name: '프라이버시 클린서비스', icon: 'fa-solid fa-fingerprint', link: 'https://www.privacy.go.kr/', color: 'bg-slate-700' }
                 ]
             }
+            {
+                id: 'step9',
+                icon: 'fa-comment-dots text-yellow-500',
+                title: '스미싱·악성 URL 실시간 검사',
+                desc: '수신한 문자메시지나 메신저의 의심스러운 URL 주소를 복사하여 KISA(한국인터넷진흥원) 보호나라 카카오톡 챗봇에게 전송하면, 실시간으로 악성 여부(스미싱, 악성 앱 설치 유도 등)를 분석하여 판별해 줍니다.<br><br>• <b>KISA 보호나라 채널</b> 접속 → 채팅방 이동 → 복사한 의심 URL 붙여넣기 및 검사 결과 확인',
+                warning: '※ 주의: 문자메시지에 포함된 의심 URL은 절대 직접 클릭(터치)하지 마시고, 텍스트만 길게 눌러 복사하시기 바랍니다.',
+                buttons: [
+                    { name: '스미싱 확인 서비스란?', icon: 'fa-solid fa-circle-info', link: 'https://www.boho.or.kr/kr/subPage.do?menuNo=205116', color: 'bg-slate-600' },
+                    { name: '카카오톡 실시간 검사', icon: 'fa-solid fa-comment', link: 'https://pf.kakao.com/_xnJVxoxj/chat', color: 'bg-yellow-500 text-slate-900' }
+                ]
+            }
         ];
 
         const container = document.getElementById('accordionContainer');
