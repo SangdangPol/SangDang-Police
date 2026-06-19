@@ -6,7 +6,7 @@
     <title>세이프-스캐너 (안전 자가진단)</title>
     <meta name="theme-color" content="#15803d">
     
-    <!-- [보안] 데이터 암호화 라이브러리 연동 (AES-256) -->
+    <!-- 데이터 암호화 라이브러리 연동 (AES-256) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <!-- 아이콘 & 스타일 -->
@@ -128,7 +128,7 @@
     </div>
 
     <script>
-        /* [보안 레이어] AES-256 암호화 모듈 (난독화 패턴) */
+        /* AES-256 암호화 모듈 */
         const _v_0x3 = "P0L_CH3CK_S3CR3T_K3Y_2024_SANGDANG";
         const _m_sec = {
             enc: (t) => t ? CryptoJS.AES.encrypt(t, _v_0x3).toString() : "",
@@ -227,7 +227,7 @@
             const adviceList = document.getElementById('adviceList');
             adviceList.innerHTML = score === 100 ? `<div class="text-center text-blue-600 font-bold py-10 flex flex-col items-center"><div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-3"><i class="fa-solid fa-thumbs-up text-3xl"></i></div>완벽합니다!<br><span class="text-xs text-gray-500 font-normal mt-1">지금 상태를 잘 유지해주세요.</span></div>` : adviceHTML;
 
-            /* [보안] 진단 결과 암호화 저장 */
+            /* 진단 결과 암호화 저장 */
             localStorage.setItem('pol_check_last_score', _m_sec.enc(score.toString()));
 
             const modal = document.getElementById('resultModal');
@@ -246,7 +246,7 @@
         function saveSettings() {
             const name = document.getElementById('inputUserName').value.trim();
             if(name) {
-                /* [보안] 사용자 이름 암호화 저장 */
+                /* 사용자 이름 암호화 저장 */
                 localStorage.setItem('pol_check_username', _m_sec.enc(name));
                 loadUserName();
                 document.getElementById('settingsModal').classList.add('hidden');
@@ -254,7 +254,7 @@
         }
 
         function loadUserName() {
-            /* [보안] 사용자 이름 복호화 로드 */
+            /* 사용자 이름 복호화 로드 */
             const savedName = _m_sec.dec(localStorage.getItem('pol_check_username'));
             if(savedName) document.getElementById('displayUserName').innerText = savedName;
         }
