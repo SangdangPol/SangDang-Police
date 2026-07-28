@@ -814,13 +814,8 @@
         chatBody.innerHTML = '<div class="text-center my-2 text-[10px] text-gray-600 bg-white bg-opacity-40 py-1 px-3 rounded-full w-max mx-auto shadow-sm backdrop-blur-sm">채팅 훈련이 시작되었습니다.</div>';
         
         
-        document.getElementById('chatSimScreen').classList.add('active');
-        
-       
-        if (bellPlayer) {
-            bellPlayer.currentTime = 0;
-            bellPlayer.play().catch(e => {});
-        }
+        document.getElementById('chatSimScreen').classList.add('active');      
+    
         if (navigator.vibrate) navigator.vibrate(200);
 
         setTimeout(() => { renderChatStep(); }, 500);
